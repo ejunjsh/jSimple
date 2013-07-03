@@ -1,16 +1,14 @@
 package com.sky.jSimple.data;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.sql.Connection;
-import java.util.List;
-import java.util.Map;
-
 import com.sky.jSimple.data.annotation.Column;
 import com.sky.jSimple.data.annotation.Entity;
 import com.sky.jSimple.data.annotation.Id;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.BeanPropertyUtil;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 
 public class JSimpleDataTemplate {
 

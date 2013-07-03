@@ -1,17 +1,17 @@
 package com.sky.jSimple.data;
 
+import com.sky.jSimple.aop.Proxy;
+import com.sky.jSimple.aop.ProxyChain;
+import com.sky.jSimple.data.annotation.GetBy;
+import com.sky.jSimple.exception.JSimpleException;
+import com.sky.jSimple.utils.BeanPropertyUtil;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.sky.jSimple.aop.Proxy;
-import com.sky.jSimple.aop.ProxyChain;
-import com.sky.jSimple.data.annotation.GetBy;
-import com.sky.jSimple.exception.JSimpleException;
-import com.sky.jSimple.utils.BeanPropertyUtil;
 
 public class JSimpleDataBeanProxy implements Proxy {
 

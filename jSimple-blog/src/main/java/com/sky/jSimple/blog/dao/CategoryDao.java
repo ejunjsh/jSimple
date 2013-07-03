@@ -2,9 +2,6 @@ package com.sky.jSimple.blog.dao;
 
 import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.blog.entity.Category;
-import com.sky.jSimple.blog.entity.Tag;
-import com.sky.jSimple.data.DBHelper;
-import com.sky.jSimple.data.SQLHelper;
 import com.sky.jSimple.exception.JSimpleException;
 
 @Bean

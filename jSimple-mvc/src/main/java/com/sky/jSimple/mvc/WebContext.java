@@ -1,16 +1,9 @@
 package com.sky.jSimple.mvc;
 
-import java.io.File;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.sky.jSimple.exception.JSimpleException;
+import com.sky.jSimple.utils.ArrayUtil;
+import com.sky.jSimple.utils.CastUtil;
+import com.sky.jSimple.utils.CodecUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadException;
@@ -19,10 +12,14 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sky.jSimple.exception.JSimpleException;
-import com.sky.jSimple.utils.ArrayUtil;
-import com.sky.jSimple.utils.CastUtil;
-import com.sky.jSimple.utils.CodecUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class WebContext {
 	

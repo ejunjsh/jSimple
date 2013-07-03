@@ -1,11 +1,10 @@
 package com.sky.jSimple.data;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.sky.jSimple.exception.JSimpleException;
 
 import javax.sql.DataSource;
-
-import com.sky.jSimple.exception.JSimpleException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Session {
      private DataSource dataSource;

@@ -1,7 +1,5 @@
 package com.sky.jSimple.blog.service;
 
-import java.util.List;
-
 import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.blog.dao.IUserDao;
 import com.sky.jSimple.blog.entity.User;

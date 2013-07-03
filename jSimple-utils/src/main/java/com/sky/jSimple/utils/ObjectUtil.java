@@ -1,8 +1,9 @@
 package com.sky.jSimple.utils;
 
+import org.apache.commons.beanutils.PropertyUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import org.apache.commons.beanutils.PropertyUtils;
 
 public class ObjectUtil {
 

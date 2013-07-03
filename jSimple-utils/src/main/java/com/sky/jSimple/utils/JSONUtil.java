@@ -1,8 +1,8 @@
 package com.sky.jSimple.utils;
 
-import java.text.SimpleDateFormat;
-
 import org.codehaus.jackson.map.ObjectMapper;
+
+import java.text.SimpleDateFormat;
 
 public class JSONUtil {
 

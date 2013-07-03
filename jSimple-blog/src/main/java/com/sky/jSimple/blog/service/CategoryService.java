@@ -1,13 +1,13 @@
 package com.sky.jSimple.blog.service;
 
-import java.util.List;
-
 import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.blog.dao.ICategoryDao;
 import com.sky.jSimple.blog.entity.Category;
 import com.sky.jSimple.data.annotation.Transactional;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Inject;
+
+import java.util.List;
 
 @Bean
 public class CategoryService implements ICategoryService {

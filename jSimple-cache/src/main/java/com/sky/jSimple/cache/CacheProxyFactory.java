@@ -1,18 +1,16 @@
 package com.sky.jSimple.cache;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sky.jSimple.aop.IProxyFactory;
 import com.sky.jSimple.aop.Proxy;
 import com.sky.jSimple.bean.BeanContainer;
 import com.sky.jSimple.cache.annotation.Cache;
 import com.sky.jSimple.cache.annotation.Evict;
-import com.sky.jSimple.exception.JSimpleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CacheProxyFactory implements IProxyFactory {
 

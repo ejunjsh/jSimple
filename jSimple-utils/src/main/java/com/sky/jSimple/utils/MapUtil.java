@@ -1,8 +1,9 @@
 package com.sky.jSimple.utils;
 
+import org.apache.commons.collections.MapUtils;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.apache.commons.collections.MapUtils;
 
 public class MapUtil {
 

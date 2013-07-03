@@ -1,12 +1,11 @@
 package com.sky.jSimple.blog.entity;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import com.sky.jSimple.data.annotation.Entity;
 import com.sky.jSimple.data.annotation.GetBy;
 import com.sky.jSimple.data.annotation.Id;
-import com.sky.jSimple.data.annotation.Ignore;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity("blog")
 public class Blog implements Serializable{

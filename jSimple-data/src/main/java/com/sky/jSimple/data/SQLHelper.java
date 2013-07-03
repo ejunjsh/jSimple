@@ -1,17 +1,12 @@
 package com.sky.jSimple.data;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Properties;
-
+import com.sky.jSimple.data.annotation.Entity;
+import com.sky.jSimple.utils.CollectionUtil;
+import com.sky.jSimple.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sky.jSimple.config.jSimpleConfig;
-import com.sky.jSimple.data.annotation.Entity;
-import com.sky.jSimple.utils.CollectionUtil;
-import com.sky.jSimple.utils.MapUtil;
-import com.sky.jSimple.utils.StringUtil;
+import java.util.Collection;
 
 public class SQLHelper {
 

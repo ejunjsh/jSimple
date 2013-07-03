@@ -1,33 +1,21 @@
 package com.sky.jSimple.data;
 
+import com.sky.jSimple.data.annotation.Entity;
+import com.sky.jSimple.exception.JSimpleException;
+import com.sky.jSimple.utils.ArrayUtil;
+import com.sky.jSimple.utils.MapUtil;
+import org.apache.commons.dbutils.BasicRowProcessor;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.dbutils.BasicRowProcessor;
-import org.apache.commons.dbutils.BeanProcessor;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanHandler;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.commons.dbutils.handlers.ColumnListHandler;
-import org.apache.commons.dbutils.handlers.MapListHandler;
-import org.apache.commons.dbutils.handlers.ScalarHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sky.jSimple.config.jSimpleConfig;
-import com.sky.jSimple.data.annotation.Entity;
-import com.sky.jSimple.exception.JSimpleException;
-import com.sky.jSimple.utils.ArrayUtil;
-import com.sky.jSimple.utils.MapUtil;
-import com.sky.jSimple.utils.StringUtil;
 
 public class DBHelper {
 

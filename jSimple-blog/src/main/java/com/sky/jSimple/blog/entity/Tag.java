@@ -1,10 +1,10 @@
 package com.sky.jSimple.blog.entity;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import com.sky.jSimple.data.annotation.Entity;
 import com.sky.jSimple.data.annotation.Id;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity("tag")
 public class Tag implements Serializable {

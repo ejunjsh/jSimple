@@ -1,15 +1,11 @@
 package com.sky.jSimple.aop;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.List;
-
+import net.sf.cglib.proxy.Enhancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+import java.io.Serializable;
+import java.util.List;
 
 public class AOPFactory {
 	private static final Logger logger = LoggerFactory.getLogger(AOPFactory.class);

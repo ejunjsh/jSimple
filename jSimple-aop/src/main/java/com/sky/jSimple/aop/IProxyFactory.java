@@ -1,8 +1,8 @@
 package com.sky.jSimple.aop;
 
-import java.util.List;
-
 import com.sky.jSimple.exception.JSimpleException;
+
+import java.util.List;
 
 public interface IProxyFactory {
    List<Proxy> create(Class<?> cls) throws JSimpleException;

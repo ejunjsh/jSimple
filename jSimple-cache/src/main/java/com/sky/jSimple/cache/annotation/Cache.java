@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Cache {
     String scope() default "";
     String key() default "";
+    int expire() default 0;
 }

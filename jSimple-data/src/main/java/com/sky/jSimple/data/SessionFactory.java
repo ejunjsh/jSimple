@@ -1,14 +1,12 @@
 package com.sky.jSimple.data;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
+import com.sky.jSimple.exception.JSimpleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sky.jSimple.exception.JSimpleException;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class SessionFactory {
 	 

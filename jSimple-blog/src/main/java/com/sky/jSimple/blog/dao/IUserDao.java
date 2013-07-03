@@ -1,9 +1,9 @@
 package com.sky.jSimple.blog.dao;
 
-import java.util.List;
-
 import com.sky.jSimple.blog.entity.User;
 import com.sky.jSimple.exception.JSimpleException;
+
+import java.util.List;
 
 public interface IUserDao {
 	void insert(User user) throws JSimpleException;

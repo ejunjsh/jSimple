@@ -1,11 +1,9 @@
 package com.sky.jSimple.mvc;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.sky.jSimple.mvc.IController;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class ControllerBase implements IController {
 

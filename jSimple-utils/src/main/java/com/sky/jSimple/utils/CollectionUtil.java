@@ -1,7 +1,8 @@
 package com.sky.jSimple.utils;
 
-import java.util.Collection;
 import org.apache.commons.collections.CollectionUtils;
+
+import java.util.Collection;
 
 public class CollectionUtil {
 

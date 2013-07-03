@@ -2,7 +2,6 @@ package com.sky.jSimple.mvc.bean;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
 
 public class ControllerBean {
 	 private Class<?> controllerClass;

@@ -1,8 +1,5 @@
 package com.sky.jSimple.blog.controller;
 
-import java.util.Date;
-import java.util.List;
-
 import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.blog.entity.Tag;
 import com.sky.jSimple.blog.service.ITagService;
@@ -11,6 +8,9 @@ import com.sky.jSimple.ioc.annotation.Inject;
 import com.sky.jSimple.mvc.ActionResult;
 import com.sky.jSimple.mvc.annotation.HttpGet;
 import com.sky.jSimple.mvc.annotation.HttpPut;
+
+import java.util.Date;
+import java.util.List;
 
 @Bean
 public class TagController extends BaseController {

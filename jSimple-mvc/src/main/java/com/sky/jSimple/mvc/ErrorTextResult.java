@@ -1,11 +1,10 @@
 package com.sky.jSimple.mvc;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.sky.jSimple.exception.JSimpleException;
 
 import javax.servlet.http.HttpServletResponse;
-
-import com.sky.jSimple.exception.JSimpleException;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class ErrorTextResult extends ActionResult {
    private Throwable error;

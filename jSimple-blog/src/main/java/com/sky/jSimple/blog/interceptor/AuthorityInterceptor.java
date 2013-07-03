@@ -1,12 +1,12 @@
 package com.sky.jSimple.blog.interceptor;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
 import com.sky.jSimple.blog.annotation.Authority;
-import com.sky.jSimple.mvc.TextResult;
 import com.sky.jSimple.mvc.ActionResult;
 import com.sky.jSimple.mvc.Interceptor;
+import com.sky.jSimple.mvc.TextResult;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 public class AuthorityInterceptor extends Interceptor {
 

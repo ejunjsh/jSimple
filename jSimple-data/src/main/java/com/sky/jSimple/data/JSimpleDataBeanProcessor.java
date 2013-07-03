@@ -1,19 +1,17 @@
 package com.sky.jSimple.data;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.dbutils.BeanProcessor;
-
 import com.sky.jSimple.aop.AOPFactory;
 import com.sky.jSimple.aop.Proxy;
 import com.sky.jSimple.bean.BeanContainer;
 import com.sky.jSimple.data.annotation.GetBy;
 import com.sky.jSimple.utils.BeanPropertyUtil;
+import org.apache.commons.dbutils.BeanProcessor;
+
+import java.lang.reflect.Field;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class JSimpleDataBeanProcessor extends BeanProcessor {
 

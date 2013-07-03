@@ -1,21 +1,18 @@
 package com.sky.jSimple.ioc;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sky.jSimple.bean.BeanContainer;
 import com.sky.jSimple.bean.ClassScaner;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Impl;
 import com.sky.jSimple.ioc.annotation.Inject;
-import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.BeanPropertyUtil;
-import com.sky.jSimple.utils.ClassUtil;
 import com.sky.jSimple.utils.CollectionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 
 public class IocManager {
 	

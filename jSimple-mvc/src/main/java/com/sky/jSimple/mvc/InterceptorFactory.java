@@ -1,17 +1,15 @@
 package com.sky.jSimple.mvc;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sky.jSimple.aop.AOPFactory;
 import com.sky.jSimple.aop.IProxyFactory;
 import com.sky.jSimple.aop.Proxy;
 import com.sky.jSimple.bean.BeanContainer;
 import com.sky.jSimple.bean.ClassScaner;
 import com.sky.jSimple.exception.JSimpleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InterceptorFactory implements IProxyFactory {
 

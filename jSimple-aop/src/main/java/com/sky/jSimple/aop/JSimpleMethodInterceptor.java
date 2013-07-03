@@ -1,11 +1,11 @@
 package com.sky.jSimple.aop;
 
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
-
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
 
 public class JSimpleMethodInterceptor implements MethodInterceptor,Serializable {
 	

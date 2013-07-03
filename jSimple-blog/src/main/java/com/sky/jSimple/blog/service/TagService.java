@@ -1,16 +1,15 @@
 package com.sky.jSimple.blog.service;
 
-import java.util.List;
-
 import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.blog.dao.ITagDao;
-import com.sky.jSimple.blog.entity.Category;
 import com.sky.jSimple.blog.entity.Tag;
 import com.sky.jSimple.cache.annotation.Cache;
 import com.sky.jSimple.cache.annotation.Evict;
 import com.sky.jSimple.data.annotation.Transactional;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Inject;
+
+import java.util.List;
 
 @Bean
 public class TagService implements ITagService {

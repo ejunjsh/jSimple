@@ -69,8 +69,8 @@ public class MemcachedCacheManager implements ICacheManager {
         this.memcachedClient = memcachedClient;
     }
 
-    public synchronized void insert(String key, Object value) {
-        insert(key, value, "");
+    public synchronized void insert(String key, Object value,int expire) {
+        insert(key, value, "",expire);
     }
 
     public Object get(String key) {
@@ -84,30 +84,47 @@ public class MemcachedCacheManager implements ICacheManager {
 
     public synchronized void removeScope(String scope) {
 
-        Object o = getMemcachedClient().get(scope);
+        //多scope
+        String[] ss=scope.split(",");
 
-        if (o != null) {
-            List<String> keys = (List<String>) o;
+            for (String s : ss) {
 
-            for (String key : keys) {
-                getMemcachedClient().delete(key);
+                Object o = getMemcachedClient().get(s);
+
+                if (o != null) {
+                    List<String> keys = (List<String>) o;
+
+                    for (String key : keys) {
+                        getMemcachedClient().delete(key);
+                    }
+                }
+                getMemcachedClient().delete(s);
             }
-        }
-        getMemcachedClient().delete(scope);
+
 
     }
 
-    public synchronized void insert(String key, Object value, String scope) {
-        getMemcachedClient().set(key, value);
+    public synchronized void insert(String key, Object value, String scope,int expire) {
+        getMemcachedClient().set(key, value,expire);
 
-        Object keys = getMemcachedClient().get(scope);
-        if (keys == null) {
-            keys = new ArrayList<String>();
+        //多scope
+        String[] ss=scope.split(",");
+
+            for(String s: ss) {
+                Object keys = getMemcachedClient().get(s);
+                if (keys == null) {
+                    keys = new ArrayList<String>();
+                }
+
+                ((List<String>) keys).add(key);
+
+                getMemcachedClient().set(s, keys);
+
+
+
         }
 
-        ((List<String>) keys).add(key);
 
-        getMemcachedClient().set(scope, keys);
     }
 
 

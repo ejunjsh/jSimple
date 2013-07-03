@@ -1,10 +1,9 @@
 package com.sky.jSimple.blog.dao;
 
-import java.util.List;
-
 import com.sky.jSimple.blog.entity.Category;
-import com.sky.jSimple.blog.entity.Tag;
 import com.sky.jSimple.exception.JSimpleException;
+
+import java.util.List;
 
 public interface ICategoryDao {
 	void insert(Category category) throws JSimpleException;

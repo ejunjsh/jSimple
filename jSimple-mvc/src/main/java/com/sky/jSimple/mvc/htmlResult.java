@@ -1,17 +1,8 @@
 package com.sky.jSimple.mvc;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
-
 import com.sky.jSimple.exception.JSimpleException;
-import com.sky.jSimple.utils.FileUtil;
+
+import java.io.*;
 
 public class htmlResult extends ActionResult {
 

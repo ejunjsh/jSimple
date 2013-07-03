@@ -1,5 +1,10 @@
 package com.sky.jSimple.utils;
 
+import javassist.*;
+import javassist.bytecode.CodeAttribute;
+import javassist.bytecode.LocalVariableAttribute;
+import javassist.bytecode.MethodInfo;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.lang.annotation.Annotation;
@@ -11,18 +16,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import org.apache.log4j.pattern.FileDatePatternConverter;
-
-import javassist.ClassClassPath;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.Modifier;
-import javassist.NotFoundException;
-import javassist.bytecode.CodeAttribute;
-import javassist.bytecode.LocalVariableAttribute;
-import javassist.bytecode.MethodInfo;
 
 public class ClassUtil {
 

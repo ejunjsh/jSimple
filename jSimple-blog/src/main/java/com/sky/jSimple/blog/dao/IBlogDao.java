@@ -1,11 +1,9 @@
 package com.sky.jSimple.blog.dao;
 
-import java.util.List;
-
 import com.sky.jSimple.blog.entity.Blog;
-import com.sky.jSimple.data.DBHelper;
-import com.sky.jSimple.data.SQLHelper;
 import com.sky.jSimple.exception.JSimpleException;
+
+import java.util.List;
 
 public interface IBlogDao {
 	void insert(Blog blog) throws JSimpleException;

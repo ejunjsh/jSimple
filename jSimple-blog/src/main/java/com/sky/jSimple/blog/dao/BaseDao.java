@@ -1,11 +1,11 @@
 package com.sky.jSimple.blog.dao;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.List;
-
 import com.sky.jSimple.data.JSimpleDataTemplate;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Inject;
+
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 
 public class BaseDao<T> {

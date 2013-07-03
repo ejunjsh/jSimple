@@ -1,23 +1,16 @@
 package com.sky.jSimple.cache;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.map.ObjectWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sky.jSimple.aop.Proxy;
 import com.sky.jSimple.aop.ProxyChain;
 import com.sky.jSimple.cache.annotation.Cache;
 import com.sky.jSimple.cache.annotation.Evict;
 import com.sky.jSimple.exception.JSimpleException;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Method;
+import java.text.MessageFormat;
 
 public class CacheProxy implements Proxy {
 
@@ -43,11 +36,16 @@ public class CacheProxy implements Proxy {
 		try {
 		       Class<?> cls=proxyChain.getTargetClass();
 		       Method method=proxyChain.getTargetMethod();
-		       
+		       Object[] params=proxyChain.getMethodParams();
 		       
 		       if(method.isAnnotationPresent(Cache.class))
 		       {
 		    	   String scope=method.getAnnotation(Cache.class).scope();
+                   //实现动态scope -- myscope{0}{1}
+                   scope= MessageFormat.format(scope,params);
+
+                   int expire =method.getAnnotation(Cache.class).expire();
+
 				    if(StringUtils.isBlank(scope))
 				    {
 				   	  scope=cls.getName();
@@ -69,12 +67,15 @@ public class CacheProxy implements Proxy {
 		    	    }
 		    	    result= proxyChain.doProxyChain();
 		    	 
-		    	    getCacheManager().insert(key, result,scope);
+		    	    getCacheManager().insert(key, result,scope,expire);
 		    	    logger.debug("[jSimpe-cache] save cache with key--"+key+" in scope--"+scope);
 		    	    return result;
 		       }
 		       else if(method.isAnnotationPresent(Evict.class)){
 		    	   String scope=method.getAnnotation(Evict.class).scope();
+
+                   //实现动态scope -- myscope{0}{1}
+                   scope=MessageFormat.format(scope,params);
 				    if(StringUtils.isBlank(scope))
 				    {
 					   	  scope=cls.getName();
