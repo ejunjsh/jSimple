@@ -101,4 +101,12 @@ public class BlogController extends BaseController {
 		pagination.setCurrentPage(p);
 	    return json(pagination);
 	}
+
+	public IBlogService getBlogService() {
+		return blogService;
+	}
+
+	public void setBlogService(IBlogService blogService) {
+		this.blogService = blogService;
+	}
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,8 @@ import com.sky.jSimple.data.annotation.Entity;
 import com.sky.jSimple.data.annotation.Ignore;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.ArrayUtil;
+import com.sky.jSimple.utils.BeanPropertyUtil;
+import com.sky.jSimple.utils.FileUtil;
 import com.sky.jSimple.utils.MapUtil;
 
 public class EntityHelper {
@@ -26,12 +29,13 @@ public class EntityHelper {
         // 获取并遍历所有 Entity 类
         List<Class<?>> entityClassList =ClassScaner.getClassListByAnnotation(Entity.class);
         for (Class<?> entityClass : entityClassList) {
-            // 获取并遍历该 Entity 类中所有的字段（不包括父类中的方法）
-            Field[] fields = entityClass.getDeclaredFields();
-            if (ArrayUtil.isNotEmpty(fields)) {
+            // 获取并遍历该 Entity 类中所有的字段
+            List<String> fields = BeanPropertyUtil.getAllPropertyName(entityClass);
+            if (fields!=null&&fields.size()>0) {
                 // 创建一个 Field Map（用于存放列名与字段名的映射关系）
                 Map<String, String> fieldMap = new LinkedHashMap<String, String>();
-                for (Field field : fields) {
+                for (String s : fields) {
+                	Field field=BeanPropertyUtil.getField(entityClass, s);
                     String fieldName = field.getName();
                     String columnName;
                     if(!field.isAnnotationPresent(Ignore.class))
@@ -63,42 +67,38 @@ public class EntityHelper {
     
     public static Object[] entityToArray(Object entity) throws JSimpleException 
     {
-    	 Field[] fields = entity.getClass().getDeclaredFields();
+    	 List<String> fields =BeanPropertyUtil.getAllPropertyName(entity.getClass());
     	 List<Object> objects=new ArrayList<Object>();
-    	 for(int i=0;i<fields.length;i++)
+    	 for(int i=0;i<fields.size();i++)
     	 {
+    		 Field field=BeanPropertyUtil.getField(entity.getClass(), fields.get(i));
     		 try {
-    			 if(!fields[i].isAnnotationPresent(Ignore.class))
+    			 if(!field.isAnnotationPresent(Ignore.class))
     			 {
-    			 fields[i].setAccessible(true);
-    			 objects.add(fields[i].get(entity));
+    			     objects.add(BeanPropertyUtil.getPropertyValue(entity,fields.get(i)));
     			 }
-			} catch (IllegalArgumentException e) {
+			} catch (Exception e) {
 				throw new JSimpleException(e);
-			} catch (IllegalAccessException e) {
-			    throw new JSimpleException(e);
-			}
+			} 
     	 }
     	 return objects.toArray();
     }
     
     public static List<Object> entityToList(Object entity) throws JSimpleException 
     {
-    	 Field[] fields = entity.getClass().getDeclaredFields();
+    	 List<String> fields =BeanPropertyUtil.getAllPropertyName(entity.getClass());
     	 List<Object> objects=new ArrayList<Object>();
-    	 for(int i=0;i<fields.length;i++)
+    	 for(int i=0;i<fields.size();i++)
     	 {
+    		 Field field=BeanPropertyUtil.getField(entity.getClass(), fields.get(i));
     		 try {
-    			 if(!fields[i].isAnnotationPresent(Ignore.class))
+    			 if(!field.isAnnotationPresent(Ignore.class))
     			 {
-    			 fields[i].setAccessible(true);
-    			 objects.add(fields[i].get(entity));
+    			     objects.add(BeanPropertyUtil.getPropertyValue(entity,fields.get(i)));
     			 }
-			} catch (IllegalArgumentException e) {
+			} catch (Exception e) {
 				throw new JSimpleException(e);
-			} catch (IllegalAccessException e) {
-			    throw new JSimpleException(e);
-			}
+			} 
     	 }
     	 return objects;
     }

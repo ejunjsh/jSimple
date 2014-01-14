@@ -1,6 +1,7 @@
 package com.sky.jSimple.data;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public class TransactionalProxy implements Proxy {
         boolean isTransactional = false; // 默认不具有事务
         
       //定义一个链接工厂
-        ConnectionFactory connectionFactory=null;
+        SessionFactory sessionFactory=null;
         try {
             // 获取目标方法
             Method method = proxyChain.getTargetMethod();
@@ -38,44 +39,59 @@ public class TransactionalProxy implements Proxy {
                 
                 if(connFactoryId!=null&&!connFactoryId.isEmpty())
                 {
-                	connectionFactory=BeanContainer.getBean(connFactoryId);
+                	sessionFactory=BeanContainer.getBean(connFactoryId);
                 }
-                if(connectionFactory==null)
+                if(sessionFactory==null)
                 {
-                	connectionFactory=BeanContainer.getBean(ConnectionFactory.class);
+                	sessionFactory=BeanContainer.getBean(SessionFactory.class);
                 }
                 
-                if(connectionFactory==null)
+                if(sessionFactory==null)
                 {
                 	logger.debug("not find connection");
                 	 throw new JSimpleException("not find connection");
                 }
                 
                 // 开启事务
-                connectionFactory.beginTransaction();
+                sessionFactory.beginTransaction();
               
                     logger.debug("begin transaction");
                 
                 // 执行操作
                 result = proxyChain.doProxyChain();
                 // 提交事务
-                connectionFactory.commitTransaction();
+                sessionFactory.commitTransaction();
                
                     logger.debug("commit transaction");
                 
             } else {
                 // 执行操作
                 result = proxyChain.doProxyChain();
+                
+                //关闭链接
+                List<SessionFactory> factories= BeanContainer.getBeans(SessionFactory.class);
+                for(SessionFactory factory:factories)
+                {
+                	factory.remove();
+                }
             }
         } catch (Exception e) {
             // 判断是否具有事务
             if (isTransactional) {
                 // 回滚事务
-            	connectionFactory.rollbackTransaction();
+            	sessionFactory.rollbackTransaction();
                 if (logger.isDebugEnabled()) {
                     logger.debug("rollback transaction");
                 }
             }
+            else {
+            	 //关闭链接
+                List<SessionFactory> factories= BeanContainer.getBeans(SessionFactory.class);
+                for(SessionFactory factory:factories)
+                {
+                	factory.remove();
+                }
+			}
             throw new JSimpleException(e);
         }
         return result;

@@ -1,9 +1,11 @@
 package com.sky.jSimple.bean;
 
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.exception.JSimpleException;
+import com.sky.jSimple.utils.BeanPropertyUtil;
 import com.sky.jSimple.utils.CastUtil;
 
 public class BeanContainer {
@@ -30,13 +33,13 @@ public class BeanContainer {
 	static
 	{
 		instance=new BeanContainer();
-		instance.classContainer=new HashMap<Class<?>, Object>(50);
+		instance.classContainer=new HashMap<Class<?>, List<Object>>(50);
 		instance.nameContainer=new HashMap<String, Object>(50);
 		loadBeansFromXml();
 	}
 	
 	
-	private  Map<Class<?>,Object> classContainer;
+	private  Map<Class<?>,List<Object>> classContainer;
 	
 	private  Map<String, Object> nameContainer;
 	
@@ -47,7 +50,25 @@ public class BeanContainer {
         if (!instance.classContainer.containsKey(cls)) {
             return null;
         }
-        return (T) instance.classContainer.get(cls);
+        List<Object> objecList=instance.classContainer.get(cls);
+        if(objecList!=null&&objecList.size()>0)
+        {
+        	return  (T)objecList.get(0);
+        }
+        return null;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public static <T> List<T> getBeans(Class<T> cls) {
+        if (!instance.classContainer.containsKey(cls)) {
+            return null;
+        }
+        List<Object> objecList=instance.classContainer.get(cls);
+        if(objecList!=null&&objecList.size()>0)
+        {
+        	return  (List<T>)objecList;
+        }
+        return null;
     }
     
     @SuppressWarnings("unchecked")
@@ -59,19 +80,23 @@ public class BeanContainer {
        }
 
     public static void setBean(Class<?> cls, Object obj) {
-    	
-    	instance.classContainer.put(cls, obj);
+    	List<Object> objects=instance.classContainer.get(cls);
+    	if(objects==null)
+    	{
+    		objects=new ArrayList<Object>();
+    	}
+    	objects.add(obj);
+    	instance.classContainer.put(cls, objects);
     }
     
     public static void setBean(String name, Object obj) {
     	
     	instance.nameContainer.put(name, obj);
         Class<?> cls=obj.getClass();
-        if(getBean(cls)==null)
         setBean(cls, obj);
     }
     
-    public static Map<Class<?>,Object> getClassMap()
+    public static Map<Class<?>,List<Object>> getClassMap()
     {
     	
     	return instance.classContainer;
@@ -108,10 +133,9 @@ public class BeanContainer {
 					{
 						if(namesString!=null&&!namesString.isEmpty()&&valueString!=null&&!valueString.isEmpty())
 						{
-							Field field= bean.getClass().getDeclaredField(namesString);
-							field.setAccessible(true);
-							Object o=CastUtil.castPirmitiveObject(field.getType(), valueString);
-							field.set(bean, o);
+							PropertyDescriptor descriptor= BeanPropertyUtil.getDescriptor(bean.getClass(), namesString);
+							Object o=CastUtil.castPirmitiveObject(descriptor.getPropertyType(), valueString);
+							BeanPropertyUtil.setPropertyValue(bean, namesString, o);
 						}
 					}
 					else {
@@ -120,9 +144,7 @@ public class BeanContainer {
 							Object refBean=BeanContainer.getBean(refString);
 							if(refBean!=null)
 							{
-								Field field= bean.getClass().getDeclaredField(namesString);
-								field.setAccessible(true);
-								field.set(bean,refBean);
+								BeanPropertyUtil.setPropertyValue(bean, namesString, refBean);
 							}
 						}
 					}

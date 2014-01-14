@@ -2,10 +2,6 @@ package com.sky.jSimple.mvc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

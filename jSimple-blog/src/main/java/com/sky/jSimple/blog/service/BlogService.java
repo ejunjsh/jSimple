@@ -119,4 +119,28 @@ public class BlogService implements IBlogService {
 		
 	}
 
+	public IBlogDao getBlogDao() {
+		return blogDao;
+	}
+
+	public void setBlogDao(IBlogDao blogDao) {
+		this.blogDao = blogDao;
+	}
+
+	public ITagDao getTagDao() {
+		return tagDao;
+	}
+
+	public void setTagDao(ITagDao tagDao) {
+		this.tagDao = tagDao;
+	}
+
+	public ICategoryDao getCategoryDao() {
+		return categoryDao;
+	}
+
+	public void setCategoryDao(ICategoryDao categoryDao) {
+		this.categoryDao = categoryDao;
+	}
+
 }

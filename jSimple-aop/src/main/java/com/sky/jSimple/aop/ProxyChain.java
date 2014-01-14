@@ -39,6 +39,11 @@ public class ProxyChain {
     public Method getTargetMethod() {
         return targetMethod;
     }
+    
+    public Object getTargetObject()
+    {
+    	return targetObject;
+    }
 
     public Object doProxyChain() throws JSimpleException   {
         Object methodResult;

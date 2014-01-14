@@ -33,4 +33,12 @@ public class UserService implements IUserService {
 	public User getById(Long id)throws JSimpleException {
 		return userDao.getById(id);
 	}
+
+	public IUserDao getUserDao() {
+		return userDao;
+	}
+
+	public void setUserDao(IUserDao userDao) {
+		this.userDao = userDao;
+	}
 }

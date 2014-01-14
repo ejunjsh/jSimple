@@ -46,4 +46,12 @@ public class TagService implements ITagService {
     	return tagDao.getAll(sort);
     }
 
+	public ITagDao getTagDao() {
+		return tagDao;
+	}
+
+	public void setTagDao(ITagDao tagDao) {
+		this.tagDao = tagDao;
+	}
+
 }

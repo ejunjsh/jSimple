@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.blog.entity.Tag;
-import com.sky.jSimple.blog.model.Pagination;
-import com.sky.jSimple.blog.service.IBlogService;
 import com.sky.jSimple.blog.service.ITagService;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Inject;
@@ -41,6 +39,12 @@ public class TagController extends BaseController {
 		t.setLastModifiedDate(new Date());
 		tagService.update(t);
 		return json(tag);
+	}
+	public ITagService getTagService() {
+		return tagService;
+	}
+	public void setTagService(ITagService tagService) {
+		this.tagService = tagService;
 	}
 	
 

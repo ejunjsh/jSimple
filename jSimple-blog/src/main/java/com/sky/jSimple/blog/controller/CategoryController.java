@@ -60,6 +60,14 @@ public class CategoryController extends BaseController {
 		categoryService.update(c);
 		return json(category);
 	}
+
+	public ICategoryService getCategoryService() {
+		return categoryService;
+	}
+
+	public void setCategoryService(ICategoryService categoryService) {
+		this.categoryService = categoryService;
+	}
 	
 
 }

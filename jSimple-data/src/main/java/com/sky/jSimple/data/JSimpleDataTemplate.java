@@ -9,26 +9,27 @@ import java.util.Map;
 import com.sky.jSimple.data.annotation.Column;
 import com.sky.jSimple.data.annotation.Id;
 import com.sky.jSimple.exception.JSimpleException;
+import com.sky.jSimple.utils.BeanPropertyUtil;
 
 public class JSimpleDataTemplate {
 
-   private ConnectionFactory connectionFactory;
+   private SessionFactory sessionFactory;
 	
    public void insert(Object entity) throws JSimpleException
    {
-	   Connection connection=connectionFactory.getConnection();
+	   Session session=sessionFactory.getSession();
 	   
 	   Map<String, String> entityMap= EntityHelper.getEntityMap().get(entity.getClass());
 	     String sql=SQLHelper.generateInsertSQL(entity.getClass(),entityMap.keySet());
-	     long id= (Long)DBHelper.insertReturnPK(connection,sql,EntityHelper.entityToArray(entity));
+	     long id= (Long)DBHelper.insertReturnPK(session,sql,EntityHelper.entityToArray(entity));
 	     try {
-			Field[] fields= entity.getClass().getDeclaredFields();
-			for(Field field : fields)
+			List<String> fields= BeanPropertyUtil.getAllPropertyName(entity.getClass());
+			for(String s : fields)
 			{
+				Field field=BeanPropertyUtil.getField(entity.getClass(), s);
 				if(field.isAnnotationPresent(Id.class))
 				{
-					field.setAccessible(true) ;
-					field.set(entity,id);
+					BeanPropertyUtil.setPropertyValue(entity, s, id);
 				}
 				break;
 			}
@@ -40,7 +41,7 @@ public class JSimpleDataTemplate {
    
    public void update(Object entity) throws JSimpleException
    {
-	   Connection connection=connectionFactory.getConnection();
+	   Session session=sessionFactory.getSession();
 	   String idCondition="=?";
 		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(entity.getClass());
 		 List<Object> objects=EntityHelper.entityToList(entity);
@@ -48,11 +49,10 @@ public class JSimpleDataTemplate {
 		 {
 			 Field field;
 			try {
-				field = entity.getClass().getDeclaredField(s);
+				field = BeanPropertyUtil.getField(entity.getClass(), s);
 				 if(field.isAnnotationPresent(Id.class))
 				 {
-					 field.setAccessible(true);
-			   	     objects.add(field.get(entity));
+			   	     objects.add(BeanPropertyUtil.getPropertyValue(entity, s));
 			   	     
 			   	    String columnName ="";
 			   	    Column column = field.getAnnotation(Column.class);
@@ -78,13 +78,13 @@ public class JSimpleDataTemplate {
 		
 	     String sql=SQLHelper.generateUpdateSQL(entity.getClass(),entityMap.keySet(),idCondition);
 
-	     DBHelper.update(connection,sql,objects.toArray());
+	     DBHelper.update(session,sql,objects.toArray());
    }
    
    public  void delete(Object id,Class<?> entityClass) throws JSimpleException
    {
 	   
-       Connection connection=connectionFactory.getConnection();
+       Session session=sessionFactory.getSession();
 	   
 	   String idCondition="=?";
 		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(entityClass);
@@ -92,7 +92,7 @@ public class JSimpleDataTemplate {
 		 {
 			 Field field;
 			try {
-				field = entityClass.getDeclaredField(s);
+				field = BeanPropertyUtil.getField(entityClass, s);
 				 if(field.isAnnotationPresent(Id.class))
 				 {
 					 String columnName ="";
@@ -118,41 +118,41 @@ public class JSimpleDataTemplate {
 		 }
 	   
 	   String sql=SQLHelper.generateDeleteSQL(entityClass, idCondition);
-	   DBHelper.update(connection,sql, id);
+	   DBHelper.update(session,sql, id);
    }
    
    public <T> T querySingleByCondition(Class<T> cls , String condition,Object ... params) throws JSimpleException
    {
-	   Connection connection=connectionFactory.getConnection();
+	   Session session=sessionFactory.getSession();
 	  
 	   String sql=SQLHelper.generateSelectSQL(cls, condition,"");
-		 return DBHelper.queryBean(connection,cls, sql, params);
+		 return DBHelper.queryBean(session,cls, sql, params);
    }
    
    public <T> List<T> queryListByCondition(Class<T> cls ,String condition,String sort,Object ... params) throws JSimpleException
    {
-	   Connection connection=connectionFactory.getConnection();
+	   Session session=sessionFactory.getSession();
 
 	   String sql=SQLHelper.generateSelectSQL(cls, condition, sort);
-		 return DBHelper.queryBeanList(connection,cls, sql, params);
+		 return DBHelper.queryBeanList(session,cls, sql, params);
    }
    
    public <T> List<T> queryList(Class<T> cls ,String sql,Object ... params) throws JSimpleException
    {
-	   Connection connection=connectionFactory.getConnection();
-		 return DBHelper.queryBeanList(connection,cls, sql, params);
+	   Session session=sessionFactory.getSession();
+		 return DBHelper.queryBeanList(session,cls, sql, params);
    }
    
    public <T> T querySingle(Class<T> cls, String sql,Object ... params) throws JSimpleException
    {
-	   Connection connection=connectionFactory.getConnection();
+	   Session session=sessionFactory.getSession();
   
-		 return DBHelper.queryBean(connection,cls, sql, params);
+		 return DBHelper.queryBean(session,cls, sql, params);
    }
    
    public  <T> T getById(Class<T> cls, Long id) throws JSimpleException
 	 {
-	   Connection connection=connectionFactory.getConnection();
+	   Session session=sessionFactory.getSession();
 	   
 	   String idCondition="=?";
 		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(cls);
@@ -160,7 +160,7 @@ public class JSimpleDataTemplate {
 		 {
 			 Field field;
 			try {
-				field = cls.getDeclaredField(s);
+				field =BeanPropertyUtil.getField(cls, s);
 				 if(field.isAnnotationPresent(Id.class))
 				 {
 					 String columnName ="";
@@ -186,30 +186,31 @@ public class JSimpleDataTemplate {
 		 }
 	   
 	   String sql=SQLHelper.generateSelectSQL(cls,idCondition, "");
-	   return DBHelper.queryBean(connection,cls, sql, id);
+	   return DBHelper.queryBean(session,cls, sql, id);
 	 }
    
    public <T> List<T> getPager(Class<T> cls, int pageNumber,int pageSize,String condition,String sort,Object ... params) throws JSimpleException
 	 {
-	   Connection connection=connectionFactory.getConnection();
+	   Session session=sessionFactory.getSession();
    
 		 String sql=SQLHelper.generateSelectSQLForPager(pageNumber, pageSize, cls, condition, sort);
-		 return DBHelper.queryBeanList(connection,cls, sql, params);
+		 return DBHelper.queryBeanList(session,cls, sql, params);
 	 }
 	 
 	 public long getCount(String condition,Class<?> entityClass,Object ... params) throws JSimpleException
 	 {
-		 Connection connection=connectionFactory.getConnection();
+		 Session session=sessionFactory.getSession();
 		   
 		 String sql=SQLHelper.generateSelectSQLForCount(entityClass, condition);
-		 return DBHelper.queryCount(connection,sql, params);
+		 return DBHelper.queryCount(session,sql, params);
 	 }
 
-	public ConnectionFactory getConnectionFactory() {
-		return connectionFactory;
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
 	}
-	
-	public void setConnectionFactory(ConnectionFactory connectionFactory) {
-		this.connectionFactory = connectionFactory;
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

@@ -13,6 +13,7 @@ import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Impl;
 import com.sky.jSimple.ioc.annotation.Inject;
 import com.sky.jSimple.utils.ArrayUtil;
+import com.sky.jSimple.utils.BeanPropertyUtil;
 import com.sky.jSimple.utils.ClassUtil;
 import com.sky.jSimple.utils.CollectionUtil;
 
@@ -23,18 +24,19 @@ public class IocManager {
    public static void execute() throws JSimpleException 
    {
 	// 获取并遍历所有的 Bean 类
-       Map<Class<?>, Object> beanMap = BeanContainer.getClassMap();
-       for (Map.Entry<Class<?>, Object> beanEntry : beanMap.entrySet()) {
+       Map<Class<?>, List<Object>> beanMap = BeanContainer.getClassMap();
+       for (Map.Entry<Class<?>, List<Object>> beanEntry : beanMap.entrySet()) {
            // 获取 Bean 类与 Bean 实例
            Class<?> beanClass = beanEntry.getKey();
-           Object beanInstance = beanEntry.getValue();
+           Object beanInstance = beanEntry.getValue().get(0);
            // 获取 Bean 类中所有的字段
-           Field[] beanFields = ClassUtil.getAllFields(beanClass);
-           if (ArrayUtil.isNotEmpty(beanFields)) {
+           List<String>beanFields = BeanPropertyUtil.getAllPropertyName(beanClass);
+           if (beanFields!=null&&beanFields.size()>0) {
                // 遍历所有的 Bean 字段
-               for (Field beanField : beanFields) {
+               for (String propertyName : beanFields) {
+            	   Field beanField=BeanPropertyUtil.getField(beanClass, propertyName);
                    // 判断当前 Bean 字段是否带有 @Inject 注解
-                   if (beanField.isAnnotationPresent(Inject.class)) {
+                   if (beanField!=null&&beanField.isAnnotationPresent(Inject.class)) {
                 	   Object implementInstance =null;
                 	  String beanId=  beanField.getAnnotation(Inject.class).value();
                 	  if(beanId!=null&&!beanId.isEmpty())
@@ -49,20 +51,17 @@ public class IocManager {
                        // 若存在实现类，则执行以下代码
                        if (implementClass != null) {
                        	// 从 Bean Map 中获取该实现类对应的实现类实例
-                           implementInstance = beanMap.get(implementClass);
+                           implementInstance = BeanContainer.getBean(implementClass);
                        }
                 	  }
                 	 
                      // 设置该 Bean 字段的值
                      if (implementInstance != null) {
-                         beanField.setAccessible(true); // 将字段设置为 public
                          try {
-							beanField.set(beanInstance, implementInstance);
-						} catch (IllegalArgumentException e) {
+                        	 BeanPropertyUtil.setPropertyValue(beanInstance, propertyName, implementInstance);
+						} catch (Exception e) {
 							throw new JSimpleException(e);
-						} catch (IllegalAccessException e) {
-							throw new JSimpleException(e);
-						} // 设置字段初始值
+						}
                      }
                    }
                }

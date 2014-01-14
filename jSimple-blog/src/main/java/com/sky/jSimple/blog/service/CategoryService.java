@@ -45,4 +45,12 @@ public class CategoryService implements ICategoryService {
     	return categoryDao.getAll(sort);
     }
 
+	public ICategoryDao getCategoryDao() {
+		return categoryDao;
+	}
+
+	public void setCategoryDao(ICategoryDao categoryDao) {
+		this.categoryDao = categoryDao;
+	}
+
 }

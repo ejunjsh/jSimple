@@ -13,7 +13,7 @@ import net.sf.cglib.proxy.MethodProxy;
 public class AOPFactory {
 	private static final Logger logger = LoggerFactory.getLogger(AOPFactory.class);
     @SuppressWarnings("unchecked")
-    public static <T> T createEnhanceObject(final Class<?> targetClass, final List<Proxy> proxyList) {
+    public static <T> T createEnhanceObject(final Class<T> targetClass, final List<Proxy> proxyList) {
     	
     	logger.debug("[jSimple]-create AOP Object--"+targetClass.getName());
     	

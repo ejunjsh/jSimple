@@ -12,10 +12,10 @@
 		<property  name="minIdle"  value="5"/>
 		<property  name="maxActive"  value="50"/>
 	</bean>
-	<bean id="connectionFactory" class="com.sky.jSimple.data.ConnectionFactory">
+	<bean id="sessionFactory" class="com.sky.jSimple.data.SessionFactory">
 	       <property name="dataSource"  ref="dataSource" />
 	</bean>
 	<bean id="jSimpleDataTemplate" class="com.sky.jSimple.data.JSimpleDataTemplate">
-	       <property name="connectionFactory"  ref="connectionFactory" />
+	       <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
 </beans>
