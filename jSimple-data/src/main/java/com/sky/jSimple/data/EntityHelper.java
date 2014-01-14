@@ -13,11 +13,10 @@ import org.slf4j.LoggerFactory;
 import com.sky.jSimple.bean.ClassScaner;
 import com.sky.jSimple.data.annotation.Column;
 import com.sky.jSimple.data.annotation.Entity;
+import com.sky.jSimple.data.annotation.GetBy;
 import com.sky.jSimple.data.annotation.Ignore;
 import com.sky.jSimple.exception.JSimpleException;
-import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.BeanPropertyUtil;
-import com.sky.jSimple.utils.FileUtil;
 import com.sky.jSimple.utils.MapUtil;
 
 public class EntityHelper {
@@ -38,7 +37,7 @@ public class EntityHelper {
                 	Field field=BeanPropertyUtil.getField(entityClass, s);
                     String fieldName = field.getName();
                     String columnName;
-                    if(!field.isAnnotationPresent(Ignore.class))
+                    if(!field.isAnnotationPresent(Ignore.class)&&!field.isAnnotationPresent(GetBy.class))
                     {
                     // 若该字段上存在 @Column 注解，则优先获取注解中的列名
                     if (field.isAnnotationPresent(Column.class)) {
@@ -73,7 +72,7 @@ public class EntityHelper {
     	 {
     		 Field field=BeanPropertyUtil.getField(entity.getClass(), fields.get(i));
     		 try {
-    			 if(!field.isAnnotationPresent(Ignore.class))
+    			 if(!field.isAnnotationPresent(Ignore.class)&&!field.isAnnotationPresent(GetBy.class))
     			 {
     			     objects.add(BeanPropertyUtil.getPropertyValue(entity,fields.get(i)));
     			 }
@@ -92,7 +91,7 @@ public class EntityHelper {
     	 {
     		 Field field=BeanPropertyUtil.getField(entity.getClass(), fields.get(i));
     		 try {
-    			 if(!field.isAnnotationPresent(Ignore.class))
+    			 if(!field.isAnnotationPresent(Ignore.class)&&!field.isAnnotationPresent(GetBy.class))
     			 {
     			     objects.add(BeanPropertyUtil.getPropertyValue(entity,fields.get(i)));
     			 }

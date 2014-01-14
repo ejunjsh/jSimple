@@ -5,6 +5,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import com.sky.jSimple.exception.JSimpleException;
+
 public class Session {
      private DataSource dataSource;
      
@@ -28,12 +30,9 @@ public class Session {
     	 }
      }
      
-     public void close() throws SQLException
+     public void close() throws JSimpleException
      {
-    	  if(connection!=null&&!connection.isClosed())
-    	  {
-    		  connection.close();
-    	  }
+    	  this.sessionFactory.remove();
      }
      
      public void rollback() throws SQLException

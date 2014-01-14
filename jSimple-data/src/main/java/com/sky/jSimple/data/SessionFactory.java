@@ -106,8 +106,8 @@ public class SessionFactory {
 	        try {
 	            // 先从 ThreadLocal 中获取 Connection
 	            session = connContainer.get();
-	            if (session != null) {
-	                session.close();
+	            if (session != null&&session.getConnection()!=null&&!session.getConnection().isClosed()) {
+	                session.getConnection().close();
 	                connContainer.remove();
 	            }
 	        } catch (SQLException e) {

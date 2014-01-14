@@ -3,6 +3,7 @@ package com.sky.jSimple.blog.entity;
 import java.util.Date;
 
 import com.sky.jSimple.data.annotation.Entity;
+import com.sky.jSimple.data.annotation.GetBy;
 import com.sky.jSimple.data.annotation.Id;
 import com.sky.jSimple.data.annotation.Ignore;
 
@@ -20,6 +21,9 @@ public class Blog {
 	  private String linkName;
 	  private long categoryId;
 	  private String tags;
+	  
+	  @GetBy(condition="id=?",values="categoryId")
+	  private Category category;
 	  
 	public long getId() {
 		return id;
@@ -80,5 +84,11 @@ public class Blog {
 	}
 	public void setCategoryId(long categoryId) {
 		this.categoryId = categoryId;
+	}
+	public Category getCategory() {
+		return category;
+	}
+	public void setCategory(Category category) {
+		this.category = category;
 	} 
 }

@@ -53,9 +53,9 @@ public class DBHelper {
         try {
             Map<String, String> fieldMap = EntityHelper.getEntityMap().get(cls);
             if (MapUtil.isNotEmpty(fieldMap)) {
-                result = queryRunner.query(session.getConnection(),sql, new BeanHandler<T>(cls, new BasicRowProcessor(new BeanProcessor(fieldMap))), params);
+                result = queryRunner.query(session.getConnection(),sql, new BeanHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory(),fieldMap))), params);
             } else {
-                result = queryRunner.query(session.getConnection(),sql, new BeanHandler<T>(cls), params);
+                result = queryRunner.query(session.getConnection(),sql, new BeanHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory()))), params);
             }
         } catch (SQLException e) {
             logger.error("查询出错！", e);
@@ -71,9 +71,9 @@ public class DBHelper {
         try {
             Map<String, String> fieldMap = EntityHelper.getEntityMap().get(cls);
             if (MapUtil.isNotEmpty(fieldMap)) {
-                result = queryRunner.query(session.getConnection(),sql, new BeanListHandler<T>(cls, new BasicRowProcessor(new BeanProcessor(fieldMap))), params);
+                result = queryRunner.query(session.getConnection(),sql, new BeanListHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory(),fieldMap))), params);
             } else {
-                result = queryRunner.query(session.getConnection(),sql, new BeanListHandler<T>(cls), params);
+                result = queryRunner.query(session.getConnection(),sql, new BeanListHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory()))), params);
             }
         } catch (SQLException e) {
             logger.error("查询出错！", e);
