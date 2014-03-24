@@ -6,5 +6,12 @@
   <packaging>pom</packaging>
   <modules>
   	<module>jSimple-aop</module>
+  	<module>jSimple-ioc</module>
+  	<module>jSimple-bean</module>
+  	<module>jSimple-utils</module>
+  	<module>jSimple-mvc</module>
+  	<module>jSimple-blog</module>
+  	<module>jSimple-data</module>
   </modules>
+   
 </project>

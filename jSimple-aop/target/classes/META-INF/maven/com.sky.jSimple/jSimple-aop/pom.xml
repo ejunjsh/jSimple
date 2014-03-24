@@ -7,7 +7,7 @@
   </parent>
   <artifactId>jSimple-aop</artifactId>
   <dependencies>
-  	<dependency>
+          <dependency>
   		<groupId>cglib</groupId>
   		<artifactId>cglib</artifactId>
   		<version>2.2.2</version>
