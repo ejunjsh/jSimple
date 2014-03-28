@@ -12,6 +12,7 @@
   	<module>jSimple-mvc</module>
   	<module>jSimple-blog</module>
   	<module>jSimple-data</module>
+  	<module>jSimple-hessian</module>
   </modules>
    
 </project>

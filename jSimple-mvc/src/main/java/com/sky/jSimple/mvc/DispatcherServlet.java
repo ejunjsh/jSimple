@@ -1,7 +1,7 @@
 package com.sky.jSimple.mvc;
 
-import com.sky.jSimple.aop.Aspect;
-import com.sky.jSimple.aop.AspectFactory;
+import com.sky.jSimple.aop.Proxy;
+import com.sky.jSimple.aop.AOPFactory;
 import com.sky.jSimple.bean.BeanContainer;
 import com.sky.jSimple.bean.ClassScaner;
 import com.sky.jSimple.mvc.bean.ControllerBean;
@@ -62,11 +62,11 @@ public class DispatcherServlet extends HttpServlet {
         properties= PropsUtil.loadProps("jSimple.properties");
         
         List<Class<?>> interceptorClasses=ClassScaner.getClassListBySuper(Interceptor.class);
-        List<Aspect> aspects=new ArrayList<Aspect>();
+        List<Proxy> aspects=new ArrayList<Proxy>();
         for(Class<?> inerceptorClass:interceptorClasses)
         {
             try {
-				aspects.add((Aspect) inerceptorClass.newInstance());
+				aspects.add((Proxy) inerceptorClass.newInstance());
 			} catch (InstantiationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -82,7 +82,7 @@ public class DispatcherServlet extends HttpServlet {
         	if(interceptorClasses!=null&&interceptorClasses.size()>0)
         	{
         	   
-        		BeanContainer.setBean(contorllerClass,AspectFactory.createAspect(contorllerClass, aspects));
+        		BeanContainer.setBean(contorllerClass,AOPFactory.createEnhanceObject(contorllerClass, aspects));
         	}
         	else {
         		try {

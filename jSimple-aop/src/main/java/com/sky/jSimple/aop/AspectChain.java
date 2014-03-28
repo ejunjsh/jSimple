@@ -13,10 +13,10 @@ public class AspectChain {
     private final MethodProxy methodProxy;
     private final Object[] methodParams;
 
-    private List<Aspect> proxyList = new ArrayList<Aspect>();
+    private List<Proxy> proxyList = new ArrayList<Proxy>();
     private int proxyIndex = 0;
 
-    public AspectChain(Class<?> targetClass, Object targetObject, Method targetMethod, MethodProxy methodProxy, Object[] methodParams, List<Aspect> aspects) {
+    public AspectChain(Class<?> targetClass, Object targetObject, Method targetMethod, MethodProxy methodProxy, Object[] methodParams, List<Proxy> aspects) {
         this.targetClass = targetClass;
         this.targetObject = targetObject;
         this.targetMethod = targetMethod;
@@ -40,7 +40,7 @@ public class AspectChain {
     public Object doAspectChain() throws Throwable {
         Object methodResult;
         if (proxyIndex < proxyList.size()) {
-            methodResult = proxyList.get(proxyIndex++).doAspect(this);
+            methodResult = proxyList.get(proxyIndex++).doProxy(this);
         } else {
             methodResult = methodProxy.invokeSuper(targetObject, methodParams);
         }
