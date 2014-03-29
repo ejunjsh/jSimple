@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.sf.cglib.proxy.MethodProxy;
 
-public class AspectChain {
+public class ProxyChain {
 
     private final Class<?> targetClass;
     private final Object targetObject;
@@ -16,7 +16,7 @@ public class AspectChain {
     private List<Proxy> proxyList = new ArrayList<Proxy>();
     private int proxyIndex = 0;
 
-    public AspectChain(Class<?> targetClass, Object targetObject, Method targetMethod, MethodProxy methodProxy, Object[] methodParams, List<Proxy> aspects) {
+    public ProxyChain(Class<?> targetClass, Object targetObject, Method targetMethod, MethodProxy methodProxy, Object[] methodParams, List<Proxy> aspects) {
         this.targetClass = targetClass;
         this.targetObject = targetObject;
         this.targetMethod = targetMethod;
@@ -37,7 +37,7 @@ public class AspectChain {
         return targetMethod;
     }
 
-    public Object doAspectChain() throws Throwable {
+    public Object doProxyChain() throws Throwable {
         Object methodResult;
         if (proxyIndex < proxyList.size()) {
             methodResult = proxyList.get(proxyIndex++).doProxy(this);

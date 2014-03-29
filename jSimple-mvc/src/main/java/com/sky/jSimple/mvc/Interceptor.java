@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import com.sky.jSimple.aop.Proxy;
-import com.sky.jSimple.aop.AspectChain;
+import com.sky.jSimple.aop.ProxyChain;
 
 public abstract class Interceptor implements Proxy {
 
@@ -14,7 +14,7 @@ public abstract class Interceptor implements Proxy {
 	
 	public abstract ActionResult before(Class<?> cls,Method method);
 
-	public final Object doProxy(AspectChain aspectChain) throws Throwable {
+	public final Object doProxy(ProxyChain aspectChain) throws Throwable {
 		Method method=aspectChain.getTargetMethod();
 		Class<?> cls=aspectChain.getTargetClass();
 		
@@ -23,7 +23,7 @@ public abstract class Interceptor implements Proxy {
 			Object befroeResult=before(cls,method);
 			if(befroeResult==null)
 			{
-				Object result= aspectChain.doAspectChain();
+				Object result= aspectChain.doProxyChain();
 				after(cls,method);
 				return result;
 			}
@@ -32,7 +32,7 @@ public abstract class Interceptor implements Proxy {
 			}
 		}
 		else {
-			return aspectChain.doAspectChain();
+			return aspectChain.doProxyChain();
 		}
 		
 	}

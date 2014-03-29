@@ -4,16 +4,13 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Properties;
 
+import com.sky.jSimple.config.jSimpleConfig;
 import com.sky.jSimple.utils.ClassUtil;
 import com.sky.jSimple.utils.PropsUtil;
 
 public class ClassScaner {
-	static
-	{
-		properties= PropsUtil.loadProps("jSimple.properties");
-	}
-	private static Properties properties;
-	private static final String packageName = PropsUtil.getString(properties,"app.package");
+
+	private static final String packageName = jSimpleConfig.getConfigString("app.package");
 
     public static List<Class<?>> getClassList() {
         return ClassUtil.getClassList(packageName, true);

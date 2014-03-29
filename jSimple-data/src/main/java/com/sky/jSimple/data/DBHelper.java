@@ -22,6 +22,7 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sky.jSimple.config.jSimpleConfig;
 import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.MapUtil;
 import com.sky.jSimple.utils.StringUtil;
@@ -38,7 +39,7 @@ public class DBHelper {
     private static QueryRunner queryRunner;
 
     static {
-        databaseType = ConfigHelper.getConfigString("jdbc.type");
+        databaseType = jSimpleConfig.getConfigString("jdbc.type");
         if (StringUtil.isNotEmpty(databaseType)) {
             dataSource = getDataSource();
             queryRunner = new QueryRunner(dataSource);
@@ -53,10 +54,10 @@ public class DBHelper {
     // 获取数据源
     public static DataSource getDataSource() {
         // 从配置文件中读取 JDBC 配置项
-        String driver = ConfigHelper.getConfigString("jdbc.driver");
-        String url = ConfigHelper.getConfigString("jdbc.url");
-        String username = ConfigHelper.getConfigString("jdbc.username");
-        String password = ConfigHelper.getConfigString("jdbc.password");
+        String driver = jSimpleConfig.getConfigString("jdbc.driver");
+        String url = jSimpleConfig.getConfigString("jdbc.url");
+        String username = jSimpleConfig.getConfigString("jdbc.username");
+        String password = jSimpleConfig.getConfigString("jdbc.password");
         // 创建 DBCP 数据源
         BasicDataSource ds = new BasicDataSource();
         if (StringUtil.isNotEmpty(driver)) {

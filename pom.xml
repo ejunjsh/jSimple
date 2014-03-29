@@ -13,6 +13,7 @@
   	<module>jSimple-blog</module>
   	<module>jSimple-data</module>
   	<module>jSimple-hessian</module>
+  	<module>jSimple-config</module>
   </modules>
    
 </project>

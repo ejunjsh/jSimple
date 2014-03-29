@@ -1,9 +1,7 @@
 package com.sky.jSimple.mvc;
 
-import com.sky.jSimple.aop.Proxy;
-import com.sky.jSimple.aop.AOPFactory;
+import com.sky.jSimple.aop.BeanAssembly;
 import com.sky.jSimple.bean.BeanContainer;
-import com.sky.jSimple.bean.ClassScaner;
 import com.sky.jSimple.mvc.bean.ControllerBean;
 import com.sky.jSimple.mvc.bean.RequestBean;
 import com.sky.jSimple.utils.CastUtil;
@@ -43,7 +41,6 @@ import org.apache.commons.fileupload.FileUploadException;
 
 public class DispatcherServlet extends HttpServlet {
 
-	private  Properties properties;
 	
 
     // 获取相关配置项
@@ -59,43 +56,17 @@ public class DispatcherServlet extends HttpServlet {
         FreemarkerResult.init(servletContext, Locale.CHINA, 1);
         VelocityResult.init(servletContext);
         
-        properties= PropsUtil.loadProps("jSimple.properties");
-        
-        List<Class<?>> interceptorClasses=ClassScaner.getClassListBySuper(Interceptor.class);
-        List<Proxy> aspects=new ArrayList<Proxy>();
-        for(Class<?> inerceptorClass:interceptorClasses)
-        {
-            try {
-				aspects.add((Proxy) inerceptorClass.newInstance());
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-        
-        List<Class<?>> controllerClasses=ClassScaner.getClassListBySuper(IController.class);
-        for(Class<?> contorllerClass:controllerClasses)
-        {
-        	if(interceptorClasses!=null&&interceptorClasses.size()>0)
-        	{
-        	   
-        		BeanContainer.setBean(contorllerClass,AOPFactory.createEnhanceObject(contorllerClass, aspects));
-        	}
-        	else {
-        		try {
-					BeanContainer.setBean(contorllerClass, contorllerClass.newInstance());
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-        }
+    
+       
+        try {
+			BeanAssembly.assemble();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         
         
         try {

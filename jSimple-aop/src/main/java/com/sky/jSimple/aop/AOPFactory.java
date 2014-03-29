@@ -12,7 +12,7 @@ public class AOPFactory {
     public static <T> T createEnhanceObject(final Class<?> targetClass, final List<Proxy> proxyList) {
         return (T) Enhancer.create(targetClass, new MethodInterceptor() {
             public Object intercept(Object targetObject, Method targetMethod, Object[] methodParams, MethodProxy methodProxy) throws Throwable {
-                return new AspectChain(targetClass, targetObject, targetMethod, methodProxy, methodParams, proxyList).doAspectChain();
+                return new ProxyChain(targetClass, targetObject, targetMethod, methodProxy, methodParams, proxyList).doProxyChain();
             }
         });
     }

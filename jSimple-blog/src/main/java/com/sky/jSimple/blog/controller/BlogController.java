@@ -21,7 +21,6 @@ public class BlogController extends BaseController {
 	
 	
 	@HttpGet("/blog/{id}")
-	@Authority("123")
 	public ActionResult blogById(Map<String, Object> model)
 	{
 		

@@ -1,1 +1,1 @@
-一个模仿smart框架，借鉴jfinal一些东西开发的框架。
+一个借鉴smart,jfinal一些东西开发的框架。

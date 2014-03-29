@@ -23,7 +23,7 @@ public class AuthorityInterceptor extends Interceptor {
 
 	@Override
 	public ActionResult before(Class<?> cls, Method method) {
-		return null;
+		return new HtmlResult("no authority!");
 	}
 
 	@Override
