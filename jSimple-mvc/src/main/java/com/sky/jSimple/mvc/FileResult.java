@@ -8,8 +8,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class FileResult extends ActionResult {
+	
+	private static final Logger logger = LoggerFactory.getLogger(FileResult.class);
 
 	private String path;
 	

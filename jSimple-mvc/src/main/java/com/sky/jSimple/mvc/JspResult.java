@@ -13,8 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.map.LinkedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JspResult extends ActionResult {
+	
+	private static final Logger logger = LoggerFactory.getLogger(JspResult.class);
+	
 	private String path;
 
 	

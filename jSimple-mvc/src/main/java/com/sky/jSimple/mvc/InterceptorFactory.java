@@ -3,6 +3,9 @@ package com.sky.jSimple.mvc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sky.jSimple.aop.AOPFactory;
 import com.sky.jSimple.aop.IProxyFactory;
 import com.sky.jSimple.aop.Proxy;
@@ -11,6 +14,8 @@ import com.sky.jSimple.bean.ClassScaner;
 
 public class InterceptorFactory implements IProxyFactory {
 
+	private static final Logger logger = LoggerFactory.getLogger(InterceptorFactory.class);
+	
 	public List<Proxy> create(Class<?> cls) {
 		Class<?>[] clsClasses= cls.getSuperclass().getInterfaces();
 		boolean flag=false;
@@ -28,13 +33,21 @@ public class InterceptorFactory implements IProxyFactory {
 			List<Proxy> proxyList = new ArrayList<Proxy>();
 			for (Class<?> inerceptorClass : interceptorClasses) {
 				try {
-					proxyList.add((Proxy) inerceptorClass.newInstance());
+					if(BeanContainer.getBean(inerceptorClass)==null)
+					{
+						Object proxy=inerceptorClass.newInstance();
+						BeanContainer.setBean(inerceptorClass, proxy);
+						proxyList.add((Proxy)proxy);
+					}
+					else {
+						proxyList.add((Proxy)BeanContainer.getBean(inerceptorClass));
+					}
+					
+					
 				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.debug("[jSimple]--create proxy error");
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.debug("[jSimple]--create proxy error");
 				}
 			}
 			return proxyList;

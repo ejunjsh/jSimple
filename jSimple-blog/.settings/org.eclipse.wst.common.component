@@ -10,7 +10,10 @@
         <dependent-module archiveName="jSimple-aop-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jSimple-aop/jSimple-aop">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jSimple-bean-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jSimple-bean/jSimple-bean">
+        <dependent-module archiveName="jSimple-ioc-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jSimple-ioc/jSimple-ioc">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jSimple-data-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jSimple-data/jSimple-data">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jSimple-utils-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jSimple-utils/jSimple-utils">
@@ -19,7 +22,7 @@
         <dependent-module archiveName="jSimple-config-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jSimple-config/jSimple-config">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jSimple-ioc-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jSimple-ioc/jSimple-ioc">
+        <dependent-module archiveName="jSimple-bean-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jSimple-bean/jSimple-bean">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="jSimple-blog"/>

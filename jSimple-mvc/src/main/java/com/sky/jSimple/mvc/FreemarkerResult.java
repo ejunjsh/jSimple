@@ -9,6 +9,8 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
@@ -17,6 +19,8 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
 public class FreemarkerResult extends ActionResult {
+	
+	private static final Logger logger = LoggerFactory.getLogger(FreemarkerResult.class);
 	
 	private transient static final String encoding = "utf-8";
 	private transient static final String contentType = "text/html; charset=" + encoding;

@@ -16,12 +16,17 @@ import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.CastUtil;
 import com.sky.jSimple.utils.CodecUtil;
 
 public class WebContext {
+	
+	private static final Logger logger = LoggerFactory.getLogger(WebContext.class);
+	
 
     private static final ThreadLocal<WebContext> dataContextContainer = new ThreadLocal<WebContext>();
 

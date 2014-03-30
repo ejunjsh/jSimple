@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sky.jSimple.config.jSimpleConfig;
-import com.sky.jSimple.data.annotation.Table;
+import com.sky.jSimple.data.annotation.Entity;
 import com.sky.jSimple.utils.CollectionUtil;
 import com.sky.jSimple.utils.MapUtil;
 import com.sky.jSimple.utils.StringUtil;
@@ -32,7 +32,7 @@ public class SQLHelper {
             StringBuilder columns = new StringBuilder(" ");
             StringBuilder values = new StringBuilder(" values ");
             for (String fieldName : fieldNames) {
-                String columnName = StringUtil.camelhumpToUnderline(fieldName);
+                String columnName = fieldName;
                 if (i == 0) {
                     columns.append("(").append(columnName);
                     values.append("(?");
@@ -57,13 +57,13 @@ public class SQLHelper {
         return sql.toString();
     }
 
-    public static String generateUpdateSQL(Class<?> cls, Map<String, Object> fieldMap, String condition) {
+    public static String generateUpdateSQL(Class<?> cls,Collection<String> fieldNames, String condition) {
         StringBuilder sql = new StringBuilder("update ").append(getTable(cls));
-        if (MapUtil.isNotEmpty(fieldMap)) {
+        if (CollectionUtil.isNotEmpty(fieldNames)) {
             sql.append(" set ");
             int i = 0;
-            for (Map.Entry<String, ?> fieldEntry : fieldMap.entrySet()) {
-                String columnName = StringUtil.camelhumpToUnderline(fieldEntry.getKey());
+            for (String fieldName : fieldNames) {
+                String columnName = fieldName;
                 if (i == 0) {
                     sql.append(columnName).append(" = ?");
                 } else {
@@ -104,10 +104,10 @@ public class SQLHelper {
 
     private static String getTable(Class<?> cls) {
         String tableName;
-        if (cls.isAnnotationPresent(Table.class)) {
-            tableName = cls.getAnnotation(Table.class).value();
+        if (cls.isAnnotationPresent(Entity.class)) {
+            tableName = cls.getAnnotation(Entity.class).value();
         } else {
-            tableName = StringUtil.camelhumpToUnderline(cls.getSimpleName());
+            tableName =cls.getSimpleName();
         }
         return tableName;
     }
@@ -167,5 +167,18 @@ public class SQLHelper {
         sql.append(where);
         sql.append(order);
         sql.append(") ").append(order);
+    }
+    
+    public static String getLastId()
+    {
+        String dbType = jSimpleConfig.getConfigString("jdbc.type");
+        if (dbType.equalsIgnoreCase("mysql")) {
+           return "SELECT LAST_INSERT_ID()";
+        } else if (dbType.equalsIgnoreCase("oracle")) {
+            
+        } else if (dbType.equalsIgnoreCase("mssql")) {
+           
+        }
+        return null;
     }
 }

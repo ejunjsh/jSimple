@@ -4,17 +4,22 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Properties;
+
 import javax.servlet.ServletContext;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
 public class VelocityResult extends ActionResult {
 
+	private static final Logger logger = LoggerFactory.getLogger(VelocityResult.class);
+	
 	private transient static final String encoding = "utf-8";
 	private transient static final String contentType = "text/html;charset=" + encoding;
 

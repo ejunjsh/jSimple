@@ -1,11 +1,17 @@
 package com.sky.jSimple.mvc;
 
 import java.io.PrintWriter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sky.jSimple.utils.JSONUtil;
 
 
 
 public class JsonResult extends ActionResult {
+	
+	private static final Logger logger = LoggerFactory.getLogger(JsonResult.class);
 	
 	public JsonResult(Object model)
 	{

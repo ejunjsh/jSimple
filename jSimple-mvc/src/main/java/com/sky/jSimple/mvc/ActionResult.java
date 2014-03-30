@@ -8,8 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sky.jSimple.ioc.IocManager;
 
 public abstract class ActionResult {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ActionResult.class);
 	
 	protected HttpServletRequest request;
 	

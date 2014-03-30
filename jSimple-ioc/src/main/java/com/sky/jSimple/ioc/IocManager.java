@@ -4,6 +4,9 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sky.jSimple.bean.BeanContainer;
 import com.sky.jSimple.bean.ClassScaner;
 import com.sky.jSimple.ioc.annotation.Impl;
@@ -12,6 +15,9 @@ import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.CollectionUtil;
 
 public class IocManager {
+	
+	private static final Logger logger = LoggerFactory.getLogger(IocManager.class);
+	
    public static void execute() throws IllegalArgumentException, IllegalAccessException
    {
 	// 获取并遍历所有的 Bean 类

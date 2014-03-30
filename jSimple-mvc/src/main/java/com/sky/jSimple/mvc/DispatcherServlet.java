@@ -1,12 +1,12 @@
 package com.sky.jSimple.mvc;
 
-import com.sky.jSimple.aop.BeanAssembly;
+import com.sky.jSimple.bean.BeanAssembly;
 import com.sky.jSimple.bean.BeanContainer;
+import com.sky.jSimple.ioc.IocManager;
 import com.sky.jSimple.mvc.bean.ControllerBean;
 import com.sky.jSimple.mvc.bean.RequestBean;
 import com.sky.jSimple.utils.CastUtil;
 import com.sky.jSimple.utils.ClassUtil.MissingLVException;
-import com.sky.jSimple.utils.PropsUtil;
 import com.sky.jSimple.utils.WebUtil;
 
 import java.io.File;
@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,16 +36,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class DispatcherServlet extends HttpServlet {
 
 	
 
-    // 获取相关配置项
-//    private  final String homePage =  PropsUtil.getString(properties,"app.homePage");
-//    private  final String jspPath =  PropsUtil.getString(properties,"app.jspPath");
-//    private  final String forbiddenURL =  PropsUtil.getString(properties,"app.forbiddenURL");
+	private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -68,6 +66,16 @@ public class DispatcherServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
         
+        
+        try {
+			IocManager.execute();
+		} catch (IllegalArgumentException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         
         try {
 			UrlMapper.excute();

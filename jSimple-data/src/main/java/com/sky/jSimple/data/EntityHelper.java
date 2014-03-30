@@ -5,20 +5,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sky.jSimple.bean.ClassScaner;
+import com.sky.jSimple.config.jSimpleConfig;
 import com.sky.jSimple.data.annotation.Column;
-import com.sky.jSimple.data.annotation.Table;
+import com.sky.jSimple.data.annotation.Entity;
 import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.MapUtil;
 import com.sky.jSimple.utils.StringUtil;
 
 public class EntityHelper {
 
+	private static final Logger logger = LoggerFactory.getLogger(EntityHelper.class);
     private static final Map<Class<?>, Map<String, String>> entityMap = new HashMap<Class<?>, Map<String, String>>(); // Entity 类 => (列名 => 字段名)
 
     static {
         // 获取并遍历所有 Entity 类
-        List<Class<?>> entityClassList =ClassScaner.getClassListByAnnotation(Table.class);
+        List<Class<?>> entityClassList =ClassScaner.getClassListByAnnotation(Entity.class);
         for (Class<?> entityClass : entityClassList) {
             // 获取并遍历该 Entity 类中所有的字段（不包括父类中的方法）
             Field[] fields = entityClass.getDeclaredFields();
@@ -32,7 +37,7 @@ public class EntityHelper {
                     if (field.isAnnotationPresent(Column.class)) {
                         columnName = field.getAnnotation(Column.class).value();
                     } else {
-                        columnName = StringUtil.camelhumpToUnderline(fieldName); // 将驼峰风格替换为下划线风格
+                        columnName =fieldName; // 将驼峰风格替换为下划线风格
                     }
                     // 若字段名与列名不同，则需要进行映射
                     if (!fieldName.equals(columnName)) {

@@ -10,7 +10,8 @@ create table user(
    nickName nvarchar(50) not null,
    pwd varchar(50) not null,
    createdDate datetime not null ,
-    lastLoginDate datetime not null 
+    lastLoginDate datetime not null ,
+    avatar nvarchar(50) null,
 );
 
 create table category(
@@ -38,6 +39,7 @@ create table blog(
   createdDate datetime not null,
   lastModifiedDate datetime not null,
   uid int(8) not null ,
+  viewCount int(8) not null default 0,
   CONSTRAINT `uid_user_blog` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 );
 

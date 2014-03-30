@@ -3,11 +3,15 @@ package com.sky.jSimple.mvc;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sky.jSimple.aop.Proxy;
 import com.sky.jSimple.aop.ProxyChain;
 
 public abstract class Interceptor implements Proxy {
 
+	private static final Logger logger = LoggerFactory.getLogger(Interceptor.class);
     public abstract Class<? extends Annotation> getAnnotation();
     
     public abstract boolean getGlobal();

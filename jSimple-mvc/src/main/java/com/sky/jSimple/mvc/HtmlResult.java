@@ -5,7 +5,12 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class HtmlResult extends ActionResult {
+	
+	private static final Logger logger = LoggerFactory.getLogger(HtmlResult.class);
 	
     private String html="";
 	public HtmlResult(String html)

@@ -3,8 +3,13 @@ package com.sky.jSimple.mvc;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class JavascriptResult extends ActionResult {
 
+	private static final Logger logger = LoggerFactory.getLogger(JavascriptResult.class);
+	
 	@Override
 	public void ExecuteResult() {
 		PrintWriter writer = null;

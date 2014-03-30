@@ -7,6 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javassist.NotFoundException;
 
 import com.sky.jSimple.bean.ClassScaner;
@@ -23,6 +26,9 @@ import com.sky.jSimple.utils.CollectionUtil;
 import com.sky.jSimple.utils.StringUtil;
 
 public class UrlMapper {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UrlMapper.class);
+	
 	 private static final Map<RequestBean, ControllerBean> urlMapper = new LinkedHashMap<RequestBean, ControllerBean>();
 
 	   public static void excute() throws NotFoundException, MissingLVException 

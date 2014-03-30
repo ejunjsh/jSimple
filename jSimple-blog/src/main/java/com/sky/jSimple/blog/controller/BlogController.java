@@ -4,8 +4,11 @@ import java.util.Map;
 
 import org.codehaus.jackson.impl.JsonReadContext;
 
+import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.blog.annotation.Authority;
 import com.sky.jSimple.blog.model.BlogModel;
+import com.sky.jSimple.blog.service.IBlogService;
+import com.sky.jSimple.ioc.annotation.Inject;
 import com.sky.jSimple.mvc.ActionResult;
 import com.sky.jSimple.mvc.BaseController;
 import com.sky.jSimple.mvc.FileResult;
@@ -16,14 +19,16 @@ import com.sky.jSimple.mvc.JspResult;
 import com.sky.jSimple.mvc.VelocityResult;
 import com.sky.jSimple.mvc.annotation.HttpGet;
 
+@Bean
 public class BlogController extends BaseController {
 
-	
+	@Inject
+	private IBlogService blogService;
 	
 	@HttpGet("/blog/{id}")
 	public ActionResult blogById(Map<String, Object> model)
 	{
-		
+		blogService.delete((long) 1);
 		return new JspResult("/WEB-INF/jsp/index.jsp", model);
 	}
 	
