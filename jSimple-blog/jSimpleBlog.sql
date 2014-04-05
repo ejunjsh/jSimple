@@ -17,6 +17,8 @@ create table user(
 create table category(
 id int(8) not null primary key auto_increment,
 name nvarchar(50) not null,
+content text not null,
+linkName nvachar(50) not null,
 createdDate datetime not null ,
 lastModifiedDate datetime not null ,
 uid int(8) not null,
@@ -26,6 +28,7 @@ CONSTRAINT `uid_user_category` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 create table tag(
 id int(8) not null primary key auto_increment,
 name nvarchar(50) not null,
+linkName nvachar(50) not null,
 createdDate datetime not null ,
 lastModifiedDate datetime not null ,
 uid int(8) not null,
@@ -36,6 +39,7 @@ create table blog(
   id int(8) not null primary key auto_increment,
   title nvarchar(50) not null,
   content text not null,
+  linkName nvachar(50) not null,
   createdDate datetime not null,
   lastModifiedDate datetime not null,
   uid int(8) not null ,

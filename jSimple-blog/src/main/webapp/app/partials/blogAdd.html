@@ -1,0 +1,36 @@
+﻿<form name="signup_form" novalidate ng-submit="signupForm()">
+  <div class="form-group">
+    <label for="exampleInputEmail1">输入标题</label>
+    <input  class="form-control" name="title" ng-model="blog.title" placeholder="输入标题" required />
+      <small class="error" 
+            ng-show="signup_form.title.$error.required">
+            必填
+    </small>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">输入内容</label> <a ng-click="loadEditor()" class="btn btn-default">加载编辑器</a>
+    <textarea name="content" class="form-control" rows="8" id="kindEditor" required ng-model="blog.content"></textarea>
+      <small class="error" 
+            ng-show="signup_form.content.$error.required">
+             必填
+    </small>
+  </div>
+    <div class="form-group">
+    <label for="exampleInputEmail1">输入标签</label>
+    <input name="tags"  class="form-control" ng-model="blog.tags" required placeholder="输入标签" />
+        <small class="error" 
+            ng-show="signup_form.tags.$error.required">
+          必填
+    </small>
+  </div>
+     <div class="form-group">
+    <label for="exampleInputEmail1">输入链接名</label>
+    <input name="linkName" class="form-control" ng-model="blog.linkName" required placeholder="输入链接名" />
+         <small class="error" 
+            ng-show="signup_form.linkName.$error.required">
+             必填
+    </small>
+  </div>
+  <button type="submit" class="btn btn-default">发布</button>
+    <a ng-click="click()" class="btn btn-default">发布</a>
+</form>

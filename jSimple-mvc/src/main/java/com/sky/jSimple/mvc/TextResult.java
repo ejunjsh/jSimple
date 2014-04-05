@@ -8,14 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HtmlResult extends ActionResult {
+public class TextResult extends ActionResult {
 	
-	private static final Logger logger = LoggerFactory.getLogger(HtmlResult.class);
+	private static final Logger logger = LoggerFactory.getLogger(TextResult.class);
 	
-    private String html="";
-	public HtmlResult(String html)
+    private String text="";
+	public TextResult(String text)
 	{
-	    this.html=html;
+	    this.text=text;
 	}
 	
 	public void ExecuteResult() {
@@ -32,7 +32,7 @@ public class HtmlResult extends ActionResult {
 	        
 			response.setContentType("text/html;charset=UFT-8");
 	        
-	        writer.write(html);
+	        writer.write(text);
 	        writer.flush();
 		} catch (IOException e) {
 			

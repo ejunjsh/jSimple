@@ -11,6 +11,7 @@ public class Tag {
 	private Date createdDate; 
 	private Date lastModifiedDate;
 	private long uid;
+	private String linkName;
 	public long getId() {
 		return id;
 	}
@@ -40,5 +41,11 @@ public class Tag {
 	}
 	public void setUid(long uid) {
 		this.uid = uid;
+	}
+	public String getLinkName() {
+		return linkName;
+	}
+	public void setLinkName(String linkName) {
+		this.linkName = linkName;
 	} 
 }

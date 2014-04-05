@@ -17,17 +17,8 @@ public class InterceptorFactory implements IProxyFactory {
 	private static final Logger logger = LoggerFactory.getLogger(InterceptorFactory.class);
 	
 	public List<Proxy> create(Class<?> cls) {
-		Class<?>[] clsClasses= cls.getSuperclass().getInterfaces();
-		boolean flag=false;
-		for(Class<?> c:clsClasses)
-		{
-			if(c==IController.class)
-			{
-				flag=true;
-				break;
-			}
-		}
-		if (flag) {
+		List<Class<?>> clsClasses= ClassScaner.getClassListBySuper(IController.class);
+		if (clsClasses.contains(cls)) {
 			List<Class<?>> interceptorClasses = ClassScaner
 					.getClassListBySuper(Interceptor.class);
 			List<Proxy> proxyList = new ArrayList<Proxy>();

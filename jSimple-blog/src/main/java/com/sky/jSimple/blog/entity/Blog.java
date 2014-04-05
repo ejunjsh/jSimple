@@ -13,6 +13,7 @@ public class Blog {
 	  private Date lastModifiedDate;
 	  private long uid; 
 	  private long viewCount;
+	  private String linkName;
 	public long getId() {
 		return id;
 	}
@@ -54,5 +55,11 @@ public class Blog {
 	}
 	public void setViewCount(long viewCount) {
 		this.viewCount = viewCount;
+	}
+	public String getLinkName() {
+		return linkName;
+	}
+	public void setLinkName(String linkName) {
+		this.linkName = linkName;
 	} 
 }

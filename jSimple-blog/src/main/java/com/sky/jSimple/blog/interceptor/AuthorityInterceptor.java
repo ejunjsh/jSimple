@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import com.sky.jSimple.blog.annotation.Authority;
-import com.sky.jSimple.mvc.HtmlResult;
+import com.sky.jSimple.mvc.TextResult;
 import com.sky.jSimple.mvc.ActionResult;
 import com.sky.jSimple.mvc.Interceptor;
 
@@ -23,7 +23,7 @@ public class AuthorityInterceptor extends Interceptor {
 
 	@Override
 	public ActionResult before(Class<?> cls, Method method) {
-		return new HtmlResult("no authority!");
+		return new TextResult("no authority!");
 	}
 
 	@Override

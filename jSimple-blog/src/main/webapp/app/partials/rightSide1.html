@@ -1,0 +1,280 @@
+﻿<a href="javascript:void(0);" ng-click="click()">123123123123123</a>
+
+
+<a href="/view1">to view 1</a>
+
+<pre class="brush:c#;">using HDayaERP.Web.Model;
+using HDayaERP.Web.Base;
+using HDayaERP.Web.Model.Accounting;
+using HDayaERP.Web.Repository;
+using HDayaERP.Web.WebApplication.CommentHelper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using HDayaERP.Common.Frm;
+using HDayaERP.Base.Constant;
+using HDayaERP.Web.Model.Master;
+
+namespace HDayaERP.Web.WebApplication.Areas.AccountData.Controllers
+{
+    public class OpeningBalanceController : BaseController
+    {
+        //
+        // GET: /MasterData/AccountHead/
+        [AccessAuthorize(Roles = PrivilegeName.OpeningBalanceEntry_Browse)]
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        [AccessAuthorize(Roles = PrivilegeName.OpeningBalanceEntry_Browse)]
+        public ActionResult IndexGroupByCompany()
+        {
+            if (GetCompanyAuthority())
+                return View();
+            else
+            {
+                
+                return JsonResultHelper.GetNoAccessJsonResult(Msg.NoAccess);
+            }
+        }
+
+        #warning: need to implement
+        private bool GetCompanyAuthority()
+        {
+            BranchRepository br = new BranchRepository();
+            //all braches of this company
+            List&lt;Branch&gt; listBranch = br.GetBranchByParentID(CompanyID);
+            
+            //all branches which current user have the access
+            UserProfileRepository upr = new UserProfileRepository();
+            List&lt;OrganizationUnit&gt; listOU =  upr.GetUserAccessibleBranch();
+            List&lt;Branch&gt; listUserBranch = new List&lt;Branch&gt;();
+            foreach (var model in listOU)
+            {
+                if (model.ID == GroupID)
+                {
+                    foreach (var model2 in model.SubOrganizationUnit)
+                    {
+                        if (model2.ID == CompanyID)
+                        {
+                            foreach (var model3 in model2.SubOrganizationUnit)
+                            {
+                                listUserBranch.Add(br.GetBranchByBranchID(model3.ID));
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (listUserBranch != null &amp;&amp; listBranch.Count == listUserBranch.Count)
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
+
+
+
+
+        }
+
+        //bool ValueEquals(List&lt;Branch&gt; list_1, List&lt;Branch&gt; list_2)
+        //{
+        //    if (list_1.Count != list_2.Count)
+        //        return false;
+        //    for (int i = 0; i &lt; list_1.Count - 1; i++)
+        //    {
+        //        if (!list_2.Contains(list_1[i]))
+        //            return false;
+        //    }
+
+        //    return true;
+        //}
+        
+
+       
+        [HttpPost]
+        [AccessAuthorize(Roles = PrivilegeName.OpeningBalanceEntry_Modify)]
+        public JsonResult EditSave(HDayaERP.Web.Model.Accounting.OpeningBalance model)
+        {
+            if (model.CreditFC &gt; 0 &amp;&amp; model.DebitFC &gt; 0)
+            {
+                return JsonResultHelper.GetErrorJsonResult("Can not update two fields at the same time");
+            }
+            model.CreditBC = model.CreditFC * model.ExRate;
+            model.DebitBC = model.DebitFC * model.ExRate;
+                OpeningBalanceRepository repository = new OpeningBalanceRepository();
+                repository.UpdateOpeningBalance(model);
+                return JsonResultHelper.GetOkJsonResult(Msg.UpdateSuccess);
+        }
+
+
+        [HttpPost]
+        [AccessAuthorize(Roles = PrivilegeName.OpeningBalanceEntry_Modify)]
+        public JsonResult Clear(HDayaERP.Web.Model.Accounting.OpeningBalance model)
+        {
+            model.BranchID = BranchID;
+            model.FinancialYearID = this.FinancialYearID;
+            OpeningBalanceRepository repository = new OpeningBalanceRepository();
+            repository.ClearOpeningBalance(model);
+            return JsonResultHelper.GetOkJsonResult(Msg.UpdateSuccess);
+        }
+
+      
+
+        
+
+
+        /// &lt;summary&gt;
+        /// get List data by nums and page
+        /// &lt;/summary&gt;
+        /// &lt;param name="page"&gt;page index,start form 1&lt;/param&gt;
+        /// &lt;param name="rows"&gt;show numbers&lt;/param&gt;
+        /// &lt;param name="sort"&gt;sort field&lt;/param&gt;
+        /// &lt;param name="order"&gt;asc or desc&lt;/param&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        [AccessAuthorize(Roles = PrivilegeName.OpeningBalanceEntry_Browse)]
+        public JsonResult GetPagedList(int page, int rows, string sort, string order)
+        {
+            var openingBalance = GetSearchCondition(Request);
+            openingBalance.BranchID = BranchID;
+            openingBalance.FinancialYearID = this.FinancialYearID;
+
+            if (string.IsNullOrEmpty(sort))
+            {
+                sort = "AccountCode";
+            }
+
+            PagedEntity pagedEntity = new PagedEntity()
+            {
+                PageIndex = page,
+                PageSize = rows,
+                SortType = (order != null &amp;&amp; order == "asc") ? true : false,
+                SortColumn = sort
+            };
+            OpeningBalanceRepository repository = new OpeningBalanceRepository();
+            var lists = repository.GetPagedOpeningBalance(openingBalance, pagedEntity);
+            if (lists != null)
+            {
+                int total = lists.TotalRecord;
+                var result = lists.ListData;
+                return JsonResultHelper.GetOkJsonResult(Msg.SearchOK, result, total);
+            }
+            else
+            {
+                return JsonResultHelper.GetErrorPagedJsonResult();
+            }
+        }
+
+        [AccessAuthorize(Roles = PrivilegeName.OpeningBalanceEntry_Browse)]
+        public JsonResult GetTotalOpeningBalance()
+        {
+            var openingBalance = new OpeningBalance();
+            openingBalance.BranchID = BranchID;
+            openingBalance.FinancialYearID = this.FinancialYearID;
+
+
+
+            OpeningBalanceRepository repository = new OpeningBalanceRepository();
+            var result = repository.GetTotalOpeningBalance(openingBalance);
+            if (result != null)
+            {
+                string str = "Total Opening Balance:" + LocalCurrency + "&amp;nbsp;&amp;nbsp;" + string.Format("{0:N}", result.DebitBC) + "&amp;nbsp;&amp;nbsp;" + string.Format("{0:N}", result.CreditBC);
+                return JsonResultHelper.GetOkJsonResult(str,null);
+            }
+            else
+            {
+                return JsonResultHelper.GetErrorPagedJsonResult();
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// get List data by nums and page
+        /// &lt;/summary&gt;
+        /// &lt;param name="page"&gt;page index,start form 1&lt;/param&gt;
+        /// &lt;param name="rows"&gt;show numbers&lt;/param&gt;
+        /// &lt;param name="sort"&gt;sort field&lt;/param&gt;
+        /// &lt;param name="order"&gt;asc or desc&lt;/param&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        [AccessAuthorize(Roles = PrivilegeName.OpeningBalanceEntry_Browse)]
+        public JsonResult GetPagedListGroupByCompany(int page, int rows, string sort, string order)
+        {
+            var openingBalance = GetSearchCondition(Request);
+            openingBalance.FinancialYearID = this.FinancialYearID;
+            openingBalance.CompanyID = this.CompanyID;
+
+            if (string.IsNullOrEmpty(sort))
+            {
+                sort = "AccountCode";
+            }
+
+            PagedEntity pagedEntity = new PagedEntity()
+            {
+                PageIndex = page,
+                PageSize = rows,
+                SortType = (order != null &amp;&amp; order == "asc") ? true : false,
+                SortColumn = sort
+            };
+            
+            OpeningBalanceRepository repository = new OpeningBalanceRepository();
+            var lists = repository.GetPagedOpeningBalance(openingBalance, pagedEntity);
+            if (lists != null)
+            {
+                int total = lists.TotalRecord;
+                var result = lists.ListData;
+                return JsonResultHelper.GetOkJsonResult(Msg.SearchOK, result, total);
+            }
+            else
+            {
+                return JsonResultHelper.GetErrorPagedJsonResult();
+            }
+        }
+
+        [AccessAuthorize(Roles = PrivilegeName.OpeningBalanceEntry_Browse)]
+        public JsonResult GetTotalOpeningBalanceByCompany()
+        {
+            var openingBalance = new OpeningBalance();
+            openingBalance.CompanyID = CompanyID;
+            openingBalance.FinancialYearID = this.FinancialYearID;
+
+
+
+            OpeningBalanceRepository repository = new OpeningBalanceRepository();
+            var result = repository.GetTotalOpeningBalance(openingBalance);
+            if (result != null)
+            {
+                string str = "Total Opening Balance:" + LocalCurrency + "&amp;nbsp;&amp;nbsp;" +string.Format("{0:N}", result.DebitBC)  + "&amp;nbsp;&amp;nbsp;" +string.Format("{0:N}", result.CreditBC) ;
+                return JsonResultHelper.GetOkJsonResult(str, null);
+            }
+            else
+            {
+                return JsonResultHelper.GetErrorPagedJsonResult();
+            }
+        }
+
+
+        /// &lt;summary&gt;
+        /// Get Search Condition
+        /// &lt;/summary&gt;
+        /// &lt;param name="Request"&gt;&lt;/param&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        private OpeningBalance GetSearchCondition(System.Web.HttpRequestBase Request)
+        {
+            string searchKode = Request["SC"];
+            if (!string.IsNullOrEmpty(searchKode))
+            {
+                OpeningBalance openingBalance = new OpeningBalance();
+                openingBalance.AccountName = searchKode.Trim();
+                return openingBalance;
+            }
+            return new OpeningBalance();
+        }
+    }
+}
+</pre>
