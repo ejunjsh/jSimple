@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sky.jSimple.aop.Proxy;
 import com.sky.jSimple.aop.ProxyChain;
+import com.sky.jSimple.exception.JSimpleException;
 
 public abstract class Interceptor implements Proxy {
 
@@ -18,7 +19,7 @@ public abstract class Interceptor implements Proxy {
 	
 	public abstract ActionResult before(Class<?> cls,Method method);
 
-	public final Object doProxy(ProxyChain aspectChain) throws Throwable {
+	public final Object doProxy(ProxyChain aspectChain) throws JSimpleException {
 		Method method=aspectChain.getTargetMethod();
 		Class<?> cls=aspectChain.getTargetClass();
 		

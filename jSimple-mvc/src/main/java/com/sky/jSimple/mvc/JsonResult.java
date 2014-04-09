@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.JSONUtil;
 
 
@@ -24,7 +25,7 @@ public class JsonResult extends ActionResult {
 		return useragent.contains("MSIE");
 	}
 	
-	public void ExecuteResult() {
+	public void ExecuteResult() throws JSimpleException {
 	    String jsonText=JSONUtil.toJSON(getModel());
 	    
 	    String contentType="";
@@ -44,7 +45,7 @@ public class JsonResult extends ActionResult {
 			writer.write(jsonText);
 			writer.flush();
 		} catch (Exception e) {
-			
+			throw new JSimpleException(e);
 		}
 		finally {
 			if (writer != null)

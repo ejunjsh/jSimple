@@ -2,6 +2,7 @@ package com.sky.jSimple.mvc;
 
 import com.sky.jSimple.bean.BeanAssembly;
 import com.sky.jSimple.bean.BeanContainer;
+import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.IocManager;
 import com.sky.jSimple.mvc.bean.ControllerBean;
 import com.sky.jSimple.mvc.bean.RequestBean;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,47 +55,26 @@ public class DispatcherServlet extends HttpServlet {
 		VelocityResult.init(servletContext);
 
 		try {
-			BeanAssembly.assemble();
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		try {
+			BeanAssembly.assemble();			
 			IocManager.execute();
-		} catch (IllegalArgumentException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		try {
 			UrlMapper.excute();
-		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MissingLVException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+			catch (JSimpleException e) {
+			 e.printStackTrace();
+			}
+		
 
 	}
 
 	@Override
-	public void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void service(HttpServletRequest request, HttpServletResponse response) {
 
 		// 定义一个 JSP 映射标志（默认为映射失败）
 		boolean jspMapped = false;
 		// 初始化 WebContext
 		try {
 			WebContext.init(request, response);
-		} catch (FileUploadException e1) {
+		} catch (JSimpleException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -112,10 +93,11 @@ public class DispatcherServlet extends HttpServlet {
 					currentRequestPath.length() - 1);
 		}
 
+		BaseController foundControllerBean=null;
 		try {
 			if (!UrlMapper.handleStaticResource()) {
 
-				boolean isFound = false;
+				
 				// 获取并遍历 Action 映射
 				Map<RequestBean, ControllerBean> controllerMap = UrlMapper
 						.getMpper();
@@ -169,8 +151,18 @@ public class DispatcherServlet extends HttpServlet {
 								} else if (paramClass == Map.class) {
 									actionMethodParamList.add(requestmMap);
 								} else {
-									Object bean = paramClass.newInstance();
-									BeanUtils.populate(bean, requestmMap);
+									Object bean;
+									try {
+										bean = paramClass.newInstance();
+										BeanUtils.populate(bean, requestmMap);
+									} catch (InstantiationException e) {
+										throw new JSimpleException(e);
+									} catch (IllegalAccessException e) {
+										throw new JSimpleException(e);
+									}
+									 catch (InvocationTargetException e) {
+										 throw new JSimpleException(e);
+									}
 									actionMethodParamList.add(bean);
 								}
 							}
@@ -179,60 +171,78 @@ public class DispatcherServlet extends HttpServlet {
 						// 从 BeanHelper 中创建 Action 实例
 						Object controllerObject = BeanContainer
 								.getBean(controllerClass);
+						
+						foundControllerBean=(BaseController)controllerObject;
 						// 调用 Action 方法
 						ActionResult actionResult;
 
 						actionMethod.setAccessible(true); // 取消类型安全检测（可提高反射性能）
-						actionResult = (ActionResult) actionMethod.invoke(
-								controllerObject,
-								actionMethodParamList.toArray());
+						try {
+							actionResult = (ActionResult) actionMethod.invoke(
+									controllerObject,
+									actionMethodParamList.toArray());
+						} catch (IllegalAccessException e) {
+							throw new JSimpleException(e);
+						} catch (IllegalArgumentException e) {
+							throw new JSimpleException(e);
+						} catch (InvocationTargetException e) {
+							throw new JSimpleException(e);
+						}
 						if (actionResult != null) {
 							actionResult.ExecuteResult();
 						}
-						super.service(request, response);
-						isFound = true;
+						
+						
 						break;
 					}
 
 				}
-				if (!isFound) {
+				if (foundControllerBean==null) {
 					ControllerBean bean = UrlMapper.getDefaultAction();
 					if (bean != null) {
 						Method method = bean.getActionMethod();
 						Object controllerObject = BeanContainer.getBean(bean
 								.getControllerClass());
+						foundControllerBean=(BaseController)controllerObject;
 						method.setAccessible(true);
-						ActionResult actionResult = (ActionResult) method
-								.invoke(controllerObject, null);
+						ActionResult actionResult;
+						try {
+							actionResult = (ActionResult) method
+									.invoke(controllerObject, null);
+						} catch (IllegalAccessException e) {
+							throw new JSimpleException(e);
+						} catch (IllegalArgumentException e) {
+							throw new JSimpleException(e);
+						} catch (InvocationTargetException e) {
+							throw new JSimpleException(e);
+						}
 						if (actionResult != null) {
 							actionResult.ExecuteResult();
 						}
+
 					}
 					else {
 						new TextResult("not found any action!").ExecuteResult();
 					}
-					super.service(request, response);
 				} else {
 					new TextResult("not found any action!").ExecuteResult();
-					super.service(request, response);
 				}
 			}
-		} catch (Exception e) {
+		} catch (JSimpleException e) {
 
+				if(foundControllerBean!=null)
+				{
+					foundControllerBean.onException(e);
+				}
+				else {
+					new BaseController().onException(e);
+				}
+
+			e.printStackTrace();
 		} finally {
 			// 销毁 DataContext
 			WebContext.destroy();
 		}
-		// 若 JSP 映射失败，则根据默认路由规则转发请求
-		// if (!jspMapped && StringUtil.isNotEmpty(jspPath)) {
-		// // 获取路径（默认路由规则：/{1}/{2} => /xxx/{1}_{2}.jsp）
-		// String path = jspPath + currentRequestPath.substring(1).replace("/",
-		// "_") + ".jsp";
-		// // 转发请求
-		// request.setAttribute("path", path);
-		// WebUtil.forwardRequest(path, request, response);
-		// }
-
 	}
 
 	private Object castPirmitiveObject(Class<?> clazz, String value) {
@@ -249,40 +259,50 @@ public class DispatcherServlet extends HttpServlet {
 		}
 	}
 
-	private File getFileFromRequest(HttpServletRequest request, String fieldName)
-			throws IOException {
-		if (WebContext.isFileUpload()) {
-			List<FileItem> fileItemList = WebContext.getFileItems();
-			for (FileItem item : fileItemList) {
-				if (item.getFieldName().equals(fieldName)
-						&& !item.isFormField()) {
-					File file = new File(item.getName());
-					OutputStream os = new FileOutputStream(file);
-					InputStream ins = item.getInputStream();
-					int bytesRead = 0;
-					byte[] buffer = new byte[8192];
-					while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
-						os.write(buffer, 0, bytesRead);
+	private File getFileFromRequest(HttpServletRequest request, String fieldName) throws JSimpleException
+		 {
+		try {
+			if (WebContext.isFileUpload()) {
+				List<FileItem> fileItemList = WebContext.getFileItems();
+				for (FileItem item : fileItemList) {
+					if (item.getFieldName().equals(fieldName)
+							&& !item.isFormField()) {
+						File file = new File(item.getName());
+						OutputStream os = new FileOutputStream(file);
+						InputStream ins = item.getInputStream();
+						int bytesRead = 0;
+						byte[] buffer = new byte[8192];
+						while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
+							os.write(buffer, 0, bytesRead);
+						}
+						os.close();
+						ins.close();
+
+						return file;
 					}
-					os.close();
-					ins.close();
 
-					return file;
 				}
-
 			}
+		} catch (Exception e) {
+			throw new JSimpleException(e);
 		}
+		
 		return null;
 	}
 
-	private Map<String, String> getRequstParamsMap(HttpServletRequest request)
-			throws UnsupportedEncodingException {
+	private Map<String, String> getRequstParamsMap(HttpServletRequest request) throws JSimpleException
+		 {
 		Map<String, String> map = null;
 		if (WebContext.isFileUpload()) {
 			List<FileItem> fileItemList = WebContext.getFileItems();
 			for (FileItem item : fileItemList) {
 				if (item.isFormField()) {
-					String fieldValue = item.getString("UTF-8");
+					String fieldValue;
+					try {
+						fieldValue = item.getString("UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						throw new JSimpleException(e);
+					}
 					if (map == null) {
 						map = new HashMap<String, String>();
 					}

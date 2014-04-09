@@ -16,6 +16,8 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sky.jSimple.exception.JSimpleException;
+
 public class JspResult extends ActionResult {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JspResult.class);
@@ -29,16 +31,14 @@ public class JspResult extends ActionResult {
 		this.setModel(model);
 	}
 	
-	public void ExecuteResult() {
+	public void ExecuteResult() throws JSimpleException {
 		processRequest();
 		try {
 			request.getRequestDispatcher(path).forward(request, response);
 		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new JSimpleException(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new JSimpleException(e);
 		}
 	}
 

@@ -19,6 +19,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.CastUtil;
 import com.sky.jSimple.utils.CodecUtil;
@@ -37,7 +38,7 @@ public class WebContext {
     private List<FileItem> fileItems;
 
     // 初始化
-    public static void init(HttpServletRequest request, HttpServletResponse response) throws FileUploadException {
+    public static void init(HttpServletRequest request, HttpServletResponse response) throws JSimpleException   {
     	WebContext webContext = new WebContext();
         webContext.request = request;
         webContext.response = response;
@@ -48,7 +49,11 @@ public class WebContext {
         File repository = (File) request.getServletContext().getAttribute("javax.servlet.context.tempdir");
         // 创建 FileUpload 对象
         webContext.fileUpload = new ServletFileUpload( new DiskFileItemFactory(DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD, repository));
-        webContext.fileItems=webContext.fileUpload.parseRequest(request);
+        try {
+			webContext.fileItems=webContext.fileUpload.parseRequest(request);
+		} catch (FileUploadException e) {
+			throw new JSimpleException(e);
+		}
         }
     }
     

@@ -3,9 +3,11 @@ package com.sky.jSimple.mvc;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,12 +26,14 @@ import javassist.NotFoundException;
 
 import com.sky.jSimple.bean.ClassScaner;
 import com.sky.jSimple.config.jSimpleConfig;
+import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.mvc.WebContext.Request;
-import com.sky.jSimple.mvc.annotation.DefaultAction;
+import com.sky.jSimple.mvc.annotation.Default;
 import com.sky.jSimple.mvc.annotation.HttpDelete;
 import com.sky.jSimple.mvc.annotation.HttpGet;
 import com.sky.jSimple.mvc.annotation.HttpPost;
 import com.sky.jSimple.mvc.annotation.HttpPut;
+import com.sky.jSimple.mvc.annotation.Param;
 import com.sky.jSimple.mvc.bean.ControllerBean;
 import com.sky.jSimple.mvc.bean.RequestBean;
 import com.sky.jSimple.utils.ArrayUtil;
@@ -47,7 +51,7 @@ public class UrlMapper {
 	 private static final Map<RequestBean, ControllerBean> urlMapper = new LinkedHashMap<RequestBean, ControllerBean>();
      
 	 private static ControllerBean defaultAction=null;
-	   public static void excute() throws NotFoundException, MissingLVException 
+	   public static void excute() throws JSimpleException 
 	   {
 	        // 获取所有 Action 类
 
@@ -69,10 +73,30 @@ public class UrlMapper {
 	                    for (Method actionMethod : actionMethods) {
 	                        // 判断当前 Action 方法是否带有 @Request 注解
 	                         List<String> paramNamesList=new ArrayList<String>();
-	                    	 String[] paramNameStrings=ClassUtil.getMethodParamNames(controllerClass, actionMethod.getName());
-		                       
+	                    	 String[] paramNameStrings;
+							try {
+								paramNameStrings = ClassUtil.getMethodParamNames(controllerClass, actionMethod.getName());
+							} catch (NotFoundException e) {
+								throw new JSimpleException(e);
+							} catch (MissingLVException e) {
+								throw new JSimpleException(e);
+							}
+		                     Annotation[][] paramAnnotations=actionMethod.getParameterAnnotations();
 		                       for (int i=0;i<paramNameStrings.length;i++) {
-								paramNamesList.add(paramNameStrings[i]);
+		                    	   boolean flag=false;
+		                    	   for(int j=0;j<paramAnnotations[i].length;j++)
+		                    	   {
+		                    		   if(paramAnnotations[i][j] instanceof Param)
+		                    		   {
+		                    			   paramNamesList.add(((Param)paramAnnotations[i][j]).value());
+		                    			   flag=true;
+		                    			   break;
+		                    		   }
+		                    	   }
+		                    	   if(!flag)
+		                    	 paramNamesList.add(paramNameStrings[i]);
+								
+								 
 							}
 	                       if (actionMethod.isAnnotationPresent(HttpGet.class)) {
 	                            String requestPath = actionMethod.getAnnotation(HttpGet.class).value();
@@ -87,7 +111,7 @@ public class UrlMapper {
 	                            String requestPath = actionMethod.getAnnotation(HttpDelete.class).value();
 	                            putActionMap("DELETE", requestPath, controllerClass, actionMethod,paramNamesList, normalUrlMapper, regexpUrlMapper);
 	                        }
-	                        else if (actionMethod.isAnnotationPresent(DefaultAction.class))
+	                        else if (actionMethod.isAnnotationPresent(Default.class))
 	                        {
 	                        	defaultAction=new ControllerBean(controllerClass, actionMethod, null);
 	                        }
@@ -127,7 +151,7 @@ public class UrlMapper {
 	    	return defaultAction;
 	    }
 	    
-	    public static boolean handleStaticResource() throws IOException
+	    public static boolean handleStaticResource() throws  JSimpleException
 	    {
 	    	 HttpServletRequest request= WebContext.getRequest();
 	    	  HttpServletResponse response=WebContext.getResponse();
@@ -136,7 +160,11 @@ public class UrlMapper {
 	            String path = request.getContextPath();
 	            url = url.substring(path.length());
 	            if (url.toUpperCase().startsWith("/WEB-INF/")) {
-	                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+	                try {
+						response.sendError(HttpServletResponse.SC_NOT_FOUND);
+					} catch (IOException e) {
+						throw new JSimpleException(e);
+					}
 	                return true;
 	            }
 	            int n = url.indexOf('?');
@@ -165,7 +193,11 @@ public class UrlMapper {
 	      {
 	            File f = new File(servletContext.getRealPath(url));
 	            if (! f.isFile()) {
-	                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+	                try {
+						response.sendError(HttpServletResponse.SC_NOT_FOUND);
+					} catch (IOException e) {
+					    throw new JSimpleException(e);
+					}
 	                return true;
 	            }
 	    	 
@@ -199,7 +231,11 @@ public class UrlMapper {
 	          String mime = servletContext.getMimeType(f.getName());
 	          mime= mime==null ? "application/octet-stream" : mime;
 	          response.setContentType(mime);
-	          sendFile(f, response.getOutputStream());
+	          try {
+				sendFile(f, response.getOutputStream());
+			} catch (IOException e) {
+				throw new JSimpleException(e);
+			}
 	          return true;
 	      }
 	      else {
@@ -208,7 +244,7 @@ public class UrlMapper {
 	    }
 
 
-	    static void sendFile(File file, OutputStream output) throws IOException {
+	    static void sendFile(File file, OutputStream output) throws JSimpleException {
 	        InputStream input = null;
 	        try {
 	            input = new BufferedInputStream(new FileInputStream(file));
@@ -220,13 +256,19 @@ public class UrlMapper {
 	                output.write(buffer, 0, n);
 	            }
 	            output.flush();
-	        }
+	        } catch (FileNotFoundException e) {
+	        	throw new JSimpleException(e);
+			} catch (IOException e) {
+				throw new JSimpleException(e);
+			}
 	        finally {
 	            if (input!=null) {
 	                try {
 	                    input.close();
 	                }
-	                catch (IOException e) {}
+	                catch (IOException e) {
+	                	throw new JSimpleException(e);
+	                }
 	            }
 	        }
 	    }

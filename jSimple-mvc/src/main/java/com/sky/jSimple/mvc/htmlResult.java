@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.FileUtil;
 
 public class htmlResult extends ActionResult {
@@ -22,7 +23,7 @@ public class htmlResult extends ActionResult {
 	}
 	
 	@Override
-	public void ExecuteResult() {
+	public void ExecuteResult() throws JSimpleException {
 		  File f = new File(request.getServletContext().getRealPath(path));
 			response.setHeader("Pragma", "no-cache");	// HTTP/1.0 caches might not implement Cache-Control and might only implement Pragma: no-cache
 
@@ -45,15 +46,17 @@ public class htmlResult extends ActionResult {
   	            }
   	            output.flush();
   	        } catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				 throw new JSimpleException(e);
 			}
   	        finally {
   	            if (input!=null) {
   	                try {
   	                    input.close();
   	                }
-  	                catch (IOException e) {}
+  	                catch (IOException e) {
+  	                	
+  	                	throw new JSimpleException(e);
+  	                }
   	            }
   	        }
           }

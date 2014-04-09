@@ -18,6 +18,6 @@ public class TagController extends BaseController {
 	@HttpGet("/tag/{id}")
 	public ActionResult tagIndex(int id)
 	{
-		return new TextResult(""+id);
+		return text(""+id);
 	}
 }

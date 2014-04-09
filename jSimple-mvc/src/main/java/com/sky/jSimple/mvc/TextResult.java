@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sky.jSimple.exception.JSimpleException;
+
 public class TextResult extends ActionResult {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TextResult.class);
@@ -18,7 +20,7 @@ public class TextResult extends ActionResult {
 	    this.text=text;
 	}
 	
-	public void ExecuteResult() {
+	public void ExecuteResult() throws JSimpleException {
 		
 		HttpServletResponse response=WebContext.getResponse();
 		
@@ -35,7 +37,7 @@ public class TextResult extends ActionResult {
 	        writer.write(text);
 	        writer.flush();
 		} catch (IOException e) {
-			
+			throw new JSimpleException(e);
 		}
 		finally {
 			if (writer != null)

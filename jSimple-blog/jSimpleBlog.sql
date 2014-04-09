@@ -6,19 +6,19 @@ use jSimpleBlog;
 
 create table user(
   id int(8) not null primary key auto_increment,
-   email varchar(50) not null,
-   nickName nvarchar(50) not null,
+   email varchar(50) not null unique,
+   nickName nvarchar(50) not null unique,
    pwd varchar(50) not null,
    createdDate datetime not null ,
-    lastLoginDate datetime not null ,
-    avatar nvarchar(50) null,
+    lastLoginDate datetime not null,
+    avatar varchar(50) not null
 );
 
 create table category(
 id int(8) not null primary key auto_increment,
-name nvarchar(50) not null,
-content text not null,
-linkName nvachar(50) not null,
+name nvarchar(50) not null unique,
+content text not null default '',
+linkName varchar(50) not null unique,
 createdDate datetime not null ,
 lastModifiedDate datetime not null ,
 uid int(8) not null,
@@ -27,8 +27,8 @@ CONSTRAINT `uid_user_category` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 
 create table tag(
 id int(8) not null primary key auto_increment,
-name nvarchar(50) not null,
-linkName nvachar(50) not null,
+name nvarchar(50) not null unique,
+linkName varchar(50) not null unique,
 createdDate datetime not null ,
 lastModifiedDate datetime not null ,
 uid int(8) not null,
@@ -39,11 +39,11 @@ create table blog(
   id int(8) not null primary key auto_increment,
   title nvarchar(50) not null,
   content text not null,
-  linkName nvachar(50) not null,
+linkName varchar(50) not null unique,
   createdDate datetime not null,
   lastModifiedDate datetime not null,
   uid int(8) not null ,
-  viewCount int(8) not null default 0,
+viewCount int(8) not null default 0,
   CONSTRAINT `uid_user_blog` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 );
 
@@ -55,5 +55,7 @@ create table blog_tag(
   CONSTRAINT `blogId_blog` FOREIGN KEY (`blogId`) REFERENCES `blog` (`id`),
   primary key(tagId,blogId)
 );
+
+insert `user` ( email,nickName ,pwd , createdDate ,lastLoginDate , avatar) values('sjj050121014@163.com','idiotSky','123',now(),now(),'/app/IMG_2218.jpg');
 
  

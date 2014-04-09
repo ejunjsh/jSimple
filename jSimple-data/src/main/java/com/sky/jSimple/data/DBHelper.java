@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sky.jSimple.config.jSimpleConfig;
+import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.MapUtil;
 import com.sky.jSimple.utils.StringUtil;
@@ -75,7 +76,7 @@ public class DBHelper {
         return ds;
     }
 
-    public static Connection getConnection() {
+    public static Connection getConnection() throws JSimpleException {
         Connection conn;
         try {
             // 先从 ThreadLocal 中获取 Connection
@@ -90,20 +91,20 @@ public class DBHelper {
             }
         } catch (SQLException e) {
             logger.error("获取数据库连接出错！", e);
-            throw new RuntimeException(e);
+            throw new JSimpleException(e);
         }
         return conn;
     }
 
     // 开启事务
-    public static void beginTransaction() {
+    public static void beginTransaction() throws JSimpleException {
         Connection conn = getConnection();
         if (conn != null) {
             try {
                 conn.setAutoCommit(false);
             } catch (SQLException e) {
                 logger.error("开启事务出错！", e);
-                throw new RuntimeException(e);
+                throw new JSimpleException(e);
             } finally {
                 connContainer.set(conn);
             }
@@ -111,7 +112,7 @@ public class DBHelper {
     }
 
     // 提交事务
-    public static void commitTransaction() {
+    public static void commitTransaction() throws JSimpleException {
         Connection conn = getConnection();
         if (conn != null) {
             try {
@@ -119,7 +120,7 @@ public class DBHelper {
                 conn.close();
             } catch (SQLException e) {
                 logger.error("提交事务出错！", e);
-                throw new RuntimeException(e);
+                throw new JSimpleException(e);
             } finally {
                 connContainer.remove();
             }
@@ -127,7 +128,7 @@ public class DBHelper {
     }
 
     // 回滚事务
-    public static void rollbackTransaction() {
+    public static void rollbackTransaction() throws JSimpleException {
         Connection conn = getConnection();
         if (conn != null) {
             try {
@@ -135,7 +136,7 @@ public class DBHelper {
                 conn.close();
             } catch (SQLException e) {
                 logger.error("回滚事务出错！", e);
-                throw new RuntimeException(e);
+                throw new JSimpleException(e);
             } finally {
                 connContainer.remove();
             }
@@ -143,111 +144,118 @@ public class DBHelper {
     }
 
     // 执行查询（返回一个对象）
-    public static <T> T queryBean(Class<T> cls, String sql, Object... params) {
+    public static <T> T queryBean(Class<T> cls, String sql, Object... params) throws JSimpleException {
         T result;
         try {
             Map<String, String> fieldMap = EntityHelper.getEntityMap().get(cls);
+            Connection conn = getConnection();
             if (MapUtil.isNotEmpty(fieldMap)) {
-                result = queryRunner.query(sql, new BeanHandler<T>(cls, new BasicRowProcessor(new BeanProcessor(fieldMap))), params);
+                result = queryRunner.query(conn,sql, new BeanHandler<T>(cls, new BasicRowProcessor(new BeanProcessor(fieldMap))), params);
             } else {
-                result = queryRunner.query(sql, new BeanHandler<T>(cls), params);
+                result = queryRunner.query(conn,sql, new BeanHandler<T>(cls), params);
             }
         } catch (SQLException e) {
             logger.error("查询出错！", e);
-            throw new RuntimeException(e);
+            throw new JSimpleException(e);
         }
         printSQL(sql);
         return result;
     }
 
     // 执行查询（返回多个对象）
-    public static <T> List<T> queryBeanList(Class<T> cls, String sql, Object... params) {
+    public static <T> List<T> queryBeanList(Class<T> cls, String sql, Object... params) throws JSimpleException {
         List<T> result;
         try {
             Map<String, String> fieldMap = EntityHelper.getEntityMap().get(cls);
+            Connection conn = getConnection();
             if (MapUtil.isNotEmpty(fieldMap)) {
-                result = queryRunner.query(sql, new BeanListHandler<T>(cls, new BasicRowProcessor(new BeanProcessor(fieldMap))), params);
+                result = queryRunner.query(conn,sql, new BeanListHandler<T>(cls, new BasicRowProcessor(new BeanProcessor(fieldMap))), params);
             } else {
-                result = queryRunner.query(sql, new BeanListHandler<T>(cls), params);
+                result = queryRunner.query(conn,sql, new BeanListHandler<T>(cls), params);
             }
         } catch (SQLException e) {
             logger.error("查询出错！", e);
-            throw new RuntimeException(e);
+            throw new JSimpleException(e);
         }
         printSQL(sql);
         return result;
     }
 
     // 执行更新（包括 UPDATE、INSERT、DELETE）
-	public static int update(String sql, Object... params) {
+	public static int update(String sql, Object... params) throws JSimpleException {
         int result;
         try {
             Connection conn = getConnection();
             result = queryRunner.update(conn, sql, params);
         } catch (SQLException e) {
             logger.error("更新出错！", e);
-            throw new RuntimeException(e);
+            throw new JSimpleException(e);
         }
         printSQL(sql);
         return result;
     }
 
     // 执行查询（返回 count 结果）
-    public static long queryCount(String sql, Object... params) {
+    public static long queryCount(String sql, Object... params) throws JSimpleException {
         long result;
         try {
-            result = queryRunner.query(sql, new ScalarHandler<Long>("count(*)"), params);
+        	 Connection conn = getConnection();
+            result = queryRunner.query(conn,sql, new ScalarHandler<Long>("count(*)"), params);
         } catch (SQLException e) {
             logger.error("查询出错！", e);
-            throw new RuntimeException(e);
+            throw new JSimpleException(e);
         }
         printSQL(sql);
         return result;
     }
 
     // 查询映射列表
-    public static List<Map<String, Object>> queryMapList(String sql, Object... params) {
+    public static List<Map<String, Object>> queryMapList(String sql, Object... params) throws JSimpleException {
         List<Map<String, Object>> result;
         try {
-            result = queryRunner.query(sql, new MapListHandler(), params);
+        	 Connection conn = getConnection();
+            result = queryRunner.query(conn,sql, new MapListHandler(), params);
         } catch (SQLException e) {
             logger.error("查询出错！", e);
-            throw new RuntimeException(e);
+            throw new JSimpleException(e);
         }
         printSQL(sql);
         return result;
     }
 
     // 查询单列数据（返回一个对象）
-    public static <T> T queryColumn(String column, String sql, Object... params) {
+    public static <T> T queryColumn(String column, String sql, Object... params) throws JSimpleException {
         T result;
         try {
-            result = queryRunner.query(sql, new ScalarHandler<T>(column), params);
+        	 Connection conn = getConnection();
+            result = queryRunner.query(conn,sql, new ScalarHandler<T>(column), params);
         } catch (SQLException e) {
             logger.error("查询出错！", e);
-            throw new RuntimeException(e);
+            throw new JSimpleException(e);
         }
         printSQL(sql);
         return result;
     }
 
     // 查询单列数据（返回多个对象）
-    public static <T> List<T> queryColumnList(String column, String sql, Object... params) {
+    public static <T> List<T> queryColumnList(String column, String sql, Object... params) throws JSimpleException {
         List<T> result;
         try {
-            result = queryRunner.query(sql, new ColumnListHandler<T>(column), params);
+        	 Connection conn = getConnection();
+            result = queryRunner.query(conn,sql, new ColumnListHandler<T>(column), params);
         } catch (SQLException e) {
             logger.error("查询出错！", e);
-            throw new RuntimeException(e);
+            throw new JSimpleException(e);
         }
         printSQL(sql);
         return result;
     }
 
     // 插入（返回自动生成的主键）
-    public static Serializable insertReturnPK(String sql, Object... params) {
+    public static Serializable insertReturnPK(String sql, Object... params) throws JSimpleException {
         Serializable key = null;
         Connection conn = getConnection();
+        printSQL(sql);
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             if (ArrayUtil.isNotEmpty(params)) {
@@ -264,9 +272,9 @@ public class DBHelper {
             }
         } catch (SQLException e) {
             logger.error("插入出错！", e);
-            throw new RuntimeException(e);
+            throw new JSimpleException(e);
         }
-        printSQL(sql);
+        
         return key;
     }
 

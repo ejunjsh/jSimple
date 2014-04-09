@@ -6,6 +6,7 @@ import com.sky.jSimple.aop.Proxy;
 import com.sky.jSimple.aop.ProxyChain;
 import com.sky.jSimple.aop.annotation.Cache;
 import com.sky.jSimple.aop.annotation.Log;
+import com.sky.jSimple.exception.JSimpleException;
 
 public class CacheAspect implements Proxy {
 
@@ -14,7 +15,7 @@ public class CacheAspect implements Proxy {
 		return true;
 	}
 
-	public Object doProxy(ProxyChain aspectChain) throws Throwable {
+	public Object doProxy(ProxyChain aspectChain) throws JSimpleException  {
 		Class<?> cls=aspectChain.getTargetClass();
 		Method method=aspectChain.getTargetMethod();
 		Object[] params=aspectChain.getMethodParams();

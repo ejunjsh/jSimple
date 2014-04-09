@@ -11,6 +11,8 @@ import java.io.UnsupportedEncodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sky.jSimple.exception.JSimpleException;
+
 
 public class FileResult extends ActionResult {
 	
@@ -23,7 +25,7 @@ public class FileResult extends ActionResult {
 		this.path=path;
 	}
 	
-	public void ExecuteResult() {
+	public void ExecuteResult() throws JSimpleException {
 		String realPath=request.getServletContext().getRealPath(path) ;
 		
 		File file=new File(realPath);
@@ -53,7 +55,7 @@ public class FileResult extends ActionResult {
             outputStream.flush();
         }
         catch (Exception e) {
-        	
+        	throw new JSimpleException(e);
         }
         finally {
             if (inputStream != null) {

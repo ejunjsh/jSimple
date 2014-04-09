@@ -11,9 +11,10 @@ import org.apache.commons.beanutils.BeanMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.IocManager;
 
-public abstract class ActionResult {
+public abstract class ActionResult  {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ActionResult.class);
 	
@@ -29,7 +30,7 @@ public abstract class ActionResult {
 	    response=WebContext.getResponse();
 	}
 	
-	public abstract void ExecuteResult();
+	public abstract void ExecuteResult() throws JSimpleException;
 
 	public Object getModel() {
 		return model;

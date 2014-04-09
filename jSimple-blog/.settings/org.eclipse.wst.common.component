@@ -25,6 +25,9 @@
         <dependent-module archiveName="jSimple-bean-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jSimple-bean/jSimple-bean">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jSimple-exception-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jSimple-exception/jSimple-exception">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="jSimple-blog"/>
         <property name="java-output-path" value="/jSimple-blog/target/classes"/>
     </wb-module>

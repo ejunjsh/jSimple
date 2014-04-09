@@ -12,6 +12,8 @@ import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sky.jSimple.exception.JSimpleException;
+
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
@@ -44,20 +46,21 @@ public class FreemarkerResult extends ActionResult {
 	 * Set freemarker's property.
 	 * The value of template_update_delay is 5 seconds.
 	 * Example: FreeMarkerRender.setProperty("template_update_delay", "1600");
+	 * @throws JSimpleException 
 	 */
-	public static void setProperty(String propertyName, String propertyValue) {
+	public static void setProperty(String propertyName, String propertyValue) throws JSimpleException {
 		try {
 			FreemarkerResult.getConfiguration().setSetting(propertyName, propertyValue);
 		} catch (TemplateException e) {
-			throw new RuntimeException(e);
+			throw new JSimpleException(e);
 		}
 	}
 	
-	public static void setProperties(Properties properties) {
+	public static void setProperties(Properties properties) throws JSimpleException {
 		try {
 			FreemarkerResult.getConfiguration().setSettings(properties);
 		} catch (TemplateException e) {
-			throw new RuntimeException(e);
+			throw new JSimpleException(e);
 		}
 	}
 	
@@ -95,7 +98,7 @@ public class FreemarkerResult extends ActionResult {
         config.setNumberFormat("#0.#####");
     }
 
-	public void ExecuteResult() {
+	public void ExecuteResult() throws JSimpleException {
 		processRequest();
 		
 		response.setContentType(contentType);
@@ -112,7 +115,7 @@ public class FreemarkerResult extends ActionResult {
 			writer = response.getWriter();
 			template.process(root, writer);		// Merge the data-model and the template
 		} catch (Exception e) {
-			
+			throw new JSimpleException(e);
 		}
 		finally {
 			if (writer != null)

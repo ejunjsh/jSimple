@@ -14,6 +14,7 @@
   	<module>jSimple-data</module>
   	<module>jSimple-hessian</module>
   	<module>jSimple-config</module>
+  	<module>jSimple-exception</module>
   </modules>
    
 </project>

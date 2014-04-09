@@ -14,6 +14,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sky.jSimple.exception.JSimpleException;
+
 
 
 public class VelocityResult extends ActionResult {
@@ -58,7 +60,7 @@ public class VelocityResult extends ActionResult {
 	}
 	
 	
-	public void ExecuteResult() {
+	public void ExecuteResult() throws JSimpleException {
 		processRequest();
 		PrintWriter writer = null;
         try {
@@ -94,14 +96,14 @@ public class VelocityResult extends ActionResult {
            try {
 			writer = response.getWriter();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new JSimpleException(e);
 		}	// BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
             
            template.merge(context, writer);
            writer.flush();	// flush and cleanup
         }
         catch(ResourceNotFoundException e) {
+        	throw new JSimpleException(e);
         }
         finally {
         	if (writer != null)

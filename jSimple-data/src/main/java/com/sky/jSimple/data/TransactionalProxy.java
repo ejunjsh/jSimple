@@ -8,12 +8,13 @@ import org.slf4j.LoggerFactory;
 import com.sky.jSimple.aop.Proxy;
 import com.sky.jSimple.aop.ProxyChain;
 import com.sky.jSimple.data.annotation.Transactional;
+import com.sky.jSimple.exception.JSimpleException;
 
 public class TransactionalProxy implements Proxy {
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionalProxy.class);
 
-    public Object doProxy(ProxyChain proxyChain) throws Throwable {
+    public Object doProxy(ProxyChain proxyChain) throws JSimpleException  {
         Object result = null;
         boolean isTransactional = false; // 默认不具有事务
         try {
@@ -25,16 +26,16 @@ public class TransactionalProxy implements Proxy {
                 isTransactional = true;
                 // 开启事务
                 DBHelper.beginTransaction();
-                if (logger.isDebugEnabled()) {
+              
                     logger.debug("[Smart] begin transaction");
-                }
+                
                 // 执行操作
                 result = proxyChain.doProxyChain();
                 // 提交事务
                 DBHelper.commitTransaction();
-                if (logger.isDebugEnabled()) {
+               
                     logger.debug("[Smart] commit transaction");
-                }
+                
             } else {
                 // 执行操作
                 result = proxyChain.doProxyChain();
@@ -48,7 +49,7 @@ public class TransactionalProxy implements Proxy {
                     logger.debug("[Smart] rollback transaction");
                 }
             }
-            logger.error("服务端运行出错！", e);
+            throw new JSimpleException(e);
         }
         return result;
     }

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sky.jSimple.bean.BeanContainer;
 import com.sky.jSimple.bean.ClassScaner;
+import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Impl;
 import com.sky.jSimple.ioc.annotation.Inject;
 import com.sky.jSimple.utils.ArrayUtil;
@@ -18,7 +19,7 @@ public class IocManager {
 	
 	private static final Logger logger = LoggerFactory.getLogger(IocManager.class);
 	
-   public static void execute() throws IllegalArgumentException, IllegalAccessException
+   public static void execute() throws JSimpleException 
    {
 	// 获取并遍历所有的 Bean 类
        Map<Class<?>, Object> beanMap = BeanContainer.getMap();
@@ -44,7 +45,13 @@ public class IocManager {
                            // 设置该 Bean 字段的值
                            if (implementInstance != null) {
                                beanField.setAccessible(true); // 将字段设置为 public
-                               beanField.set(beanInstance, implementInstance); // 设置字段初始值
+                               try {
+								beanField.set(beanInstance, implementInstance);
+							} catch (IllegalArgumentException e) {
+								throw new JSimpleException(e);
+							} catch (IllegalAccessException e) {
+								throw new JSimpleException(e);
+							} // 设置字段初始值
                            }
                        }
                    }

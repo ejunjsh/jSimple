@@ -3,17 +3,18 @@ package com.sky.jSimple.blog.service;
 import java.util.List;
 
 import com.sky.jSimple.blog.entity.Category;
+import com.sky.jSimple.exception.JSimpleException;
 
 public interface ICategoryService {
-	 void insert(Category category);
+	 void insert(Category category) throws JSimpleException;
 	   
-	   void update(Category category);
+	   void update(Category category) throws JSimpleException;
 	   
-	   void delete(Long id);
+	   void delete(Long id) throws JSimpleException;
 	   
-	   Category getById(Long id);
+	   Category getById(Long id) throws JSimpleException;
 	   
-	   List<Category> getPager(int pageNumber,int pageSize,String condition,String sort);
+	   List<Category> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException;
 	   
-	   long getCount(String condition);
+	   long getCount(String condition) throws JSimpleException;
 }

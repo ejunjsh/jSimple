@@ -1,7 +1,7 @@
-﻿<form name="signup_form" novalidate ng-submit="signupForm()">
+﻿<form name="signup_form"  ng-submit="add()">
   <div class="form-group">
     <label for="exampleInputEmail1">输入名称</label>
-    <input  class="form-control" name="name" ng-model="blog.title" placeholder="输入名称" required />
+    <input  class="form-control" name="name" ng-model="category.name" placeholder="输入名称" required />
       <small class="error" 
             ng-show="signup_form.name.$error.required">
              必填
@@ -10,12 +10,11 @@
 
      <div class="form-group">
     <label for="exampleInputEmail1">输入链接名</label>
-    <input name="linkName" class="form-control" ng-model="blog.linkName" required placeholder="输入链接名" />
+    <input name="linkName" class="form-control" ng-model="category.linkName" required placeholder="输入链接名" />
          <small class="error" 
             ng-show="signup_form.linkName.$error.required">
              必填
     </small>
   </div>
   <button type="submit" class="btn btn-default">发布</button>
-    <a ng-click="click()" class="btn btn-default">发布</a>
 </form>

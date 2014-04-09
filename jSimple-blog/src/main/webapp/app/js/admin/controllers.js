@@ -47,6 +47,12 @@ angular.module('controllers', [])
         });
     }
 }])
-.controller('categoryAddController', ['$scope', function ($scope) {
-  
+.controller('categoryAddController', ['$scope','categoryService', function ($scope,categoryService) {
+   $scope.add=function(){
+	   categoryService.create($scope.category,function(){
+		   alert("successful");
+	   },function(error,status){
+		   alert(error.data);
+	   });
+   };
 }]);

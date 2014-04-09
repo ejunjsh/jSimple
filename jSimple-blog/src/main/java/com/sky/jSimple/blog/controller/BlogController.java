@@ -7,8 +7,9 @@ import com.sky.jSimple.mvc.ActionResult;
 import com.sky.jSimple.mvc.BaseController;
 import com.sky.jSimple.mvc.TextResult;
 import com.sky.jSimple.mvc.htmlResult;
-import com.sky.jSimple.mvc.annotation.DefaultAction;
+import com.sky.jSimple.mvc.annotation.Default;
 import com.sky.jSimple.mvc.annotation.HttpGet;
+import com.sky.jSimple.mvc.annotation.Param;
 
 @Bean
 public class BlogController extends BaseController {
@@ -16,15 +17,15 @@ public class BlogController extends BaseController {
 	@Inject
 	private IBlogService blogService;
 	
-	@DefaultAction
+	@Default
 	public ActionResult index()
 	{
-		return new htmlResult("/app/admin.html");
+		return html("/app/admin.html");
 	}
 	
-	@HttpGet("/blog/{id}")
-	public ActionResult blogIndex(int id)
+	@HttpGet("/blog/{id}/{fid}.json")
+	public ActionResult blogIndex(@Param("id")int fffid,@Param("fid")int id)
 	{
-		return new TextResult(""+id);
+		return text(id+"   "+fffid);
 	}
 }

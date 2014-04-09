@@ -1,9 +1,14 @@
 package com.sky.jSimple.data;
 
+import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +17,7 @@ import com.sky.jSimple.bean.ClassScaner;
 import com.sky.jSimple.config.jSimpleConfig;
 import com.sky.jSimple.data.annotation.Column;
 import com.sky.jSimple.data.annotation.Entity;
+import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.MapUtil;
 import com.sky.jSimple.utils.StringUtil;
@@ -29,7 +35,7 @@ public class EntityHelper {
             Field[] fields = entityClass.getDeclaredFields();
             if (ArrayUtil.isNotEmpty(fields)) {
                 // 创建一个 Field Map（用于存放列名与字段名的映射关系）
-                Map<String, String> fieldMap = new HashMap<String, String>();
+                Map<String, String> fieldMap = new LinkedHashMap<String, String>();
                 for (Field field : fields) {
                     String fieldName = field.getName();
                     String columnName;
@@ -37,12 +43,12 @@ public class EntityHelper {
                     if (field.isAnnotationPresent(Column.class)) {
                         columnName = field.getAnnotation(Column.class).value();
                     } else {
-                        columnName =fieldName; // 将驼峰风格替换为下划线风格
+                        columnName =fieldName;
                     }
                     // 若字段名与列名不同，则需要进行映射
-                    if (!fieldName.equals(columnName)) {
+//                    if (!fieldName.equals(columnName)) {
                         fieldMap.put(columnName, fieldName);
-                    }
+//                    }
                 }
                 // 将 Entity 类与 Field Map 放入 Entity Map 中
                 if (MapUtil.isNotEmpty(fieldMap)) {
@@ -54,5 +60,23 @@ public class EntityHelper {
 
     public static Map<Class<?>, Map<String, String>> getEntityMap() {
         return entityMap;
+    }
+    
+    public static Object[] entityToArray(Object entity) throws JSimpleException 
+    {
+    	 Field[] fields = entity.getClass().getDeclaredFields();
+    	 Object[] objects=new Object[fields.length];
+    	 for(int i=0;i<fields.length;i++)
+    	 {
+    		 try {
+    			 fields[i].setAccessible(true);
+				objects[i]=fields[i].get(entity);
+			} catch (IllegalArgumentException e) {
+				throw new JSimpleException(e);
+			} catch (IllegalAccessException e) {
+			    throw new JSimpleException(e);
+			}
+    	 }
+    	 return objects;
     }
 }

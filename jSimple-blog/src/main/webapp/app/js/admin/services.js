@@ -1,9 +1,9 @@
 ﻿'use strict';
 
-/* Services */
-
-
-// Demonstrate how to register services
-// In this case it is a simple value service.
-angular.module('services', []).
-  value('version', '0.1');
+angular.module('services', ["ngResource"])  
+.factory('categoryService', function ($resource){  
+    return $resource("/api/category", {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    });  
+});  

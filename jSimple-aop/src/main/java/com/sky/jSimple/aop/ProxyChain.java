@@ -3,6 +3,9 @@ package com.sky.jSimple.aop;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sky.jSimple.exception.JSimpleException;
+
 import net.sf.cglib.proxy.MethodProxy;
 
 public class ProxyChain {
@@ -37,12 +40,16 @@ public class ProxyChain {
         return targetMethod;
     }
 
-    public Object doProxyChain() throws Throwable {
+    public Object doProxyChain() throws JSimpleException   {
         Object methodResult;
         if (proxyIndex < proxyList.size()) {
             methodResult = proxyList.get(proxyIndex++).doProxy(this);
         } else {
-            methodResult = methodProxy.invokeSuper(targetObject, methodParams);
+            try {
+				methodResult = methodProxy.invokeSuper(targetObject, methodParams);
+			} catch (Throwable e) {
+				throw new JSimpleException(e);
+			}
         }
         return methodResult;
     }
