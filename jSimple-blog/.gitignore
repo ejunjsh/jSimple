@@ -1,3 +1,4 @@
-/target
-/.classpath
-/jSimple-blog.iml/.classpath/.project
+target
+
+.classpath
+.project
