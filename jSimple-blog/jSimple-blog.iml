@@ -65,5 +65,6 @@
     <orderEntry type="module" module-name="jSimple-cache" />
     <orderEntry type="library" name="Maven: com.googlecode.xmemcached:xmemcached:1.4.3" level="project" />
   </component>
+  
 </module>
 
