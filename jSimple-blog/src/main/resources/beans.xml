@@ -18,11 +18,11 @@
 	<bean id="jSimpleDataTemplate" class="com.sky.jSimple.data.JSimpleDataTemplate">
 	       <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
-	<bean id="memcachedCacheManager" class="com.sky.jSimple.cache.MemcachedCacheManager">
+<!--	<bean id="memcachedCacheManager" class="com.sky.jSimple.cache.MemcachedCacheManager">
 	        <property name="servers"  value="192.168.153.132:11111 192.168.153.133:11111" />
 	        <property name="connectionPoolSize"  value="10" />
 	</bean>
 	<bean id="cacheProxy" class="com.sky.jSimple.cache.CacheProxy">
 	       <property name="cacheManager"  ref="memcachedCacheManager" />
-	</bean>
+	</bean>-->
 </beans>
