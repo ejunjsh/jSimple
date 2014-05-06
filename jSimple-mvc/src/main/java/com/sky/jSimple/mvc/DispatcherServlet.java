@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +37,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.ConvertUtilsBean;
+import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.beanutils.converters.DateConverter;
+import org.apache.commons.beanutils.converters.DateTimeConverter;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.slf4j.Logger;
@@ -93,7 +99,7 @@ public class DispatcherServlet extends HttpServlet {
 					currentRequestPath.length() - 1);
 		}
 
-		BaseController foundControllerBean=null;
+		ControllerBase foundControllerBean=null;
 		try {
 			if (!UrlMapper.handleStaticResource()) {
 
@@ -139,7 +145,7 @@ public class DispatcherServlet extends HttpServlet {
 						for (int k = 0; k < paramsMap.size(); k++) {
 							Class<?> paramClass = paramClasses[k];
 							String paramName = paramsMap.get(k);
-							if (paramClass.isPrimitive()) {
+							if (paramClass.isPrimitive()||paramClass==String.class) {
 								String string = requestmMap.get(paramName);
 								actionMethodParamList.add(castPirmitiveObject(
 										paramClass, string));
@@ -154,7 +160,17 @@ public class DispatcherServlet extends HttpServlet {
 									Object bean;
 									try {
 										bean = paramClass.newInstance();
-										BeanUtils.populate(bean, requestmMap);
+										
+										DateTimeConverter dtConverter = new DateConverter();  
+								        dtConverter.setPattern("yyyy-MM-dd HH:mm:ss");  
+								  
+								        ConvertUtilsBean convertUtilsBean = new ConvertUtilsBean();  
+								        convertUtilsBean.deregister(Date.class);  
+								        convertUtilsBean.register(dtConverter, Date.class);  
+								  
+								        BeanUtilsBean beanUtilsBean = new BeanUtilsBean(convertUtilsBean, new PropertyUtilsBean());  
+										
+								        beanUtilsBean.populate(bean, requestmMap);
 									} catch (InstantiationException e) {
 										throw new JSimpleException(e);
 									} catch (IllegalAccessException e) {
@@ -172,7 +188,7 @@ public class DispatcherServlet extends HttpServlet {
 						Object controllerObject = BeanContainer
 								.getBean(controllerClass);
 						
-						foundControllerBean=(BaseController)controllerObject;
+						foundControllerBean=(ControllerBase)controllerObject;
 						// 调用 Action 方法
 						ActionResult actionResult;
 
@@ -203,7 +219,7 @@ public class DispatcherServlet extends HttpServlet {
 						Method method = bean.getActionMethod();
 						Object controllerObject = BeanContainer.getBean(bean
 								.getControllerClass());
-						foundControllerBean=(BaseController)controllerObject;
+						foundControllerBean=(ControllerBase)controllerObject;
 						method.setAccessible(true);
 						ActionResult actionResult;
 						try {
@@ -232,10 +248,10 @@ public class DispatcherServlet extends HttpServlet {
 
 				if(foundControllerBean!=null)
 				{
-					foundControllerBean.onException(e);
+					foundControllerBean.onException(e,request,response);
 				}
 				else {
-					new BaseController().onException(e);
+					new ControllerBase().onException(e,request,response);
 				}
 
 			e.printStackTrace();

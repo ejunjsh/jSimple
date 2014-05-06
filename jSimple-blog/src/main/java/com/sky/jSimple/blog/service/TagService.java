@@ -17,8 +17,7 @@ public class TagService implements ITagService {
 	
 	@Transactional
 	public void insert(Tag tag) throws JSimpleException{
-		long id=tagDao.insert(tag);
-		tag.setId(id);
+		tagDao.insert(tag);
 	}
 
 	@Transactional
@@ -42,6 +41,10 @@ public class TagService implements ITagService {
 
 	public long getCount(String condition) throws JSimpleException {
 		return tagDao.getCount(condition);
+	}
+
+	public Tag getByLinkName(String linkName) throws JSimpleException {
+		return tagDao.getByLinkName(linkName);
 	}
 
 }

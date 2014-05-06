@@ -6,7 +6,7 @@ import com.sky.jSimple.blog.entity.User;
 import com.sky.jSimple.exception.JSimpleException;
 
 public interface IUserDao {
-	long insert(User user) throws JSimpleException;
+	void insert(User user) throws JSimpleException;
 	   
 	   void update(User user) throws JSimpleException;
 	   

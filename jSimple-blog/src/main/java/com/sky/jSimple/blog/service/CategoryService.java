@@ -17,8 +17,7 @@ public class CategoryService implements ICategoryService {
 
 	@Transactional
 	public void insert(Category category) throws JSimpleException{
-		long id=categoryDao.insert(category);
-		category.setId(id);
+		categoryDao.insert(category);
 	}
 
 	@Transactional
@@ -33,6 +32,10 @@ public class CategoryService implements ICategoryService {
 
 	public Category getById(Long id) throws JSimpleException{
 		return categoryDao.getById(id);
+	}
+	
+	public Category getByLinkName(String linkName) throws JSimpleException{
+		return categoryDao.getByLinkName(linkName);
 	}
 
 	public List<Category> getPager(int pageNumber, int pageSize,

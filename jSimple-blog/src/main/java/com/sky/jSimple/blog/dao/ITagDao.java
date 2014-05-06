@@ -6,7 +6,7 @@ import com.sky.jSimple.blog.entity.Tag;
 import com.sky.jSimple.exception.JSimpleException;
 
 public interface ITagDao {
-	long insert(Tag tag) throws JSimpleException;
+	void insert(Tag tag) throws JSimpleException;
 	   
 	   void update(Tag tag) throws JSimpleException;
 	   
@@ -17,4 +17,8 @@ public interface ITagDao {
 	   List<Tag> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException;
 	   
 	   long getCount(String condition)throws JSimpleException ;
+	   
+	   Tag getByName(String name) throws JSimpleException;
+	   
+	   Tag getByLinkName(String linkName) throws JSimpleException;
 }

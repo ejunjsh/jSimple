@@ -6,14 +6,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.sky.jSimple.mvc.IController;
 
-public class BaseController implements IController {
+public class ControllerBase implements IController {
 
-	public void onException(Throwable error) {
-		HttpServletResponse response=WebContext.getResponse();
+	public void onException(Throwable error,HttpServletRequest request,HttpServletResponse response) {
 		PrintWriter writer = null;
 		try {
 			writer = response.getWriter();

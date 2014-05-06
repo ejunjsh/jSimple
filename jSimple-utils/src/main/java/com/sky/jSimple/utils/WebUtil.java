@@ -60,7 +60,7 @@ public class WebUtil {
         try {
             String method = request.getMethod();
             if (method.equalsIgnoreCase("put") || method.equalsIgnoreCase("delete")) {
-                String queryString = CodecUtil.urlDecode(StreamUtil.getString(request.getInputStream()));
+                String queryString = StreamUtil.getString(request.getInputStream());
                 if (StringUtil.isNotEmpty(queryString)) {
                     String[] qsArray = StringUtil.splitString(queryString, "&");
                     if (ArrayUtil.isNotEmpty(qsArray)) {
@@ -68,7 +68,7 @@ public class WebUtil {
                             String[] array = StringUtil.splitString(qs, "=");
                             if (ArrayUtil.isNotEmpty(array) && array.length == 2) {
                                 String paramName = array[0];
-                                String paramValue = array[1];
+                                String paramValue = CodecUtil.urlDecode(array[1]);
                                 if (checkParamName(paramName)) {
                                     paramMap.put(paramName, paramValue);
                                 }

@@ -3,6 +3,7 @@ package com.sky.jSimple.blog.entity;
 import java.util.Date;
 
 import com.sky.jSimple.data.annotation.Entity;
+import com.sky.jSimple.data.annotation.Ignore;
 
 @Entity("blog")
 public class Blog {
@@ -14,6 +15,9 @@ public class Blog {
 	  private long uid; 
 	  private long viewCount;
 	  private String linkName;
+	  private long categoryId;
+	  private String tags;
+	  
 	public long getId() {
 		return id;
 	}
@@ -61,5 +65,17 @@ public class Blog {
 	}
 	public void setLinkName(String linkName) {
 		this.linkName = linkName;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+	public long getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(long categoryId) {
+		this.categoryId = categoryId;
 	} 
 }

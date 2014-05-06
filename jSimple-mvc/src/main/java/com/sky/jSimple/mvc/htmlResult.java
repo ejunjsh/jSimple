@@ -24,7 +24,7 @@ public class htmlResult extends ActionResult {
 	
 	@Override
 	public void ExecuteResult() throws JSimpleException {
-		  File f = new File(request.getServletContext().getRealPath(path));
+		  File f = new File(WebContext.getServletContext().getRealPath(path));
 			response.setHeader("Pragma", "no-cache");	// HTTP/1.0 caches might not implement Cache-Control and might only implement Pragma: no-cache
 
 	        response.setHeader("Cache-Control", "no-cache");

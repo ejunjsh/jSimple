@@ -26,7 +26,7 @@ public class FileResult extends ActionResult {
 	}
 	
 	public void ExecuteResult() throws JSimpleException {
-		String realPath=request.getServletContext().getRealPath(path) ;
+		String realPath=WebContext.getServletContext().getRealPath(path) ;
 		
 		File file=new File(realPath);
 		
@@ -36,7 +36,7 @@ public class FileResult extends ActionResult {
 			response.addHeader("Content-disposition", "attachment; filename=" + file.getName());
 		}
 		
-        String contentType = request.getServletContext().getMimeType(file.getName());
+        String contentType = WebContext.getServletContext().getMimeType(file.getName());
         if (contentType == null) {
         	contentType = "application/octet-stream";		
         }

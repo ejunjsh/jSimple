@@ -1,10 +1,16 @@
 package com.sky.jSimple.blog.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.blog.dao.IBlogDao;
+import com.sky.jSimple.blog.dao.ICategoryDao;
+import com.sky.jSimple.blog.dao.ITagDao;
 import com.sky.jSimple.blog.entity.Blog;
+import com.sky.jSimple.blog.entity.Category;
+import com.sky.jSimple.blog.entity.Tag;
+import com.sky.jSimple.blog.model.Pagination;
 import com.sky.jSimple.data.annotation.Transactional;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Inject;
@@ -14,16 +20,47 @@ public class BlogService implements IBlogService {
 	
 	@Inject
 	private IBlogDao blogDao;
+	
+	@Inject
+	private ITagDao tagDao;
+	
+	@Inject
+	private ICategoryDao categoryDao;
+	
+	private void updateTags(String tags) throws JSimpleException
+	{
+		String[] strings=tags.split(" ");
+		for(String s:strings)
+		{
+			if(s!=null&&!s.isEmpty())
+			{
+				Tag tag=tagDao.getByName(s);
+				if(tag==null)
+				{
+					tag=new Tag();
+					tag.setCreatedDate(new Date());
+					tag.setLastModifiedDate(new Date());
+					tag.setLinkName(s);
+					tag.setName(s);
+					tag.setUid(1);
+					tagDao.insert(tag);
+				}
+			}
+		}
+	}
 
 	@Transactional
 	public void insert(Blog blog) throws JSimpleException{
-		long id=blogDao.insert(blog);
-        blog.setId(id);
+		blogDao.insert(blog);
+		
+		updateTags(blog.getTags());
 	}
 
 	@Transactional
 	public void update(Blog blog) throws JSimpleException{
         blogDao.update(blog);
+        
+        updateTags(blog.getTags());
 	}
 
 	@Transactional
@@ -34,14 +71,47 @@ public class BlogService implements IBlogService {
 	public Blog getById(Long id) throws JSimpleException{
 		return blogDao.getById(id);
 	}
-
-	public List<Blog> getPager(int pageNumber, int pageSize, String condition,
-			String sort) throws JSimpleException{
-		return blogDao.getPager(pageNumber, pageSize, condition, sort);
+	
+	public Blog getByLinkName(String linkName) throws JSimpleException{
+		return blogDao.getByLinkName(linkName);
 	}
 
-	public long getCount(String condition) throws JSimpleException{
-		return blogDao.getCount(condition);
+	public Pagination getAll(int pageNumber, int pageSize) throws JSimpleException{
+		 Pagination pagination=new Pagination();
+		 pagination.setData(blogDao.getPager(pageNumber, pageSize, "", "lastModifiedDate"));
+		 pagination.setRecordCount(blogDao.getCount(""));
+		 return pagination;
+	}
+
+
+	@Override
+	public Pagination getByCategoryLinkName(int pageNumber, int pageSize,String linkName, String sortBy,
+			boolean isDesc) throws JSimpleException {
+		Category category=categoryDao.getByLinkName(linkName);
+		if(category!=null)
+		{
+		 Pagination pagination=new Pagination();
+		 
+		pagination.setData(blogDao.getByCategoryId(pageNumber,pageSize,category.getId(), sortBy, isDesc));
+		pagination.setRecordCount(blogDao.countByCategoryId(category.getId()));
+		return pagination;
+		}
+		return null;
+	}
+
+	@Override
+	public Pagination getByTagLinkName(int pageNumber, int pageSize,String linkName, String sortBy, boolean isDesc)
+			throws JSimpleException {
+		Tag tag=tagDao.getByLinkName(linkName);
+		if(tag!=null)
+		{
+			Pagination pagination=new Pagination();
+		    pagination.setData(blogDao.getByTagName(pageNumber,pageSize, tag.getName(), sortBy, isDesc));
+		    pagination.setRecordCount(blogDao.countByTagName( tag.getName()));
+		    return pagination;
+		}
+		return null;
+		
 	}
 
 }

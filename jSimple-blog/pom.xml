@@ -30,6 +30,12 @@
 			<artifactId>jSimple-data</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+			<dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -42,6 +48,38 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			 <plugin>
+               <groupId>org.eclipse.jetty</groupId>
+			 	<artifactId>jetty-maven-plugin</artifactId>
+			 	<version>9.1.0.v20131115</version>
+                <configuration>
+                    <contextPath>/</contextPath>
+                    <scanIntervalSeconds>30</scanIntervalSeconds>
+                    <reload>automatic</reload>
+                    <stopKey>foo</stopKey>
+                    <stopPort>9999</stopPort>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <daemon>true</daemon>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 </project>

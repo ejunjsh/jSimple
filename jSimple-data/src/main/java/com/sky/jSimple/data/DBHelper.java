@@ -59,8 +59,37 @@ public class DBHelper {
         String url = jSimpleConfig.getConfigString("jdbc.url");
         String username = jSimpleConfig.getConfigString("jdbc.username");
         String password = jSimpleConfig.getConfigString("jdbc.password");
+        
+        
+        int initialSize=jSimpleConfig.getConfigNumber("dataSource.initialSize");
+        int maxIdle=jSimpleConfig.getConfigNumber("dataSource.maxIdle");
+        int minIdle=jSimpleConfig.getConfigNumber("dataSource.minIdle");
+        int maxActive=jSimpleConfig.getConfigNumber("dataSource.maxActive");
         // 创建 DBCP 数据源
         BasicDataSource ds = new BasicDataSource();
+        if(initialSize>0)
+        ds.setInitialSize(initialSize);
+        else {
+        	ds.setInitialSize(10);
+		}
+        if(maxIdle>0)
+        ds.setMaxIdle(maxIdle);
+        else {
+        	ds.setMaxIdle(20);
+		}
+        
+        if(minIdle>0)
+            ds.setMinIdle(minIdle);
+            else {
+            	ds.setMinIdle(5);
+    		}
+        
+        if(maxActive>0)
+            ds.setMaxActive(maxActive);
+            else {
+            	ds.setMaxActive(50);
+    		}
+        
         if (StringUtil.isNotEmpty(driver)) {
             ds.setDriverClassName(driver);
         }

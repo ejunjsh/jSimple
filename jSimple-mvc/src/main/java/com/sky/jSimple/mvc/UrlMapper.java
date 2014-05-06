@@ -131,7 +131,7 @@ public class UrlMapper {
 
 	        if (requestPath.matches(".+\\{\\w+\\}.*")) {
 	            // 将请求路径中的占位符 {\w+} 转换为正则表达式 (\\w+)
-                String regRequestPath=StringUtil.replaceAll(requestPath, "\\{\\w+\\}", "(\\\\w+)");
+                String regRequestPath=StringUtil.replaceAll(requestPath, "\\{\\w+\\}", "([\u0000-\uFFFFFa-zA-Z]+)");
 	            // 将 RequestBean 与 ActionBean 放入 Regexp Action Map 中
 
 	            regexpActionMap.put(new RequestBean(requestMethod, requestPath,regRequestPath), new ControllerBean(controllerClass, actionMethod,paramMap));

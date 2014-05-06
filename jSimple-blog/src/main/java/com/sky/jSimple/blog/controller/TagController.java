@@ -1,13 +1,18 @@
 package com.sky.jSimple.blog.controller;
 
+import java.util.Date;
+import java.util.List;
+
 import com.sky.jSimple.Annotation.Bean;
-import com.sky.jSimple.blog.annotation.Authority;
+import com.sky.jSimple.blog.entity.Tag;
+import com.sky.jSimple.blog.model.Pagination;
+import com.sky.jSimple.blog.service.IBlogService;
 import com.sky.jSimple.blog.service.ITagService;
+import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Inject;
 import com.sky.jSimple.mvc.ActionResult;
-import com.sky.jSimple.mvc.BaseController;
-import com.sky.jSimple.mvc.TextResult;
 import com.sky.jSimple.mvc.annotation.HttpGet;
+import com.sky.jSimple.mvc.annotation.HttpPut;
 
 @Bean
 public class TagController extends BaseController {
@@ -15,9 +20,28 @@ public class TagController extends BaseController {
 	@Inject
 	private ITagService tagService;
 	
-	@HttpGet("/tag/{id}")
-	public ActionResult tagIndex(int id)
+	
+	@HttpGet("/api/tag")
+	public ActionResult getTags() throws JSimpleException
 	{
-		return text(""+id);
+	     List<Tag> tags= tagService.getPager(1,1000, null, "name");
+	     return json(tags);
 	}
+	@HttpGet("/api/tag/{linkName}")
+	public ActionResult getTagByLinkName(String linkName) throws JSimpleException
+	{
+	     Tag tag=tagService.getByLinkName(linkName);
+	     return json(tag);
+	}
+	@HttpPut("/api/tag")
+	public ActionResult updateTag(Tag tag) throws JSimpleException
+	{
+		Tag t=tagService.getById(tag.getId());
+		t.setLinkName(tag.getLinkName());
+		t.setLastModifiedDate(new Date());
+		tagService.update(t);
+		return json(tag);
+	}
+	
+
 }

@@ -48,12 +48,16 @@ angular.module('myapp', [
 		  }];
 }).
 config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
-    $routeProvider.when('/tag/:linkName', { templateUrl: '/app/partials/rightSide.html', controller: 'rightSideController' });
-    $routeProvider.when('/category/add', { templateUrl: '/app/partials/categoryAdd.html', controller: 'categoryAddController' });
-    $routeProvider.when('/category/:linkName', { templateUrl: '/app/partials/rightSide1.html', controller: 'rightSideController1' });
-    $routeProvider.when('/blog/add', { templateUrl: '/app/partials/blogAdd.html', controller: 'blogAddController' });
-    $routeProvider.otherwise({ redirectTo: '/view1' });
-
+    $routeProvider.when('/admin/tag/:linkName/edit', { templateUrl: '/app/partials/tagUpdate.html', controller: 'tagController' });
+    $routeProvider.when('/admin/category/add', { templateUrl: '/app/partials/categoryAdd.html', controller: 'categoryController' });
+    $routeProvider.when('/admin/category/:linkName/edit', { templateUrl: '/app/partials/categoryEdit.html', controller: 'categoryController' });
+    $routeProvider.when('/admin/blog/add', { templateUrl: '/app/partials/blogAdd.html', controller: 'blogController' });
+    $routeProvider.when('/admin/blog/:linkName/edit', { templateUrl: '/app/partials/blogEdit.html', controller: 'blogController' });
+    $routeProvider.when('/admin/blog/list', { templateUrl: '/app/partials/blogList.html', controller: 'blogListController' });
+    $routeProvider.when('/admin/blog/:linkName', { templateUrl: '/app/partials/blogDetail.html', controller: 'blogController' });
+    $routeProvider.otherwise({ redirectTo: '/admin/blog/add' });
+    $routeProvider.when('/admin/tag/:tagLinkName', { templateUrl: '/app/partials/blogList.html', controller: 'blogListController' });
+    $routeProvider.when('/admin/category/:categoryLinkName', { templateUrl: '/app/partials/blogList.html', controller: 'blogListController' });
     $locationProvider.html5Mode(true);
     $locationProvider.hashPrefix('!');
 }]);

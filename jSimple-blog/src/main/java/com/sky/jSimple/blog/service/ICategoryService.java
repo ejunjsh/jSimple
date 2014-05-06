@@ -17,4 +17,6 @@ public interface ICategoryService {
 	   List<Category> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException;
 	   
 	   long getCount(String condition) throws JSimpleException;
+	   
+	   Category getByLinkName(String linkName) throws JSimpleException;
 }

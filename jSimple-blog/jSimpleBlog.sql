@@ -44,16 +44,10 @@ linkName varchar(50) not null unique,
   lastModifiedDate datetime not null,
   uid int(8) not null ,
 viewCount int(8) not null default 0,
-  CONSTRAINT `uid_user_blog` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
-);
-
-create table blog_tag(
-  tagId int(8) not null,
-  blogId int(8) not null,
-  createdDate datetime not null,
-  CONSTRAINT `tagId_tag` FOREIGN KEY (`tagId`) REFERENCES `tag` (`id`),
-  CONSTRAINT `blogId_blog` FOREIGN KEY (`blogId`) REFERENCES `blog` (`id`),
-  primary key(tagId,blogId)
+categoryId int(8) not null,
+tags nvarchar(50) not null,
+  CONSTRAINT `uid_user_blog` FOREIGN KEY (`uid`) REFERENCES `user` (`id`),
+  CONSTRAINT `categoryId_blog_category` FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`)
 );
 
 insert `user` ( email,nickName ,pwd , createdDate ,lastLoginDate , avatar) values('sjj050121014@163.com','idiotSky','123',now(),now(),'/app/IMG_2218.jpg');

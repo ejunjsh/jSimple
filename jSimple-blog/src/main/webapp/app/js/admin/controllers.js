@@ -3,30 +3,82 @@
 /* Controllers */
 
 angular.module('controllers', [])
-  .controller('leftSideController', ['$scope',function ($scope) {
-      $scope.tags = [{ name: "java", linkName: "java" }, { name: "c++", linkName: "cplusplus" }];
-      $scope.categories = [{ name: "开发", linkName: "kaifa" }, { name: "个人日记", linkName: "diary" }];
-  }])
-  .controller('rightSideController', ['$scope', function ($scope) {
-      $scope.click = function () {
-          alert("this is view 1");
+  .controller('leftSideController',function ($scope,tagService,categoryService) {
+      $scope.reload=function()
+      {
+	  $scope.tags = tagService.query();
+      $scope.categories = categoryService.query();
       };
-  }])
-.controller('rightSideController1', ['$scope', function ($scope) {
-    $scope.click = function () {
-        
-    };
+      $scope.reload();
+      $scope.$on("reloadLeftSide",function(){
+    	  $scope.reload();
+      });
+  })
+ .controller('tagController', function ($scope,$routeParams,tagService,$rootScope,$location) {
+      $scope.tag=tagService.get({tagId:$routeParams.linkName});
+      $scope.update=function(){
+    	 tagService.update($scope.tag,function(){
+  		   alert("successful");
+           $rootScope.$broadcast('reloadLeftSide');
+           $location.path("/admin/tag/"+$scope.tag.linkName+"/edit");
+  	   },function(error,status){
+  		   alert(error.data);
+  	   });
+      };
+  })
+.controller('blogListController',function($scope,blogService,$routeParams,$location){
+	
+		if(!$routeParams.p)
+			$routeParams.p=1;
+		if($routeParams.tagLinkName)
+		{
+			$scope.blogs= blogService.get({queryAction:"getBlogByTagLinkName",p:$routeParams.p,linkName:$routeParams.tagLinkName},function(pagination){
+				$scope.pagination={path:$location.path(),pageSize:pagination.pageSize,pageIndex:pagination.currentPage,total:pagination.recordCount};
+			});
+		}
+		else if($routeParams.categoryLinkName)
+		{
+			$scope.blogs= blogService.get({queryAction:"getBlogByCategoryLinkName",p:$routeParams.p,linkName:$routeParams.categoryLinkName},function(pagination){
+				$scope.pagination={path:$location.path(),pageSize:pagination.pageSize,pageIndex:pagination.currentPage,total:pagination.recordCount};
+			});	
+		}
+		else
+	    {
+		$scope.blogs= blogService.get({queryAction:"getAllBlog",p:$routeParams.p},function(pagination){
+			$scope.pagination={path:$location.path(),pageSize:pagination.pageSize,pageIndex:pagination.currentPage,total:pagination.recordCount};
+		});
+	    }
+})
+.controller('blogController', function ($scope,categoryService,blogService,$routeParams,$location) {
+	
+	
+	 if($routeParams.linkName)
+	   {
+           $scope.blog=blogService.get({queryAction:$routeParams.linkName});
+	   }
+ $scope.update=function(){
+	 blogService.update($scope.blog,function(){
+		   alert("successful");
+		   $rootScope.$broadcast('reloadLeftSide');
+         $location.path("/admin/blog/"+$scope.blog.linkName+"/edit");
+	   },function(error,status){
+		   alert(error.data);
+	   });
+ };
+	  
+    $scope.categories=categoryService.query();
     $scope.$on('$viewContentLoaded', function () {
-        SyntaxHighlighter.config.clipboardSwf = '/app/js/lib/sh/clipboard.swf';
-        SyntaxHighlighter.highlight();
-    });
-}])
-.controller('blogAddController', ['$scope', function ($scope) {
-    $scope.blog = { title: "123", content: "2222", tags: "1231 123", linkName: "taa" };
-    $scope.$on('$viewContentLoaded', function () {
-      
 
     });
+    $scope.add=function(){
+    	blogService.create($scope.blog,function(){
+ 		   alert("successful");
+ 		  $rootScope.$broadcast('reloadLeftSide');
+          $location.path("/admin/blog/"+$scope.blog.linkName+"/edit");
+ 	   },function(error,status){
+ 		   alert(error.data);
+ 	   });
+    };
     $scope.click = function () {
         alert($scope.blog.content);
     };
@@ -45,14 +97,30 @@ angular.module('controllers', [])
                 });
             }
         });
-    }
-}])
-.controller('categoryAddController', ['$scope','categoryService', function ($scope,categoryService) {
+    };
+	  
+})
+.controller('categoryController', function ($scope,categoryService,$routeParams,$rootScope,$location) {
    $scope.add=function(){
 	   categoryService.create($scope.category,function(){
 		   alert("successful");
+		   $rootScope.$broadcast('reloadLeftSide');
+           $location.path("/admin/category/"+$scope.category.linkName+"/edit");
 	   },function(error,status){
 		   alert(error.data);
 	   });
    };
-}]);
+   if($routeParams.linkName)
+	   {
+   $scope.category=categoryService.get({categoryId:$routeParams.linkName});
+	   }
+   $scope.update=function(){
+	   categoryService.update($scope.category,function(){
+		   alert("successful");
+		   $rootScope.$broadcast('reloadLeftSide');
+           $location.path("/admin/category/"+$scope.category.linkName+"/edit");
+	   },function(error,status){
+		   alert(error.data);
+	   });
+   };
+});

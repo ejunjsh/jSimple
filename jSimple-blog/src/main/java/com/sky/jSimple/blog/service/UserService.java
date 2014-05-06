@@ -17,9 +17,7 @@ public class UserService implements IUserService {
 	
 	@Transactional
 	public void insert(User user) throws JSimpleException{
-		long id=userDao.insert(user);
-		user.setId(id);
-
+		userDao.insert(user);
 	}
 
 	@Transactional
