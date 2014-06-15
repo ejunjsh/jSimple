@@ -22,7 +22,7 @@ public class IocManager {
    public static void execute() throws JSimpleException 
    {
 	// 获取并遍历所有的 Bean 类
-       Map<Class<?>, Object> beanMap = BeanContainer.getMap();
+       Map<Class<?>, Object> beanMap = BeanContainer.getClassMap();
        for (Map.Entry<Class<?>, Object> beanEntry : beanMap.entrySet()) {
            // 获取 Bean 类与 Bean 实例
            Class<?> beanClass = beanEntry.getKey();

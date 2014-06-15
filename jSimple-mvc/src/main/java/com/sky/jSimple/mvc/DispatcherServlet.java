@@ -147,7 +147,7 @@ public class DispatcherServlet extends HttpServlet {
 							String paramName = paramsMap.get(k);
 							if (paramClass.isPrimitive()||paramClass==String.class) {
 								String string = requestmMap.get(paramName);
-								actionMethodParamList.add(castPirmitiveObject(
+								actionMethodParamList.add(CastUtil.castPirmitiveObject(
 										paramClass, string));
 							} else {
 								if (paramClass == File.class) {
@@ -261,19 +261,7 @@ public class DispatcherServlet extends HttpServlet {
 		}
 	}
 
-	private Object castPirmitiveObject(Class<?> clazz, String value) {
-		if (clazz.equals(int.class) || clazz.equals(Integer.class)) {
-			return CastUtil.castInt(value);
-		} else if (clazz.equals(long.class) || clazz.equals(Long.class)) {
-			return CastUtil.castLong(value);
-		} else if (clazz.equals(double.class) || clazz.equals(Double.class)) {
-			return CastUtil.castDouble(value);
-		} else if (clazz.equals(String.class)) {
-			return value;
-		} else {
-			return null;
-		}
-	}
+
 
 	private File getFileFromRequest(HttpServletRequest request, String fieldName) throws JSimpleException
 		 {

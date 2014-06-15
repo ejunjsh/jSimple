@@ -3,10 +3,13 @@ package com.sky.jSimple.blog.entity;
 import java.util.Date;
 
 import com.sky.jSimple.data.annotation.Entity;
+import com.sky.jSimple.data.annotation.Id;
 
 @Entity("user")
 public class User {
-	 private long id ;
+	
+	@Id
+	private long id ;
 	private String email;
     private String  nickName;
 	private String   pwd;

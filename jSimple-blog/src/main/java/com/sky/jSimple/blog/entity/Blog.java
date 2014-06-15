@@ -3,10 +3,13 @@ package com.sky.jSimple.blog.entity;
 import java.util.Date;
 
 import com.sky.jSimple.data.annotation.Entity;
+import com.sky.jSimple.data.annotation.Id;
 import com.sky.jSimple.data.annotation.Ignore;
 
 @Entity("blog")
 public class Blog {
+	
+	  @Id
 	  private long id; 
 	  private String title; 
 	  private String content; 

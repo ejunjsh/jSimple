@@ -3,9 +3,12 @@ package com.sky.jSimple.blog.entity;
 import java.util.Date;
 
 import com.sky.jSimple.data.annotation.Entity;
+import com.sky.jSimple.data.annotation.Id;
 
 @Entity("tag")
 public class Tag {
+	
+	@Id
 	private long id;
 	private String name;
 	private Date createdDate; 

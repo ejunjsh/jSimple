@@ -1,29 +1,21 @@
 package com.sky.jSimple.data;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
-import javassist.expr.NewArray;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sky.jSimple.bean.ClassScaner;
-import com.sky.jSimple.config.jSimpleConfig;
 import com.sky.jSimple.data.annotation.Column;
 import com.sky.jSimple.data.annotation.Entity;
 import com.sky.jSimple.data.annotation.Ignore;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.MapUtil;
-import com.sky.jSimple.utils.StringUtil;
 
 public class EntityHelper {
 

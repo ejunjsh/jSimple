@@ -49,7 +49,7 @@ angular.module('controllers', [])
 		});
 	    }
 })
-.controller('blogController', function ($scope,categoryService,blogService,$routeParams,$location) {
+.controller('blogController', function ($scope,categoryService,blogService,$routeParams,$location,$rootScope) {
 	
 	
 	 if($routeParams.linkName)
@@ -78,9 +78,6 @@ angular.module('controllers', [])
  	   },function(error,status){
  		   alert(error.data);
  	   });
-    };
-    $scope.click = function () {
-        alert($scope.blog.content);
     };
     $scope.loadEditor = function () {
         var kEditor = KindEditor.create('#kindEditor', {
