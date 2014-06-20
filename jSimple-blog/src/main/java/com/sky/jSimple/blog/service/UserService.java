@@ -33,14 +33,4 @@ public class UserService implements IUserService {
 	public User getById(Long id)throws JSimpleException {
 		return userDao.getById(id);
 	}
-
-	public List<User> getPager(int pageNumber, int pageSize, String condition,
-			String sort)throws JSimpleException{
-		return userDao.getPager(pageNumber, pageSize, condition, sort);
-	}
-
-	public long getCount(String condition) throws JSimpleException{
-		return userDao.getCount(condition);
-	}
-
 }

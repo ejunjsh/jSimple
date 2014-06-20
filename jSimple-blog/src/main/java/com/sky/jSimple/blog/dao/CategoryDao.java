@@ -11,7 +11,6 @@ import com.sky.jSimple.exception.JSimpleException;
 public class CategoryDao extends BaseDao<Category> implements ICategoryDao {
 	public Category getByLinkName(String linkName) throws JSimpleException
 	   {
-		   String sql=SQLHelper.generateSelectSQL(Category.class, "linkName=?", "");
-			 return DBHelper.queryBean(Category.class, sql, linkName);
+			 return getjSimpleDataTemplate().querySingleByCondition(Category.class,"linkName=?", linkName);
 	   }
 }

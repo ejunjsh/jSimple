@@ -13,8 +13,4 @@ public interface IUserService {
 	   void delete(Long id) throws JSimpleException;
 	   
 	   User getById(Long id) throws JSimpleException;
-	   
-	   List<User> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException;
-	   
-	   long getCount(String condition) throws JSimpleException;
 }

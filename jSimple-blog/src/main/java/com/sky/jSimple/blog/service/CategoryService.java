@@ -37,14 +37,12 @@ public class CategoryService implements ICategoryService {
 	public Category getByLinkName(String linkName) throws JSimpleException{
 		return categoryDao.getByLinkName(linkName);
 	}
-
-	public List<Category> getPager(int pageNumber, int pageSize,
-			String condition, String sort) throws JSimpleException{
-		return categoryDao.getPager(pageNumber, pageSize, condition, sort);
-	}
-
-	public long getCount(String condition) throws JSimpleException{
-		return categoryDao.getCount(condition);
-	}
+	
+	@Override
+    public List<Category> getAllCategories(String sortBy,boolean isDesc) throws JSimpleException
+    {
+    	String sort=sortBy +" "+(isDesc?"desc":"asc");
+    	return categoryDao.getAll(sort);
+    }
 
 }

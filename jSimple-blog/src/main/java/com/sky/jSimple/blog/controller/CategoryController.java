@@ -40,7 +40,7 @@ public class CategoryController extends BaseController {
 	@HttpGet("/api/category")
 	public ActionResult getCategories(Category category) throws JSimpleException
 	{
-	     List<Category> categories= categoryService.getPager(1,1000, null, "name");
+	     List<Category> categories= categoryService.getAllCategories("name",true);
 	     return json(categories);
 	}
 	

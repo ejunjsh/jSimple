@@ -16,17 +16,12 @@ public interface IBlogDao {
    
    Blog getById(Long id) throws JSimpleException;
    
-   List<Blog> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException;
+   List<Blog> getPager(int pageNumber,int pageSize,String condition,String sort,Object ... params) throws JSimpleException;
    
-   long getCount(String condition) throws JSimpleException;
+   long getCount(String condition,Object ... params) throws JSimpleException;
    
    Blog getByLinkName(String linkName) throws JSimpleException;
-   
-    List<Blog> getByCategoryId(int page,int pageSize,long categoryId,String sortBy,boolean isDesc) throws JSimpleException;
-
-	long countByCategoryId(long categoryId) throws JSimpleException;
+  
 	
-    List<Blog> getByTagName(int page,int pageSize,String tagName,String sortBy,boolean isDesc) throws JSimpleException;
-	
-	long countByTagName(String tagName) throws JSimpleException;
+	List<Blog> getAll(String sort) throws JSimpleException;
 }

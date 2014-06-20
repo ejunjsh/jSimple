@@ -15,9 +15,11 @@ public interface ICategoryDao {
 	   
 	   Category getById(Long id) throws JSimpleException;
 	   
-	   List<Category> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException;
+	   List<Category> getPager(int pageNumber,int pageSize,String condition,String sort,Object ... params) throws JSimpleException;
 	   
-	   long getCount(String condition) throws JSimpleException;
+	   long getCount(String condition,Object ... params) throws JSimpleException;
 	   
 	   Category getByLinkName(String linkName) throws JSimpleException;
+	   
+	   List<Category> getAll(String sort) throws JSimpleException;
 }

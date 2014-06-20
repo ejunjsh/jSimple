@@ -2,8 +2,10 @@ package com.sky.jSimple.blog.dao;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+
 import com.sky.jSimple.data.JSimpleDataTemplate;
 import com.sky.jSimple.exception.JSimpleException;
+import com.sky.jSimple.ioc.annotation.Inject;
 
 
 public class BaseDao<T> {
@@ -16,6 +18,7 @@ public class BaseDao<T> {
 			 entityClass =(Class<T>)((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 		}
 	 
+	@Inject	
 	 private JSimpleDataTemplate jSimpleDataTemplate;	
 		
 	 public void  insert(T entity) throws JSimpleException
@@ -36,18 +39,24 @@ public class BaseDao<T> {
 	   
 	 public  T getById(Long id) throws JSimpleException
 	 {
-		 return jSimpleDataTemplate.getById(id);
+		 return jSimpleDataTemplate.getById(entityClass,id);
 	 }
+	
 	   
-	 public List<T> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException
+	 public List<T> getPager(int pageNumber,int pageSize,String condition,String sort,Object ... params) throws JSimpleException
 	 {
-		return jSimpleDataTemplate.getPager(pageNumber, pageSize, condition, sort);
+		return jSimpleDataTemplate.getPager(entityClass,pageNumber, pageSize, condition, sort,params);
 	 }
 	 
-	 public long getCount(String condition) throws JSimpleException
+	 public long getCount(String condition,Object ... params) throws JSimpleException
 	 {
-		 return jSimpleDataTemplate.getCount(condition, entityClass);
+		 return jSimpleDataTemplate.getCount(condition, entityClass, params);
 	 }
+	 
+	  public List<T> getAll(String sort) throws JSimpleException
+	  {
+		  return jSimpleDataTemplate.queryListByCondition(entityClass,"", sort);
+	  }
 
 
 	public JSimpleDataTemplate getjSimpleDataTemplate() {

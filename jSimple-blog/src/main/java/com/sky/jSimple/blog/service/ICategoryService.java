@@ -14,9 +14,11 @@ public interface ICategoryService {
 	   
 	   Category getById(Long id) throws JSimpleException;
 	   
-	   List<Category> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException;
-	   
-	   long getCount(String condition) throws JSimpleException;
 	   
 	   Category getByLinkName(String linkName) throws JSimpleException;
+
+	List<Category> getAllCategories(String sortBy, boolean isDesc)
+			throws JSimpleException;
+	   
+	   
 }

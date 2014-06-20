@@ -13,6 +13,7 @@ import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Impl;
 import com.sky.jSimple.ioc.annotation.Inject;
 import com.sky.jSimple.utils.ArrayUtil;
+import com.sky.jSimple.utils.ClassUtil;
 import com.sky.jSimple.utils.CollectionUtil;
 
 public class IocManager {
@@ -27,33 +28,42 @@ public class IocManager {
            // 获取 Bean 类与 Bean 实例
            Class<?> beanClass = beanEntry.getKey();
            Object beanInstance = beanEntry.getValue();
-           // 获取 Bean 类中所有的字段（不包括父类中的方法）
-           Field[] beanFields = beanClass.getDeclaredFields();
+           // 获取 Bean 类中所有的字段
+           Field[] beanFields = ClassUtil.getAllFields(beanClass);
            if (ArrayUtil.isNotEmpty(beanFields)) {
                // 遍历所有的 Bean 字段
                for (Field beanField : beanFields) {
                    // 判断当前 Bean 字段是否带有 @Inject 注解
                    if (beanField.isAnnotationPresent(Inject.class)) {
+                	   Object implementInstance =null;
+                	  String beanId=  beanField.getAnnotation(Inject.class).value();
+                	  if(beanId!=null&&!beanId.isEmpty())
+                	  {
+                		  implementInstance=BeanContainer.getBean(beanId);
+                	  }
+                	  else{
                        // 获取 Bean 字段对应的接口
                        Class<?> interfaceClass = beanField.getType();
                        // 获取 Bean 字段对应的实现类
                        Class<?> implementClass = findImplementClass(interfaceClass);
                        // 若存在实现类，则执行以下代码
                        if (implementClass != null) {
-                           // 从 Bean Map 中获取该实现类对应的实现类实例
-                           Object implementInstance = beanMap.get(implementClass);
-                           // 设置该 Bean 字段的值
-                           if (implementInstance != null) {
-                               beanField.setAccessible(true); // 将字段设置为 public
-                               try {
-								beanField.set(beanInstance, implementInstance);
-							} catch (IllegalArgumentException e) {
-								throw new JSimpleException(e);
-							} catch (IllegalAccessException e) {
-								throw new JSimpleException(e);
-							} // 设置字段初始值
-                           }
+                       	// 从 Bean Map 中获取该实现类对应的实现类实例
+                           implementInstance = beanMap.get(implementClass);
                        }
+                	  }
+                	 
+                     // 设置该 Bean 字段的值
+                     if (implementInstance != null) {
+                         beanField.setAccessible(true); // 将字段设置为 public
+                         try {
+							beanField.set(beanInstance, implementInstance);
+						} catch (IllegalArgumentException e) {
+							throw new JSimpleException(e);
+						} catch (IllegalAccessException e) {
+							throw new JSimpleException(e);
+						} // 设置字段初始值
+                     }
                    }
                }
            }

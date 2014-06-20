@@ -47,60 +47,6 @@ public class DBHelper {
         return databaseType;
     }
 
-    // 获取数据源
-    public static DataSource getDataSource() {
-        // 从配置文件中读取 JDBC 配置项
-        String driver = jSimpleConfig.getConfigString("jdbc.driver");
-        String url = jSimpleConfig.getConfigString("jdbc.url");
-        String username = jSimpleConfig.getConfigString("jdbc.username");
-        String password = jSimpleConfig.getConfigString("jdbc.password");
-        
-        
-        int initialSize=jSimpleConfig.getConfigNumber("dataSource.initialSize");
-        int maxIdle=jSimpleConfig.getConfigNumber("dataSource.maxIdle");
-        int minIdle=jSimpleConfig.getConfigNumber("dataSource.minIdle");
-        int maxActive=jSimpleConfig.getConfigNumber("dataSource.maxActive");
-        // 创建 DBCP 数据源
-        BasicDataSource ds = new BasicDataSource();
-        if(initialSize>0)
-        ds.setInitialSize(initialSize);
-        else {
-        	ds.setInitialSize(10);
-		}
-        if(maxIdle>0)
-        ds.setMaxIdle(maxIdle);
-        else {
-        	ds.setMaxIdle(20);
-		}
-        
-        if(minIdle>0)
-            ds.setMinIdle(minIdle);
-            else {
-            	ds.setMinIdle(5);
-    		}
-        
-        if(maxActive>0)
-            ds.setMaxActive(maxActive);
-            else {
-            	ds.setMaxActive(50);
-    		}
-        
-        if (StringUtil.isNotEmpty(driver)) {
-            ds.setDriverClassName(driver);
-        }
-        if (StringUtil.isNotEmpty(url)) {
-            ds.setUrl(url);
-        }
-        if (StringUtil.isNotEmpty(username)) {
-            ds.setUsername(username);
-        }
-        if (StringUtil.isNotEmpty(password)) {
-            ds.setPassword(password);
-        }
-        return ds;
-    }
-
-
     // 执行查询（返回一个对象）
     public static <T> T queryBean(Connection conn,Class<T> cls, String sql, Object... params) throws JSimpleException {
         T result;

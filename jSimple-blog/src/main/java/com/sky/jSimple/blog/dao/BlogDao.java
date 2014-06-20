@@ -14,33 +14,6 @@ public class BlogDao extends BaseDao<Blog> implements IBlogDao {
 
 	public Blog getByLinkName(String linkName) throws JSimpleException
 	   {
-		   String sql=SQLHelper.generateSelectSQL(Blog.class, "linkName=?", "");
-			 return DBHelper.queryBean(Blog.class, sql, linkName);
+		   return getjSimpleDataTemplate().querySingleByCondition(Blog.class,"linkName=?",  linkName);
 	   }
-	
-	public List<Blog> getByCategoryId(int page,int pageSize,long categoryId,String sortBy,boolean isDesc) throws JSimpleException
-	{
-		   String sort=sortBy +" "+(isDesc?"desc":"asc");
-		   String sql=SQLHelper.generateSelectSQLForPager(page, pageSize,Blog.class, "categoryId=?", sort);
-		   return DBHelper.queryBeanList(Blog.class, sql, categoryId);
-	}
-	
-	public long countByCategoryId(long categoryId) throws JSimpleException
-	{
-		   String sql=SQLHelper.generateSelectSQLForCount(Blog.class, "categoryId=?");
-		   return DBHelper.queryCount( sql, categoryId);
-	}
-	
-	public List<Blog> getByTagName(int page,int pageSize,String tagName,String sortBy,boolean isDesc) throws JSimpleException
-	{
-		   String sort=sortBy +" "+(isDesc?"desc":"asc");
-		   String sql=SQLHelper.generateSelectSQLForPager(page, pageSize,Blog.class, "tags like CONCAT('%',?, '%')", sort);
-		   return DBHelper.queryBeanList(Blog.class, sql, tagName);
-	}
-	
-	public long countByTagName(String tagName) throws JSimpleException
-	{
-		   String sql=SQLHelper.generateSelectSQLForCount(Blog.class, "tags like CONCAT('%',?, '%')");
-		   return DBHelper.queryCount( sql, tagName);
-	}
 }

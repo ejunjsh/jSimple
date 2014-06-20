@@ -17,7 +17,7 @@ create table user(
 create table category(
 id int(8) not null primary key auto_increment,
 name nvarchar(50) not null unique,
-content text not null default '',
+content text ,
 linkName varchar(50) not null unique,
 createdDate datetime not null ,
 lastModifiedDate datetime not null ,

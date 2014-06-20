@@ -14,7 +14,9 @@ public interface IUserDao {
 	   
 	   User getById(Long id) throws JSimpleException;
 	   
-	   List<User> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException;
+	   List<User> getPager(int pageNumber,int pageSize,String condition,String sort,Object ... params) throws JSimpleException;
 	   
-	   long getCount(String condition) throws JSimpleException;
+	   long getCount(String condition,Object ... params) throws JSimpleException;
+	   
+	   List<User> getAll(String sort) throws JSimpleException;
 }

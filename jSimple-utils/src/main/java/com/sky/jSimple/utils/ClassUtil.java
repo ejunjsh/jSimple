@@ -3,6 +3,7 @@ package com.sky.jSimple.utils;
 import java.io.File;
 import java.io.FileFilter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import org.apache.log4j.pattern.FileDatePatternConverter;
 
 import javassist.ClassClassPath;
 import javassist.ClassPool;
@@ -343,6 +346,31 @@ public class ClassUtil {
         public MissingLVException(String clazzName) {  
             super(String.format(msg, clazzName));  
         }  
-    }  
+    } 
+    
+    public static Field[] getAllFields(Class<?> cls)
+    {
+    	  List<Field> fields=new ArrayList<Field>();
+    	  Field[] fields2= cls.getDeclaredFields();
+    	  for(Field field:fields2)
+    	  {
+    		  fields.add(field);
+    	  }
+    	  Class<?> superClass=cls.getSuperclass();
+    	  if(superClass!=null)
+    	  {
+    		   fields2=getAllFields(superClass);
+    		   for(Field field:fields2)
+    	    	  {
+    	    		  fields.add(field);
+    	    	  }
+    	  }
+    	  fields2=new Field[fields.size()];
+    	  for(int i=0;i<fields.size();i++)
+    	  {
+    		  fields2[i]=fields.get(i);
+    	  }
+    	  return fields2;
+    }
     
 }

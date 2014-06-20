@@ -108,7 +108,7 @@ public class BeanContainer {
 					{
 						if(namesString!=null&&!namesString.isEmpty()&&valueString!=null&&!valueString.isEmpty())
 						{
-							Field field= bean.getClass().getField(namesString);
+							Field field= bean.getClass().getDeclaredField(namesString);
 							field.setAccessible(true);
 							Object o=CastUtil.castPirmitiveObject(field.getType(), valueString);
 							field.set(bean, o);
@@ -120,7 +120,7 @@ public class BeanContainer {
 							Object refBean=BeanContainer.getBean(refString);
 							if(refBean!=null)
 							{
-								Field field= bean.getClass().getField(namesString);
+								Field field= bean.getClass().getDeclaredField(namesString);
 								field.setAccessible(true);
 								field.set(bean,refBean);
 							}

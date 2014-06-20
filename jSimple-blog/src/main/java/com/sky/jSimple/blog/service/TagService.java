@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.blog.dao.ITagDao;
+import com.sky.jSimple.blog.entity.Category;
 import com.sky.jSimple.blog.entity.Tag;
 import com.sky.jSimple.data.annotation.Transactional;
 import com.sky.jSimple.exception.JSimpleException;
@@ -34,17 +35,15 @@ public class TagService implements ITagService {
 		return tagDao.getById(id);
 	}
 
-	public List<Tag> getPager(int pageNumber, int pageSize, String condition,
-			String sort) throws JSimpleException {
-		return tagDao.getPager(pageNumber, pageSize, condition, sort);
-	}
-
-	public long getCount(String condition) throws JSimpleException {
-		return tagDao.getCount(condition);
-	}
-
 	public Tag getByLinkName(String linkName) throws JSimpleException {
 		return tagDao.getByLinkName(linkName);
 	}
+	
+	@Override
+    public List<Tag> getAllTags(String sortBy,boolean isDesc) throws JSimpleException
+    {
+    	String sort=sortBy +" "+(isDesc?"desc":"asc");
+    	return tagDao.getAll(sort);
+    }
 
 }

@@ -92,8 +92,10 @@ public class BlogService implements IBlogService {
 		{
 		 Pagination pagination=new Pagination();
 		 
-		pagination.setData(blogDao.getByCategoryId(pageNumber,pageSize,category.getId(), sortBy, isDesc));
-		pagination.setRecordCount(blogDao.countByCategoryId(category.getId()));
+		 String sort=sortBy +" "+(isDesc?"desc":"asc");
+		 
+		pagination.setData(blogDao.getPager(pageNumber,pageSize,"categoryId=?",sort,category.getId()));
+		pagination.setRecordCount(blogDao.getCount("categoryId=?",category.getId()));
 		return pagination;
 		}
 		return null;
@@ -106,8 +108,11 @@ public class BlogService implements IBlogService {
 		if(tag!=null)
 		{
 			Pagination pagination=new Pagination();
-		    pagination.setData(blogDao.getByTagName(pageNumber,pageSize, tag.getName(), sortBy, isDesc));
-		    pagination.setRecordCount(blogDao.countByTagName( tag.getName()));
+			
+			String sort=sortBy +" "+(isDesc?"desc":"asc");
+		    pagination.setData(blogDao.getPager(pageNumber,pageSize,"tags like CONCAT('%',?, '%')",sort, tag.getName()));
+		    
+		    pagination.setRecordCount(blogDao.getCount("tags like CONCAT('%',?, '%')", tag.getName()));
 		    return pagination;
 		}
 		return null;

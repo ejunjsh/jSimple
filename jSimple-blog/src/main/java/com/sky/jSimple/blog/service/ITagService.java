@@ -14,9 +14,8 @@ public interface ITagService {
 	   
 	   Tag getById(Long id) throws JSimpleException;
 	   
-	   List<Tag> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException;
-	   
-	   long getCount(String condition) throws JSimpleException;
 	   
 	   Tag getByLinkName(String linkName) throws JSimpleException;
+
+	List<Tag> getAllTags(String sortBy, boolean isDesc) throws JSimpleException;
 }

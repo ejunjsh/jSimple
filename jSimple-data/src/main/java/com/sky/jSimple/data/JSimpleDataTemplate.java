@@ -22,7 +22,7 @@ public class JSimpleDataTemplate {
 	     String sql=SQLHelper.generateInsertSQL(entity.getClass(),entityMap.keySet());
 	     long id= (Long)DBHelper.insertReturnPK(connection,sql,EntityHelper.entityToArray(entity));
 	     try {
-			Field[] fields= entity.getClass().getFields();
+			Field[] fields= entity.getClass().getDeclaredFields();
 			for(Field field : fields)
 			{
 				if(field.isAnnotationPresent(Id.class))
@@ -48,13 +48,18 @@ public class JSimpleDataTemplate {
 		 {
 			 Field field;
 			try {
-				field = entity.getClass().getField(s);
+				field = entity.getClass().getDeclaredField(s);
 				 if(field.isAnnotationPresent(Id.class))
 				 {
 					 field.setAccessible(true);
 			   	     objects.add(field.get(entity));
 			   	     
-			   	    String columnName = field.getAnnotation(Column.class).value();
+			   	    String columnName ="";
+			   	    Column column = field.getAnnotation(Column.class);
+			   	    if(column!=null)
+			   	    {
+			   	    	columnName=column.value();
+			   	    }
 			   	    
 			   	    if(columnName!=null&&!columnName.isEmpty())
 			   	    {
@@ -87,10 +92,15 @@ public class JSimpleDataTemplate {
 		 {
 			 Field field;
 			try {
-				field = entityClass.getField(s);
+				field = entityClass.getDeclaredField(s);
 				 if(field.isAnnotationPresent(Id.class))
 				 {
-			   	    String columnName = field.getAnnotation(Column.class).value();
+					 String columnName ="";
+				   	    Column column = field.getAnnotation(Column.class);
+				   	    if(column!=null)
+				   	    {
+				   	    	columnName=column.value();
+				   	    }
 			   	    
 			   	    if(columnName!=null&&!columnName.isEmpty())
 			   	    {
@@ -111,21 +121,54 @@ public class JSimpleDataTemplate {
 	   DBHelper.update(connection,sql, id);
    }
    
-   public  <T> T getById(Long id) throws JSimpleException
+   public <T> T querySingleByCondition(Class<T> cls , String condition,Object ... params) throws JSimpleException
+   {
+	   Connection connection=connectionFactory.getConnection();
+	  
+	   String sql=SQLHelper.generateSelectSQL(cls, condition,"");
+		 return DBHelper.queryBean(connection,cls, sql, params);
+   }
+   
+   public <T> List<T> queryListByCondition(Class<T> cls ,String condition,String sort,Object ... params) throws JSimpleException
+   {
+	   Connection connection=connectionFactory.getConnection();
+
+	   String sql=SQLHelper.generateSelectSQL(cls, condition, sort);
+		 return DBHelper.queryBeanList(connection,cls, sql, params);
+   }
+   
+   public <T> List<T> queryList(Class<T> cls ,String sql,Object ... params) throws JSimpleException
+   {
+	   Connection connection=connectionFactory.getConnection();
+		 return DBHelper.queryBeanList(connection,cls, sql, params);
+   }
+   
+   public <T> T querySingle(Class<T> cls, String sql,Object ... params) throws JSimpleException
+   {
+	   Connection connection=connectionFactory.getConnection();
+  
+		 return DBHelper.queryBean(connection,cls, sql, params);
+   }
+   
+   public  <T> T getById(Class<T> cls, Long id) throws JSimpleException
 	 {
 	   Connection connection=connectionFactory.getConnection();
-	   Class<T> entityClass =(Class<T>)((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	   
 	   String idCondition="=?";
-		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(entityClass);
+		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(cls);
 		 for(String s:entityMap.values())
 		 {
 			 Field field;
 			try {
-				field = entityClass.getField(s);
+				field = cls.getDeclaredField(s);
 				 if(field.isAnnotationPresent(Id.class))
 				 {
-			   	    String columnName = field.getAnnotation(Column.class).value();
+					 String columnName ="";
+				   	    Column column = field.getAnnotation(Column.class);
+				   	    if(column!=null)
+				   	    {
+				   	    	columnName=column.value();
+				   	    }
 			   	    
 			   	    if(columnName!=null&&!columnName.isEmpty())
 			   	    {
@@ -142,25 +185,24 @@ public class JSimpleDataTemplate {
 			
 		 }
 	   
-	   String sql=SQLHelper.generateSelectSQL(entityClass,idCondition, "");
-	   return DBHelper.queryBean(connection,entityClass, sql, id);
+	   String sql=SQLHelper.generateSelectSQL(cls,idCondition, "");
+	   return DBHelper.queryBean(connection,cls, sql, id);
 	 }
    
-   public <T> List<T> getPager(int pageNumber,int pageSize,String condition,String sort) throws JSimpleException
+   public <T> List<T> getPager(Class<T> cls, int pageNumber,int pageSize,String condition,String sort,Object ... params) throws JSimpleException
 	 {
 	   Connection connection=connectionFactory.getConnection();
-	   Class<T> entityClass =(Class<T>)((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-	   
-		 String sql=SQLHelper.generateSelectSQLForPager(pageNumber, pageSize, entityClass, condition, sort);
-		 return DBHelper.queryBeanList(connection,entityClass, sql, null);
+   
+		 String sql=SQLHelper.generateSelectSQLForPager(pageNumber, pageSize, cls, condition, sort);
+		 return DBHelper.queryBeanList(connection,cls, sql, params);
 	 }
 	 
-	 public long getCount(String condition,Class<?> entityClass) throws JSimpleException
+	 public long getCount(String condition,Class<?> entityClass,Object ... params) throws JSimpleException
 	 {
 		 Connection connection=connectionFactory.getConnection();
 		   
 		 String sql=SQLHelper.generateSelectSQLForCount(entityClass, condition);
-		 return DBHelper.queryCount(connection,sql, null);
+		 return DBHelper.queryCount(connection,sql, params);
 	 }
 
 	public ConnectionFactory getConnectionFactory() {
