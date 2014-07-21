@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sky.jSimple.config.jSimpleConfig;
+import com.sky.jSimple.data.annotation.Entity;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.ArrayUtil;
 import com.sky.jSimple.utils.MapUtil;
@@ -51,7 +52,7 @@ public class DBHelper {
     public static <T> T queryBean(Session session,Class<T> cls, String sql, Object... params) throws JSimpleException {
         T result;
         try {
-            Map<String, String> fieldMap = EntityHelper.getEntityMap().get(cls);
+            Map<String, String> fieldMap = EntityHelper.getEntityMap().get(cls.getAnnotation(Entity.class).value());
             if (MapUtil.isNotEmpty(fieldMap)) {
                 result = queryRunner.query(session.getConnection(),sql, new BeanHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory(),fieldMap))), params);
             } else {
@@ -69,7 +70,7 @@ public class DBHelper {
     public static <T> List<T> queryBeanList(Session session,Class<T> cls, String sql, Object... params) throws JSimpleException {
         List<T> result;
         try {
-            Map<String, String> fieldMap = EntityHelper.getEntityMap().get(cls);
+            Map<String, String> fieldMap = EntityHelper.getEntityMap().get(cls.getAnnotation(Entity.class).value());
             if (MapUtil.isNotEmpty(fieldMap)) {
                 result = queryRunner.query(session.getConnection(),sql, new BeanListHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory(),fieldMap))), params);
             } else {

@@ -22,7 +22,7 @@ import com.sky.jSimple.utils.MapUtil;
 public class EntityHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(EntityHelper.class);
-    private static final Map<Class<?>, Map<String, String>> entityMap = new HashMap<Class<?>, Map<String, String>>(); // Entity 类 => (列名 => 字段名)
+    private static final Map<String, Map<String, String>> entityMap = new HashMap<String, Map<String, String>>(); // Entity 类 => (列名 => 字段名)
 
     static {
         // 获取并遍历所有 Entity 类
@@ -54,13 +54,14 @@ public class EntityHelper {
                 }
                 // 将 Entity 类与 Field Map 放入 Entity Map 中
                 if (MapUtil.isNotEmpty(fieldMap)) {
-                    entityMap.put(entityClass, fieldMap);
+                	String key= entityClass.getAnnotation(Entity.class).value();
+                    entityMap.put(key, fieldMap);
                 }
             }
         }
     }
 
-    public static Map<Class<?>, Map<String, String>> getEntityMap() {
+    public static Map<String, Map<String, String>> getEntityMap() {
         return entityMap;
     }
     
@@ -72,7 +73,7 @@ public class EntityHelper {
     	 {
     		 Field field=BeanPropertyUtil.getField(entity.getClass(), fields.get(i));
     		 try {
-    			 if(!field.isAnnotationPresent(Ignore.class)&&!field.isAnnotationPresent(GetBy.class))
+    			 if(field!=null&&!field.isAnnotationPresent(Ignore.class)&&!field.isAnnotationPresent(GetBy.class))
     			 {
     			     objects.add(BeanPropertyUtil.getPropertyValue(entity,fields.get(i)));
     			 }
@@ -91,7 +92,7 @@ public class EntityHelper {
     	 {
     		 Field field=BeanPropertyUtil.getField(entity.getClass(), fields.get(i));
     		 try {
-    			 if(!field.isAnnotationPresent(Ignore.class)&&!field.isAnnotationPresent(GetBy.class))
+    			 if(field!=null&&!field.isAnnotationPresent(Ignore.class)&&!field.isAnnotationPresent(GetBy.class))
     			 {
     			     objects.add(BeanPropertyUtil.getPropertyValue(entity,fields.get(i)));
     			 }

@@ -6,6 +6,8 @@ import com.sky.jSimple.Annotation.Bean;
 import com.sky.jSimple.blog.dao.ITagDao;
 import com.sky.jSimple.blog.entity.Category;
 import com.sky.jSimple.blog.entity.Tag;
+import com.sky.jSimple.cache.annotation.Cache;
+import com.sky.jSimple.cache.annotation.Evict;
 import com.sky.jSimple.data.annotation.Transactional;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Inject;
@@ -17,11 +19,13 @@ public class TagService implements ITagService {
 	private ITagDao tagDao;
 	
 	@Transactional
+	@Evict
 	public void insert(Tag tag) throws JSimpleException{
 		tagDao.insert(tag);
 	}
 
 	@Transactional
+	@Evict
 	public void update(Tag tag)  throws JSimpleException{
 		tagDao.update(tag);
 	}
@@ -40,6 +44,7 @@ public class TagService implements ITagService {
 	}
 	
 	@Override
+	@Cache
     public List<Tag> getAllTags(String sortBy,boolean isDesc) throws JSimpleException
     {
     	String sort=sortBy +" "+(isDesc?"desc":"asc");

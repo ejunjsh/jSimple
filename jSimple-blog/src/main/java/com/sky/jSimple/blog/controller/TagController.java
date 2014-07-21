@@ -25,6 +25,7 @@ public class TagController extends BaseController {
 	     List<Tag> tags= tagService.getAllTags("name",true);
 	     return json(tags);
 	}
+	
 	@HttpGet("/api/tag/{linkName}")
 	public ActionResult getTagByLinkName(String linkName) throws JSimpleException
 	{

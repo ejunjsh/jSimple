@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sky.jSimple.data.annotation.Column;
+import com.sky.jSimple.data.annotation.Entity;
 import com.sky.jSimple.data.annotation.Id;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.BeanPropertyUtil;
@@ -19,7 +20,7 @@ public class JSimpleDataTemplate {
    {
 	   Session session=sessionFactory.getSession();
 	   
-	   Map<String, String> entityMap= EntityHelper.getEntityMap().get(entity.getClass());
+	   Map<String, String> entityMap= EntityHelper.getEntityMap().get(entity.getClass().getAnnotation(Entity.class).value());
 	     String sql=SQLHelper.generateInsertSQL(entity.getClass(),entityMap.keySet());
 	     long id= (Long)DBHelper.insertReturnPK(session,sql,EntityHelper.entityToArray(entity));
 	     try {
@@ -43,7 +44,7 @@ public class JSimpleDataTemplate {
    {
 	   Session session=sessionFactory.getSession();
 	   String idCondition="=?";
-		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(entity.getClass());
+		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(entity.getClass().getAnnotation(Entity.class).value());
 		 List<Object> objects=EntityHelper.entityToList(entity);
 		 for(String s:entityMap.values())
 		 {
@@ -87,7 +88,7 @@ public class JSimpleDataTemplate {
        Session session=sessionFactory.getSession();
 	   
 	   String idCondition="=?";
-		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(entityClass);
+		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(entityClass.getAnnotation(Entity.class).value());
 		 for(String s:entityMap.values())
 		 {
 			 Field field;
@@ -155,7 +156,7 @@ public class JSimpleDataTemplate {
 	   Session session=sessionFactory.getSession();
 	   
 	   String idCondition="=?";
-		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(cls);
+		 Map<String, String> entityMap= EntityHelper.getEntityMap().get(cls.getAnnotation(Entity.class).value());
 		 for(String s:entityMap.values())
 		 {
 			 Field field;

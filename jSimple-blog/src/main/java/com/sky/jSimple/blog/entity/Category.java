@@ -1,13 +1,18 @@
 package com.sky.jSimple.blog.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.sky.jSimple.data.annotation.Entity;
 import com.sky.jSimple.data.annotation.Id;
 
 @Entity("category")
-public class Category {
+public class Category implements Serializable {
 	
+	/** 
+	* @Fields serialVersionUID : description
+	*/ 
+	private static final long serialVersionUID = 7949475853604762438L;
 	@Id
 	private long id; 
 	private String name; 

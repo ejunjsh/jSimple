@@ -1,5 +1,6 @@
 package com.sky.jSimple.aop;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -16,11 +17,9 @@ public class AOPFactory {
     public static <T> T createEnhanceObject(final Class<T> targetClass, final List<Proxy> proxyList) {
     	
     	logger.debug("[jSimple]-create AOP Object--"+targetClass.getName());
-    	
-        return (T) Enhancer.create(targetClass, new MethodInterceptor() {
-            public Object intercept(Object targetObject, Method targetMethod, Object[] methodParams, MethodProxy methodProxy) throws Throwable {
-                return new ProxyChain(targetClass, targetObject, targetMethod, methodProxy, methodParams, proxyList).doProxyChain();
-            }
-        });
+    	//add serializable interface for save this enhancer object to other place.
+    	Class<?>[] interfaces={Serializable.class};
+    	JSimpleMethodInterceptor methodInterceptor=new JSimpleMethodInterceptor(proxyList);
+        return (T) Enhancer.create(targetClass,interfaces,methodInterceptor);
     }
 }
