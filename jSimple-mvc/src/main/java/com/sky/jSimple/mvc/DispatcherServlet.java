@@ -2,12 +2,14 @@ package com.sky.jSimple.mvc;
 
 import com.sky.jSimple.bean.BeanAssembly;
 import com.sky.jSimple.bean.BeanContainer;
+import com.sky.jSimple.config.jSimpleConfig;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.IocManager;
 import com.sky.jSimple.mvc.bean.ControllerBean;
 import com.sky.jSimple.mvc.bean.RequestBean;
 import com.sky.jSimple.utils.CastUtil;
 import com.sky.jSimple.utils.ClassUtil.MissingLVException;
+import com.sky.jSimple.utils.StringUtil;
 import com.sky.jSimple.utils.WebUtil;
 
 import java.io.File;
@@ -44,6 +46,9 @@ import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +65,13 @@ public class DispatcherServlet extends HttpServlet {
 		FreemarkerResult.init(servletContext, Locale.CHINA, 1);
 		VelocityResult.init(servletContext);
 
+        String configPath=config.getInitParameter("configPath");
+        jSimpleConfig.configFilePath=configPath;
+
+
 		try {
+            loadMvcSetting();
+            BeanContainer.loadBeansFromXml();
 			BeanAssembly.assemble();			
 			IocManager.execute();
 			UrlMapper.excute();
@@ -70,7 +81,31 @@ public class DispatcherServlet extends HttpServlet {
 			}
 		
 
-	}
+    }
+
+    private void loadMvcSetting() throws JSimpleException
+    {
+        InputStream is= BeanContainer.class.getClassLoader().getResourceAsStream(jSimpleConfig.configFilePath);
+        SAXReader reader = new SAXReader();
+        try {
+            Document document = reader.read(is);
+            Element rootElement = document.getRootElement();
+            Element mvcElement = rootElement.element("mvc");
+            String staticSuffix = mvcElement.attributeValue("static-suffix");
+            String staticExpire=mvcElement.attributeValue("static-expire");
+            if (!StringUtil.isEmpty(staticSuffix)) {
+                jSimpleConfig.staticResourceSuffix = staticSuffix;
+            }
+            if(!StringUtil.isEmpty(staticExpire))
+            {
+                jSimpleConfig.staticResourceExpire=CastUtil.castInt(staticExpire);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new JSimpleException(e);
+        }
+    }
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) {

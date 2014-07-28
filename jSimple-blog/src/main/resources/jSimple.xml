@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jSimple>
+    <mvc static-suffix=".jpg;.bmp;.jpeg;.png;.gif;.html;.css;.js;.htm;.ttf;.woff;.svg;.swf;.map"
+         static-expire="3600"
+            />
+    <beans scan-package="${scan.package}">
+        <bean id="dataSource"
+            class="org.apache.commons.dbcp.BasicDataSource">
+            <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+            <property name="url"
+                value="${jdbc.driver}" />
+            <property name="username" value="${jdbc.user}" />
+            <property name="password" value="${jdbc.pwd}" />
+            <property  name="initialSize"  value="10"/>
+            <property  name="maxIdle"  value="20"/>
+            <property  name="minIdle"  value="5"/>
+            <property  name="maxActive"  value="50"/>
+        </bean>
+        <bean id="sessionFactory" class="com.sky.jSimple.data.SessionFactory">
+               <property name="dataSource"  ref="dataSource" />
+        </bean>
+        <bean id="jSimpleDataTemplate" class="com.sky.jSimple.data.JSimpleDataTemplate">
+               <property name="sessionFactory"  ref="sessionFactory" />
+               <property name="dbType" value="mysql" />
+        </bean>
+    <!--	<bean id="memcachedCacheManager" class="com.sky.jSimple.cache.MemcachedCacheManager">
+                <property name="servers"  value="192.168.153.132:11111 192.168.153.133:11111" />
+                <property name="connectionPoolSize"  value="10" />
+        </bean>
+        <bean id="cacheProxy" class="com.sky.jSimple.cache.CacheProxy">
+               <property name="cacheManager"  ref="memcachedCacheManager" />
+        </bean>-->
+    </beans>
+</jSimple>

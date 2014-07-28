@@ -7,8 +7,12 @@
   
   <servlet>  
         <servlet-name>jsimplemvc</servlet-name>  
-        <servlet-class>com.sky.jSimple.mvc.DispatcherServlet</servlet-class>  
-        <load-on-startup>1</load-on-startup>  
+        <servlet-class>com.sky.jSimple.mvc.DispatcherServlet</servlet-class>
+        <init-param>
+          <param-name>configPath</param-name>
+          <param-value>/jSimple.xml</param-value>
+        </init-param>
+      <load-on-startup>1</load-on-startup>
     </servlet>  
     <servlet-mapping>  
         <servlet-name>jsimplemvc</servlet-name>  

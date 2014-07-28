@@ -33,20 +33,8 @@ public class DBHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(DBHelper.class);
 
-    private static String databaseType;
-    private static QueryRunner queryRunner;
+    private static QueryRunner queryRunner=new QueryRunner();
 
-    static {
-        databaseType = jSimpleConfig.getConfigString("jdbc.type");
-        if (StringUtil.isNotEmpty(databaseType)) {
-            queryRunner = new QueryRunner();
-        }
-    }
-
-    // 获取数据库类型
-    public static String getDatabaseType() {
-        return databaseType;
-    }
 
     // 执行查询（返回一个对象）
     public static <T> T queryBean(Session session,Class<T> cls, String sql, Object... params) throws JSimpleException {

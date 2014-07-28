@@ -1,7 +1,5 @@
 package com.sky.jSimple.mvc.bean;
 
-import java.util.Map;
-
 public class RequestBean {
 
     private String requestMethod;

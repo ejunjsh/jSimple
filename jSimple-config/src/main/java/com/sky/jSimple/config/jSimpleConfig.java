@@ -1,27 +1,17 @@
 package com.sky.jSimple.config;
 
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sky.jSimple.utils.PropsUtil;
 
 public class jSimpleConfig {
 	
 	private static final Logger logger = LoggerFactory.getLogger(jSimpleConfig.class);
-	
-	  private static final Properties configProps = PropsUtil.loadProps("jSimple.properties");
 
-	    public static String getConfigString(String key) {
-	        return PropsUtil.getString(configProps, key);
-	    }
+    public static String configFilePath="/jSimple.xml";
 
-	    public static int getConfigNumber(String key) {
-	        return PropsUtil.getNumber(configProps, key);
-	    }
+    public static String staticResourceSuffix =".jpg;.bmp;.jpeg;.png;.gif;.html;.css;.js;.htm";
 
-	    public static boolean getConfigBoolean(String key) {
-	        return PropsUtil.getBoolean(configProps, key);
-	    }
+    public static int staticResourceExpire=3600;
+
+    public static String scanPackage="";
 }

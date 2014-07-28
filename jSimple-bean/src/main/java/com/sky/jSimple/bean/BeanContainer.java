@@ -1,28 +1,22 @@
 package com.sky.jSimple.bean;
 
-import java.beans.PropertyDescriptor;
-import java.io.File;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javassist.Loader;
-
+import com.sky.jSimple.config.jSimpleConfig;
+import com.sky.jSimple.exception.JSimpleException;
+import com.sky.jSimple.utils.BeanPropertyUtil;
+import com.sky.jSimple.utils.CastUtil;
+import com.sky.jSimple.utils.StringUtil;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sky.jSimple.Annotation.Bean;
-import com.sky.jSimple.exception.JSimpleException;
-import com.sky.jSimple.utils.BeanPropertyUtil;
-import com.sky.jSimple.utils.CastUtil;
+import java.beans.PropertyDescriptor;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BeanContainer {
 	
@@ -35,7 +29,6 @@ public class BeanContainer {
 		instance=new BeanContainer();
 		instance.classContainer=new HashMap<Class<?>, List<Object>>(50);
 		instance.nameContainer=new HashMap<String, Object>(50);
-		loadBeansFromXml();
 	}
 	
 	
@@ -108,14 +101,24 @@ public class BeanContainer {
     }
     
     
-    public static void loadBeansFromXml()
+    public static void loadBeansFromXml() throws JSimpleException
     {
-       InputStream is= BeanContainer.class.getClassLoader().getResourceAsStream("/beans.xml");
+       InputStream is= BeanContainer.class.getClassLoader().getResourceAsStream(jSimpleConfig.configFilePath);
        SAXReader reader = new SAXReader();
        try {
 		Document document = reader.read(is);
 		Element rootElement=document.getRootElement();
-		List<Element> beanElements= rootElement.elements("bean");
+        Element beansElement=rootElement.element("beans");
+        String scanPackage=beansElement.attributeValue("scan-package");
+        if(!StringUtil.isEmpty(scanPackage))
+        {
+            jSimpleConfig.scanPackage=scanPackage;
+        }
+        else
+        {
+            throw new JSimpleException("please configure the scan-package property of beans node in your config file");
+        }
+		List<Element> beanElements= beansElement.elements("bean");
 		for(Element beanElement: beanElements)
 		{
 			String idsString=beanElement.attributeValue("id");
@@ -153,7 +156,7 @@ public class BeanContainer {
 			BeanContainer.setBean(idsString, bean);
 		}
 	} catch (Exception e) {
-		e.printStackTrace();
+		throw new JSimpleException(e);
 	   }
     }
 }

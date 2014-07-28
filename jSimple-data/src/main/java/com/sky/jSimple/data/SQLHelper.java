@@ -82,12 +82,11 @@ public class SQLHelper {
         return sql.toString();
     }
 
-    public static String generateSelectSQLForPager(int pageNumber, int pageSize, Class<?> cls, String condition, String sort) {
+    public static String generateSelectSQLForPager(int pageNumber, int pageSize, Class<?> cls, String condition, String sort,String dbType) {
         StringBuilder sql = new StringBuilder();
         String table = getTable(cls);
         String where = generateWhere(condition);
         String order = generateOrder(sort);
-        String dbType = jSimpleConfig.getConfigString("jdbc.type");
         if (dbType.equalsIgnoreCase("mysql")) {
             int pageStart = (pageNumber - 1) * pageSize;
             appendSQLForMySQL(sql, table, where, order, pageStart, pageSize);
@@ -169,9 +168,8 @@ public class SQLHelper {
         sql.append(") ").append(order);
     }
     
-    public static String getLastId()
+    public static String getLastId(String dbType)
     {
-        String dbType = jSimpleConfig.getConfigString("jdbc.type");
         if (dbType.equalsIgnoreCase("mysql")) {
            return "SELECT LAST_INSERT_ID()";
         } else if (dbType.equalsIgnoreCase("oracle")) {

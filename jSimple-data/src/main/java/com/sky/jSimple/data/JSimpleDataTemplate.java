@@ -15,6 +15,12 @@ import com.sky.jSimple.utils.BeanPropertyUtil;
 public class JSimpleDataTemplate {
 
    private SessionFactory sessionFactory;
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
+    private String dbType;
 	
    public void insert(Object entity) throws JSimpleException
    {
@@ -194,7 +200,7 @@ public class JSimpleDataTemplate {
 	 {
 	   Session session=sessionFactory.getSession();
    
-		 String sql=SQLHelper.generateSelectSQLForPager(pageNumber, pageSize, cls, condition, sort);
+		 String sql=SQLHelper.generateSelectSQLForPager(pageNumber, pageSize, cls, condition, sort,dbType);
 		 return DBHelper.queryBeanList(session,cls, sql, params);
 	 }
 	 

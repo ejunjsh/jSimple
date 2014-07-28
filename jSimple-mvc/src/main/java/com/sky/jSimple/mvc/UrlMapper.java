@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,6 @@ import javassist.NotFoundException;
 import com.sky.jSimple.bean.ClassScaner;
 import com.sky.jSimple.config.jSimpleConfig;
 import com.sky.jSimple.exception.JSimpleException;
-import com.sky.jSimple.mvc.WebContext.Request;
 import com.sky.jSimple.mvc.annotation.Default;
 import com.sky.jSimple.mvc.annotation.HttpDelete;
 import com.sky.jSimple.mvc.annotation.HttpGet;
@@ -41,8 +39,6 @@ import com.sky.jSimple.utils.ClassUtil;
 import com.sky.jSimple.utils.ClassUtil.MissingLVException;
 import com.sky.jSimple.utils.CollectionUtil;
 import com.sky.jSimple.utils.StringUtil;
-
-import freemarker.core.ReturnInstruction.Return;
 
 public class UrlMapper {
 	
@@ -174,11 +170,7 @@ public class UrlMapper {
 	            if (n!=(-1))
 	                url = url.substring(0, n);
 
-	      String ignoreString=jSimpleConfig.getConfigString("resource.suffix");
-	      if(ignoreString.isEmpty())
-	      {
-	    	  ignoreString=".jpg;.bmp;.jpeg;.png;.gif;.html;.css;.js;.htm";
-	      }
+	      String ignoreString=jSimpleConfig.staticResourceSuffix;
 	      String[] strings=ignoreString.toUpperCase().split(";");
 	      boolean flag=false;
 	      for(String string :strings)
@@ -201,7 +193,7 @@ public class UrlMapper {
 	                return true;
 	            }
 	    	 
-	    	  int expires=jSimpleConfig.getConfigNumber("resource.expire");
+	    	  int expires=jSimpleConfig.staticResourceExpire;
               String  maxAge="";
 	              if (expires>0) {
 	                  expires =(int) (expires * 1000L);

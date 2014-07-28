@@ -42,7 +42,32 @@
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 	</dependencies>
+    <profiles>
+    <!-- 独立war部署 -->
+    <profile>
+    <id>defaultProperties</id>
+    <activation>
+        <activeByDefault>true</activeByDefault>
+    </activation>
+        <properties>
+            <scan.package>com.sky.jSimple</scan.package>
+            <jdbc.user>root</jdbc.user>
+            <jdbc.pwd>sjj!@#$%^</jdbc.pwd>
+            <jdbc.driver>jdbc:mysql://localhost:3306/jSimpleBlog</jdbc.driver>
+        </properties>
+    </profile>
+    </profiles>
 	<build>
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+            </resource>
+        </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
