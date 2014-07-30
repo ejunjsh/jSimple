@@ -1,144 +1,135 @@
 package com.sky.jSimple.cache;
 
-import java.io.IOException;
+import com.danga.MemCached.MemCachedClient;
+import com.danga.MemCached.SockIOPool;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
-import net.rubyeye.xmemcached.MemcachedClient;
-import net.rubyeye.xmemcached.MemcachedClientBuilder;
-import net.rubyeye.xmemcached.XMemcachedClientBuilder;
-import net.rubyeye.xmemcached.command.BinaryCommandFactory;
-import net.rubyeye.xmemcached.exception.MemcachedException;
-import net.rubyeye.xmemcached.utils.AddrUtil;
 
 public class MemcachedCacheManager implements ICacheManager {
-	
-	private MemcachedClient memcachedClient;
-	
-	public synchronized void insert(String key, Object value) {
-		insert(key, value, "");
-	}
 
-	public Object get(String key) {
-		try {
-			return  getMemcachedClient().get(key);
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MemcachedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
+    private MemCachedClient memcachedClient;
 
-	public synchronized void remove(String key) {
-		try {
-			getMemcachedClient().delete(key);
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MemcachedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    public MemCachedClient getMemcachedClient() {
+        if(memcachedClient==null)
+        {
+// server list and weights
+            String[] servers =getServers().split(",");
 
-	public synchronized void removeScope(String scope) {
-		try {
-			List<String> keys=getMemcachedClient().get(scope);
-			
-			for (String key : keys) {
-				getMemcachedClient().delete(key);
-			}
-			getMemcachedClient().delete(scope);
-			
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MemcachedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+            String[] sWeights= getWeights().split(",");
 
-	public synchronized void insert(String key, Object value, String scope) {
-		try {
-			getMemcachedClient().set(key, 0, value);
-			
-			List<String> keys=getMemcachedClient().get(scope);
-			if(keys==null)
-			{
-				keys=new ArrayList<String>();
-			}
-			
-			keys.add(key);
-			
-			getMemcachedClient().set(scope,  0, keys);
-			
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MemcachedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private String servers;
-	
-	
-    private int connectionPoolSize;
-    
+            Integer[] weights =new Integer[sWeights.length];
+            for(int i=0;i<sWeights.length;i++)
+            {
+                weights[i]=Integer.parseInt(sWeights[i]);
+            }
 
-	public MemcachedClient getMemcachedClient() {
-		if(memcachedClient==null)
-		{
-			 MemcachedClientBuilder builder = new XMemcachedClientBuilder(  
-		                AddrUtil.getAddresses(getServers()));  
-		               builder.setFailureMode(true);    
-		               builder.setCommandFactory(new BinaryCommandFactory());  
-		                builder.setConnectionPoolSize(getConnectionPoolSize());    
-		                try {
-							setMemcachedClient(builder.build());
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}  
-		}
-		return memcachedClient;
-	}
 
-	public void setMemcachedClient(MemcachedClient memcachedClient) {
-		this.memcachedClient = memcachedClient;
-	}
+            // grab an instance of our connection pool
+            SockIOPool pool = SockIOPool.getInstance();
 
-	public String getServers() {
-		return servers;
-	}
+            // set the servers and the weights
+            pool.setServers( servers );
+            pool.setWeights( weights );
 
-	public void setServers(String servers) {
-		this.servers = servers;
-	}
+            // set some basic pool settings
+            // 5 initial, 5 min, and 250 max conns
+            // and set the max idle time for a conn
+            // to 6 hours
+            pool.setInitConn( 5 );
+            pool.setMinConn( 5 );
+            pool.setMaxConn( 250 );
+            pool.setMaxIdle( 1000 * 60 * 60 * 6 );
 
-	public int getConnectionPoolSize() {
-		return connectionPoolSize;
-	}
+            // set the sleep for the maint thread
+            // it will wake up every x seconds and
+            // maintain the pool size
+            pool.setMaintSleep( 30 );
 
-	public void setConnectionPoolSize(int connectionPoolSize) {
-		this.connectionPoolSize = connectionPoolSize;
-	}
+            // set some TCP settings
+            // disable nagle
+            // set the read timeout to 3 secs
+            // and don't set a connect timeout
+            pool.setNagle( false );
+            pool.setSocketTO( 3000 );
+            pool.setSocketConnectTO( 0 );
+
+            // initialize the connection pool
+            pool.initialize();
+
+
+            memcachedClient=new MemCachedClient();
+
+        }
+        return memcachedClient;
+    }
+
+    public void setMemcachedClient(MemCachedClient memcachedClient) {
+        this.memcachedClient = memcachedClient;
+    }
+
+    public synchronized void insert(String key, Object value) {
+        insert(key, value, "");
+    }
+
+    public Object get(String key) {
+        return getMemcachedClient().get(key);
+    }
+
+    public synchronized void remove(String key) {
+        getMemcachedClient().delete(key);
+
+    }
+
+    public synchronized void removeScope(String scope) {
+
+        Object o = getMemcachedClient().get(scope);
+
+        if (o != null) {
+            List<String> keys = (List<String>) o;
+
+            for (String key : keys) {
+                getMemcachedClient().delete(key);
+            }
+        }
+        getMemcachedClient().delete(scope);
+
+    }
+
+    public synchronized void insert(String key, Object value, String scope) {
+        getMemcachedClient().set(key, value);
+
+        Object keys = getMemcachedClient().get(scope);
+        if (keys == null) {
+            keys = new ArrayList<String>();
+        }
+
+        ((List<String>) keys).add(key);
+
+        getMemcachedClient().set(scope, keys);
+    }
+
+
+    private String servers;
+
+    private String weights;
+
+    public String getWeights() {
+        return weights;
+    }
+
+    public void setWeights(String weights) {
+        this.weights = weights;
+    }
+
+    public String getServers() {
+        return servers;
+    }
+
+    public void setServers(String servers) {
+        this.servers = servers;
+    }
+
+
 }

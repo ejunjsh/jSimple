@@ -43,7 +43,6 @@
 			</dependency>
 	</dependencies>
     <profiles>
-    <!-- 独立war部署 -->
     <profile>
     <id>defaultProperties</id>
     <activation>
