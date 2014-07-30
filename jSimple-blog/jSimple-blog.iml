@@ -64,7 +64,7 @@
     <orderEntry type="module" module-name="jSimple-data" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.0.1" level="project" />
     <orderEntry type="module" module-name="jSimple-cache" />
-    <orderEntry type="library" name="Maven: com.googlecode.xmemcached:xmemcached:1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: com.danga:java-memcached:2.6.3" level="project" />
   </component>
 </module>
 
