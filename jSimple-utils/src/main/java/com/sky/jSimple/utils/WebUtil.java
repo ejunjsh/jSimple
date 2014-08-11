@@ -51,6 +51,11 @@ public class WebUtil {
     // 从请求中获取所有参数（当参数名重复时，用后者覆盖前者）
     public static Map<String, String> getRequestParamMap(HttpServletRequest request) {
         Map<String, String> paramMap = new LinkedHashMap<String, String>();
+        getRequestParamMap(request, paramMap);
+        return paramMap;
+    }
+
+    public static Map<String, String> getRequestParamMap(HttpServletRequest request, Map<String, String> paramMap) {
         try {
             String method = request.getMethod();
             if (method.equalsIgnoreCase("put") || method.equalsIgnoreCase("delete")) {
@@ -70,29 +75,29 @@ public class WebUtil {
                         }
                     }
                 }
-            } else {
-                Enumeration<String> paramNames = request.getParameterNames();
-                while (paramNames.hasMoreElements()) {
-                    String paramName = paramNames.nextElement();
-                    if (checkParamName(paramName)) {
-                        String[] paramValues = request.getParameterValues(paramName);
-                        if (ArrayUtil.isNotEmpty(paramValues)) {
-                            if (paramValues.length == 1) {
-                                paramMap.put(paramName, paramValues[0]);
-                            } else {
-                                StringBuilder paramValue = new StringBuilder("");
-                                for (int i = 0; i < paramValues.length; i++) {
-                                    paramValue.append(paramValues[i]);
-                                    if (i != paramValues.length - 1) {
-                                        paramValue.append(StringUtil.SEPARATOR);
-                                    }
+            }
+            Enumeration<String> paramNames = request.getParameterNames();
+            while (paramNames.hasMoreElements()) {
+                String paramName = paramNames.nextElement();
+                if (checkParamName(paramName)) {
+                    String[] paramValues = request.getParameterValues(paramName);
+                    if (ArrayUtil.isNotEmpty(paramValues)) {
+                        if (paramValues.length == 1) {
+                            paramMap.put(paramName, paramValues[0]);
+                        } else {
+                            StringBuilder paramValue = new StringBuilder("");
+                            for (int i = 0; i < paramValues.length; i++) {
+                                paramValue.append(paramValues[i]);
+                                if (i != paramValues.length - 1) {
+                                    paramValue.append(StringUtil.SEPARATOR);
                                 }
-                                paramMap.put(paramName, paramValue.toString());
                             }
+                            paramMap.put(paramName, paramValue.toString());
                         }
                     }
                 }
             }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -199,7 +204,7 @@ public class WebUtil {
             int fontHeight = height - 2;         // 字体高度
             int randomSeed = 10;                 // 随机数种子
             char[] codeSequence = {              // 验证码中可出现的字符
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+                    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
             };
             // 创建图像
             BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

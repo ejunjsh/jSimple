@@ -14,48 +14,47 @@ import java.util.List;
 @Bean
 public class TagService implements ITagService {
 
-	@Inject
-	private ITagDao tagDao;
-	
-	@Transactional
-	@Evict
-	public void insert(Tag tag) throws JSimpleException{
-		tagDao.insert(tag);
-	}
+    @Inject
+    private ITagDao tagDao;
 
-	@Transactional
-	@Evict
-	public void update(Tag tag)  throws JSimpleException{
-		tagDao.update(tag);
-	}
-
-	@Transactional
-	public void delete(Long id) throws JSimpleException {
-		tagDao.delete(id);
-	}
-
-	public Tag getById(Long id) throws JSimpleException {
-		return tagDao.getById(id);
-	}
-
-	public Tag getByLinkName(String linkName) throws JSimpleException {
-		return tagDao.getByLinkName(linkName);
-	}
-	
-	@Override
-	@Cache
-    public List<Tag> getAllTags(String sortBy,boolean isDesc) throws JSimpleException
-    {
-    	String sort=sortBy +" "+(isDesc?"desc":"asc");
-    	return tagDao.getAll(sort);
+    @Transactional
+    @Evict(scope = "tag1")
+    public void insert(Tag tag) throws JSimpleException {
+        tagDao.insert(tag);
     }
 
-	public ITagDao getTagDao() {
-		return tagDao;
-	}
+    @Transactional
+    @Evict(scope = "tag1")
+    public void update(Tag tag) throws JSimpleException {
+        tagDao.update(tag);
+    }
 
-	public void setTagDao(ITagDao tagDao) {
-		this.tagDao = tagDao;
-	}
+    @Transactional
+    public void delete(Long id) throws JSimpleException {
+        tagDao.delete(id);
+    }
+
+    public Tag getById(Long id) throws JSimpleException {
+        return tagDao.getById(id);
+    }
+
+    public Tag getByLinkName(String linkName) throws JSimpleException {
+        return tagDao.getByLinkName(linkName);
+    }
+
+    @Override
+    @Cache(scope = "tag1")
+    public List<Tag> getAllTags(String sortBy, boolean isDesc) throws JSimpleException {
+        String sort = sortBy + " " + (isDesc ? "desc" : "asc");
+        return tagDao.getAll(sort);
+    }
+
+    public ITagDao getTagDao() {
+        return tagDao;
+    }
+
+    public void setTagDao(ITagDao tagDao) {
+        this.tagDao = tagDao;
+    }
 
 }
