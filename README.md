@@ -11,4 +11,4 @@ jSimple-parent(jSimple父级模块，配置基础依赖)
  L hessian--hessian使用例子
  L ioc--依赖注入，基于bean容器的注入
  L mvc--mvc框架，应该说还是好好用的
- L utils--基于apache公共java库的一个公共库
+ L utils--基于apache公共java库的一个公共库 
