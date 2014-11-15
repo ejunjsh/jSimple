@@ -5,10 +5,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BeanPropertyUtil {
 	
@@ -93,7 +90,10 @@ public class BeanPropertyUtil {
     		  {
     			  ss.add(s);
     		  }
-    		  return ss;
+
+              //排序一下
+              Collections.sort(ss);
+              return ss;
     	  }
 		return null;
      }
