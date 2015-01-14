@@ -14,90 +14,77 @@ import java.text.MessageFormat;
 
 public class CacheProxy implements Proxy {
 
-	private static final Logger logger = LoggerFactory.getLogger(CacheProxy.class);
-	
-	public ICacheManager getCacheManager() {
-		if(cacheManager==null)
-		{
-			//MemoryCacheManager as default.
-			cacheManager=new MemoryCacheManager();
-		}
-		return cacheManager;
-	}
+    private static final Logger logger = LoggerFactory.getLogger(CacheProxy.class);
+    private ICacheManager cacheManager;
 
-	public void setCacheManager(ICacheManager cacheManager) {
-		this.cacheManager = cacheManager;
-	}
+    public ICacheManager getCacheManager() {
+        if (cacheManager == null) {
+            //MemoryCacheManager as default.
+            cacheManager = new MemoryCacheManager();
+        }
+        return cacheManager;
+    }
 
-	private ICacheManager cacheManager;
-	
-	public Object doProxy(ProxyChain proxyChain) throws JSimpleException {
-		Object result = null;
-		try {
-		       Class<?> cls=proxyChain.getTargetClass();
-		       Method method=proxyChain.getTargetMethod();
-		       Object[] params=proxyChain.getMethodParams();
-		       
-		       if(method.isAnnotationPresent(Cache.class))
-		       {
-		    	   String scope=method.getAnnotation(Cache.class).scope();
-                   //实现动态scope -- myscope{0}{1}
-                   scope= MessageFormat.format(scope,params);
+    public void setCacheManager(ICacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
-                   int expire =method.getAnnotation(Cache.class).expire();
+    public Object doProxy(ProxyChain proxyChain) {
+        Object result = null;
+        try {
+            Class<?> cls = proxyChain.getTargetClass();
+            Method method = proxyChain.getTargetMethod();
+            Object[] params = proxyChain.getMethodParams();
 
-				    if(StringUtils.isBlank(scope))
-				    {
-				   	  scope=cls.getName();
-				    }
-				    String key=method.getAnnotation(Cache.class).key();
-		    	    if(StringUtils.isBlank(key))
-		    	    {
-		    	    	key=method.getName();
-		    	    	for(Object param:proxyChain.getMethodParams())
-		    	    	{
-		    	    		key+=param.toString();
-		    	    	}
-		    	    }
-		    	    result=getCacheManager().get(key);
-		    	    if(result!=null)
-		    	    {
-		    	    	logger.debug("[jSimpe-cache] get cache from key--"+key);
-		    	    	return result;
-		    	    }
-		    	    result= proxyChain.doProxyChain();
-		    	 
-		    	    getCacheManager().insert(key, result,scope,expire);
-		    	    logger.debug("[jSimpe-cache] save cache with key--"+key+" in scope--"+scope);
-		    	    return result;
-		       }
-		       else if(method.isAnnotationPresent(Evict.class)){
-		    	   String scope=method.getAnnotation(Evict.class).scope();
+            if (method.isAnnotationPresent(Cache.class)) {
+                String scope = method.getAnnotation(Cache.class).scope();
+                //实现动态scope -- myscope{0}{1}
+                scope = MessageFormat.format(scope, params);
 
-                   //实现动态scope -- myscope{0}{1}
-                   scope=MessageFormat.format(scope,params);
-				    if(StringUtils.isBlank(scope))
-				    {
-					   	  scope=cls.getName();
-				    }
-				    getCacheManager().removeScope(scope);
-				    logger.debug("[jSimpe-cache] remove all cache in scope--"+scope);
-				    String key=method.getAnnotation(Evict.class).key();
-				    if(StringUtils.isNotBlank(key))
-				    {
-				    	getCacheManager().remove(key);
-				    	logger.debug("[jSimpe-cache] remove cache from key--"+key);
-				    }
-				    
-				    return proxyChain.doProxyChain();
-				 }
-		       else {
-		    	   return proxyChain.doProxyChain();
-			}
-		}
-		catch(Exception e)
-		{
-			throw new JSimpleException(e);
-		}
-	}
+                int expire = method.getAnnotation(Cache.class).expire();
+
+                if (StringUtils.isBlank(scope)) {
+                    scope = cls.getName();
+                }
+                String key = method.getAnnotation(Cache.class).key();
+                if (StringUtils.isBlank(key)) {
+                    key = method.getName();
+                    for (Object param : proxyChain.getMethodParams()) {
+                        key += param.toString();
+                    }
+                }
+                result = getCacheManager().get(key);
+                if (result != null) {
+                    logger.debug("[jSimpe-cache] get cache from key--" + key);
+                    return result;
+                }
+                result = proxyChain.doProxyChain();
+
+                getCacheManager().insert(key, result, scope, expire);
+                logger.debug("[jSimpe-cache] save cache with key--" + key + " in scope--" + scope);
+                return result;
+            } else if (method.isAnnotationPresent(Evict.class)) {
+                String scope = method.getAnnotation(Evict.class).scope();
+
+                //实现动态scope -- myscope{0}{1}
+                scope = MessageFormat.format(scope, params);
+                if (StringUtils.isBlank(scope)) {
+                    scope = cls.getName();
+                }
+                getCacheManager().removeScope(scope);
+                logger.debug("[jSimpe-cache] remove all cache in scope--" + scope);
+                String key = method.getAnnotation(Evict.class).key();
+                if (StringUtils.isNotBlank(key)) {
+                    getCacheManager().remove(key);
+                    logger.debug("[jSimpe-cache] remove cache from key--" + key);
+                }
+
+                return proxyChain.doProxyChain();
+            } else {
+                return proxyChain.doProxyChain();
+            }
+        } catch (Exception e) {
+            throw new JSimpleException(e);
+        }
+    }
 }

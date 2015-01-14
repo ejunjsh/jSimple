@@ -15,22 +15,21 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 
-
 public class VelocityResult extends ActionResult {
 
-	private static final Logger logger = LoggerFactory.getLogger(VelocityResult.class);
-	
-	private transient static final String encoding = "utf-8";
-	private transient static final String contentType = "text/html;charset=" + encoding;
+    private static final Logger logger = LoggerFactory.getLogger(VelocityResult.class);
 
-	private String path;
-	
-	
-	public VelocityResult(String path,Object model) {
-		this.path = path;
-		setModel(model);
-	}
-	
+    private transient static final String encoding = "utf-8";
+    private transient static final String contentType = "text/html;charset=" + encoding;
+
+    private String path;
+
+
+    public VelocityResult(String path, Object model) {
+        this.path = path;
+        setModel(model);
+    }
+
 	/*
 	static {
 		String webPath = RenderFactory.getServletContext().getRealPath("/");
@@ -43,24 +42,22 @@ public class VelocityResult extends ActionResult {
 		
 		Velocity.init(properties);	// Velocity.init("velocity.properties");	// setup
 	}*/
-	
 
-	
-	public static void  init(ServletContext servletContext)
-	{
-			String webPath = servletContext.getRealPath("/");
-			Properties properties=new Properties();
-			properties.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, webPath);
-			properties.setProperty(Velocity.ENCODING_DEFAULT, encoding); 
-			properties.setProperty(Velocity.INPUT_ENCODING, encoding); 
-			properties.setProperty(Velocity.OUTPUT_ENCODING, encoding);
-			Velocity.init(properties);
-	}
-	
-	
-	public void ExecuteResult() throws JSimpleException {
-		processRequest();
-		PrintWriter writer = null;
+
+    public static void init(ServletContext servletContext) {
+        String webPath = servletContext.getRealPath("/");
+        Properties properties = new Properties();
+        properties.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, webPath);
+        properties.setProperty(Velocity.ENCODING_DEFAULT, encoding);
+        properties.setProperty(Velocity.INPUT_ENCODING, encoding);
+        properties.setProperty(Velocity.OUTPUT_ENCODING, encoding);
+        Velocity.init(properties);
+    }
+
+
+    public void ExecuteResult() {
+        processRequest();
+        PrintWriter writer = null;
         try {
             /*
              *  Make a context object and populate with the data.  This
@@ -68,12 +65,12 @@ public class VelocityResult extends ActionResult {
              *  references (ex. $list) in the template
              */
             VelocityContext context = new VelocityContext();
-            
-    		// Map root = new HashMap();
-    		for (Enumeration<String> attrs=request.getAttributeNames(); attrs.hasMoreElements();) {
-    			String attrName = attrs.nextElement();
-    			context.put(attrName, request.getAttribute(attrName));
-    		}
+
+            // Map root = new HashMap();
+            for (Enumeration<String> attrs = request.getAttributeNames(); attrs.hasMoreElements(); ) {
+                String attrName = attrs.nextElement();
+                context.put(attrName, request.getAttribute(attrName));
+            }
     		
             /*
              *  get the Template object.  This is the parsed version of your
@@ -90,23 +87,21 @@ public class VelocityResult extends ActionResult {
              *  data placed into the context.  Think of it as a  'merge'
              *  of the template and the data to produce the output stream.
              */
-           response.setContentType(contentType);
-           try {
-			writer = response.getWriter();
-		} catch (IOException e) {
-			throw new JSimpleException(e);
-		}	// BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-            
-           template.merge(context, writer);
-           writer.flush();	// flush and cleanup
+            response.setContentType(contentType);
+            try {
+                writer = response.getWriter();
+            } catch (IOException e) {
+                throw new JSimpleException(e);
+            }    // BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+
+            template.merge(context, writer);
+            writer.flush();    // flush and cleanup
+        } catch (ResourceNotFoundException e) {
+            throw new JSimpleException(e);
+        } finally {
+            if (writer != null)
+                writer.close();
         }
-        catch(ResourceNotFoundException e) {
-        	throw new JSimpleException(e);
-        }
-        finally {
-        	if (writer != null)
-        		writer.close();
-        }
-	}
+    }
 
 }

@@ -1,21 +1,19 @@
 package com.sky.jSimple.exception;
 
-public class JSimpleException extends Exception{
- 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -276013798433878342L;
+public class JSimpleException extends RuntimeException {
 
-	public JSimpleException(Throwable e)
-    {
-	
-       super(e);
+    /**
+     *
+     */
+    private static final long serialVersionUID = -276013798433878342L;
+
+    public JSimpleException(Throwable e) {
+
+        super(e);
     }
-	
-	public JSimpleException(String message)
-	{
-		super(message);
-	}
+
+    public JSimpleException(String message) {
+        super(message);
+    }
 
 }

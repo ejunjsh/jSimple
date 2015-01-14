@@ -50,6 +50,17 @@ tags nvarchar(50) not null,
   CONSTRAINT `categoryId_blog_category` FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`)
 );
 
+create table comment(
+  id int(8) not null primary key auto_increment,
+  content text not null,
+  createdDate datetime not null,
+  lastModifiedDate datetime not null,
+  uid int(8) not null ,
+  blogId int(8) not null,
+  CONSTRAINT `uid_user_comment` FOREIGN KEY (`uid`) REFERENCES `user` (`id`),
+  CONSTRAINT `blogId_blog_comment` FOREIGN KEY (`blogId`) REFERENCES `blog` (`id`)
+);
+
 insert `user` ( email,nickName ,pwd , createdDate ,lastLoginDate , avatar) values('sjj050121014@163.com','idiotSky','123',now(),now(),'/app/IMG_2218.jpg');
 
  

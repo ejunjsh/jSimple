@@ -1,5 +1,7 @@
-target
-
+target/
 .classpath
+.settings/
 .project
-upload
+upload/
+velocity.log
+jSimple-blog.iml

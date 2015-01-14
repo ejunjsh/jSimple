@@ -1,21 +1,20 @@
 package com.sky.jSimple.blog.service;
 
 import com.sky.jSimple.blog.entity.Tag;
-import com.sky.jSimple.exception.JSimpleException;
 
 import java.util.List;
 
 public interface ITagService {
-	 void insert(Tag tag) throws JSimpleException;
-	   
-	   void update(Tag tag) throws JSimpleException;
-	   
-	   void delete(Long id) throws JSimpleException;
-	   
-	   Tag getById(Long id) throws JSimpleException;
-	   
-	   
-	   Tag getByLinkName(String linkName) throws JSimpleException;
+    void insert(Tag tag);
 
-	List<Tag> getAllTags(String sortBy, boolean isDesc) throws JSimpleException;
+    void update(Tag tag);
+
+    void delete(Long id);
+
+    Tag getById(Long id);
+
+
+    Tag getByLinkName(String linkName);
+
+    List<Tag> getAllTags(String sortBy, boolean isDesc);
 }

@@ -19,20 +19,20 @@ import java.util.Map;
 
 public class DBHelper {
 
-	private static final Logger logger = LoggerFactory.getLogger(DBHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(DBHelper.class);
 
-    private static QueryRunner queryRunner=new QueryRunner();
+    private static QueryRunner queryRunner = new QueryRunner();
 
 
     // 执行查询（返回一个对象）
-    public static <T> T queryBean(Session session,Class<T> cls, String sql, Object... params) throws JSimpleException {
+    public static <T> T queryBean(Session session, Class<T> cls, String sql, Object... params) {
         T result;
         try {
             Map<String, String> fieldMap = EntityHelper.getEntityMap().get(cls.getAnnotation(Entity.class).value());
             if (MapUtil.isNotEmpty(fieldMap)) {
-                result = queryRunner.query(session.getConnection(),sql, new BeanHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory(),fieldMap))), params);
+                result = queryRunner.query(session.getConnection(), sql, new BeanHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory(), fieldMap))), params);
             } else {
-                result = queryRunner.query(session.getConnection(),sql, new BeanHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory()))), params);
+                result = queryRunner.query(session.getConnection(), sql, new BeanHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory()))), params);
             }
         } catch (SQLException e) {
             logger.error("查询出错！", e);
@@ -43,14 +43,14 @@ public class DBHelper {
     }
 
     // 执行查询（返回多个对象）
-    public static <T> List<T> queryBeanList(Session session,Class<T> cls, String sql, Object... params) throws JSimpleException {
+    public static <T> List<T> queryBeanList(Session session, Class<T> cls, String sql, Object... params) {
         List<T> result;
         try {
             Map<String, String> fieldMap = EntityHelper.getEntityMap().get(cls.getAnnotation(Entity.class).value());
             if (MapUtil.isNotEmpty(fieldMap)) {
-                result = queryRunner.query(session.getConnection(),sql, new BeanListHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory(),fieldMap))), params);
+                result = queryRunner.query(session.getConnection(), sql, new BeanListHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory(), fieldMap))), params);
             } else {
-                result = queryRunner.query(session.getConnection(),sql, new BeanListHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory()))), params);
+                result = queryRunner.query(session.getConnection(), sql, new BeanListHandler<T>(cls, new BasicRowProcessor(new JSimpleDataBeanProcessor(session.getSessionFactory()))), params);
             }
         } catch (SQLException e) {
             logger.error("查询出错！", e);
@@ -61,7 +61,7 @@ public class DBHelper {
     }
 
     // 执行更新（包括 UPDATE、INSERT、DELETE）
-	public static int update(Session session,String sql, Object... params) throws JSimpleException {
+    public static int update(Session session, String sql, Object... params) {
         int result;
         try {
             result = queryRunner.update(session.getConnection(), sql, params);
@@ -74,10 +74,10 @@ public class DBHelper {
     }
 
     // 执行查询（返回 count 结果）
-    public static long queryCount(Session session,String sql, Object... params) throws JSimpleException {
+    public static long queryCount(Session session, String sql, Object... params) {
         long result;
         try {
-            result = queryRunner.query(session.getConnection(),sql, new ScalarHandler<Long>("count(*)"), params);
+            result = queryRunner.query(session.getConnection(), sql, new ScalarHandler<Long>("count(*)"), params);
         } catch (SQLException e) {
             logger.error("查询出错！", e);
             throw new JSimpleException(e);
@@ -87,10 +87,10 @@ public class DBHelper {
     }
 
     // 查询映射列表
-    public static List<Map<String, Object>> queryMapList(Session session,String sql, Object... params) throws JSimpleException {
+    public static List<Map<String, Object>> queryMapList(Session session, String sql, Object... params) {
         List<Map<String, Object>> result;
         try {
-            result = queryRunner.query(session.getConnection(),sql, new MapListHandler(), params);
+            result = queryRunner.query(session.getConnection(), sql, new MapListHandler(), params);
         } catch (SQLException e) {
             logger.error("查询出错！", e);
             throw new JSimpleException(e);
@@ -100,10 +100,10 @@ public class DBHelper {
     }
 
     // 查询单列数据（返回一个对象）
-    public static <T> T queryColumn(Session session,String column, String sql, Object... params) throws JSimpleException {
+    public static <T> T queryColumn(Session session, String column, String sql, Object... params) {
         T result;
         try {
-            result = queryRunner.query(session.getConnection(),sql, new ScalarHandler<T>(column), params);
+            result = queryRunner.query(session.getConnection(), sql, new ScalarHandler<T>(column), params);
         } catch (SQLException e) {
             logger.error("查询出错！", e);
             throw new JSimpleException(e);
@@ -113,10 +113,10 @@ public class DBHelper {
     }
 
     // 查询单列数据（返回多个对象）
-    public static <T> List<T> queryColumnList(Session session,String column, String sql, Object... params) throws JSimpleException {
+    public static <T> List<T> queryColumnList(Session session, String column, String sql, Object... params) {
         List<T> result;
         try {
-            result = queryRunner.query(session.getConnection(),sql, new ColumnListHandler<T>(column), params);
+            result = queryRunner.query(session.getConnection(), sql, new ColumnListHandler<T>(column), params);
         } catch (SQLException e) {
             logger.error("查询出错！", e);
             throw new JSimpleException(e);
@@ -126,7 +126,7 @@ public class DBHelper {
     }
 
     // 插入（返回自动生成的主键）
-    public static Serializable insertReturnPK(Session session,String sql, Object... params) throws JSimpleException {
+    public static Serializable insertReturnPK(Session session, String sql, Object... params) {
         Serializable key = null;
         printSQL(sql);
         try {
@@ -147,8 +147,42 @@ public class DBHelper {
             logger.error("插入出错！", e);
             throw new JSimpleException(e);
         }
-        
+
         return key;
+    }
+
+    //基础查询
+    public static ResultSet query(Session session, String sql, Object... params) {
+        printSQL(sql);
+        try {
+            PreparedStatement pstmt = session.getConnection().prepareStatement(sql);
+            if (ArrayUtil.isNotEmpty(params)) {
+                for (int i = 0; i < params.length; i++) {
+                    pstmt.setObject(i + 1, params[i]);
+                }
+            }
+            return pstmt.executeQuery();
+        } catch (SQLException e) {
+            logger.error("插入出错！", e);
+            throw new JSimpleException(e);
+        }
+    }
+
+    //基础执行SQL
+    public static int execute(Session session, String sql, Object... params) {
+        printSQL(sql);
+        try {
+            PreparedStatement pstmt = session.getConnection().prepareStatement(sql);
+            if (ArrayUtil.isNotEmpty(params)) {
+                for (int i = 0; i < params.length; i++) {
+                    pstmt.setObject(i + 1, params[i]);
+                }
+            }
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("插入出错！", e);
+            throw new JSimpleException(e);
+        }
     }
 
     private static void printSQL(String sql) {

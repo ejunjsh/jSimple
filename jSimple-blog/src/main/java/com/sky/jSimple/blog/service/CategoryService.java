@@ -11,46 +11,45 @@ import java.util.List;
 
 @Bean
 public class CategoryService implements ICategoryService {
-	
-	@Inject
-	private ICategoryDao categoryDao;
 
-	@Transactional
-	public void insert(Category category) throws JSimpleException{
-		categoryDao.insert(category);
-	}
+    @Inject
+    private ICategoryDao categoryDao;
 
-	@Transactional
-	public void update(Category category) throws JSimpleException{
-		categoryDao.update(category);
-	}
-
-	@Transactional
-	public void delete(Long id) throws JSimpleException{
-		categoryDao.delete(id);
-	}
-
-	public Category getById(Long id) throws JSimpleException{
-		return categoryDao.getById(id);
-	}
-	
-	public Category getByLinkName(String linkName) throws JSimpleException{
-		return categoryDao.getByLinkName(linkName);
-	}
-	
-	@Override
-    public List<Category> getAllCategories(String sortBy,boolean isDesc) throws JSimpleException
-    {
-    	String sort=sortBy +" "+(isDesc?"desc":"asc");
-    	return categoryDao.getAll(sort);
+    @Transactional
+    public void insert(Category category) throws JSimpleException {
+        categoryDao.insert(category);
     }
 
-	public ICategoryDao getCategoryDao() {
-		return categoryDao;
-	}
+    @Transactional
+    public void update(Category category) throws JSimpleException {
+        categoryDao.update(category);
+    }
 
-	public void setCategoryDao(ICategoryDao categoryDao) {
-		this.categoryDao = categoryDao;
-	}
+    @Transactional
+    public void delete(Long id) throws JSimpleException {
+        categoryDao.delete(id);
+    }
+
+    public Category getById(Long id) {
+        return categoryDao.getById(id);
+    }
+
+    public Category getByLinkName(String linkName) throws JSimpleException {
+        return categoryDao.getByLinkName(linkName);
+    }
+
+    @Override
+    public List<Category> getAllCategories(String sortBy, boolean isDesc) throws JSimpleException {
+        String sort = sortBy + " " + (isDesc ? "desc" : "asc");
+        return categoryDao.getAll(sort);
+    }
+
+    public ICategoryDao getCategoryDao() {
+        return categoryDao;
+    }
+
+    public void setCategoryDao(ICategoryDao categoryDao) {
+        this.categoryDao = categoryDao;
+    }
 
 }

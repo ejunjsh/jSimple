@@ -2,26 +2,28 @@ package com.sky.jSimple.blog.service;
 
 import com.sky.jSimple.blog.entity.Blog;
 import com.sky.jSimple.blog.model.Pagination;
-import com.sky.jSimple.exception.JSimpleException;
+
+import java.util.List;
 
 public interface IBlogService {
-	 void insert(Blog blog) throws JSimpleException;
-	   
-	   void update(Blog blog) throws JSimpleException;
-	   
-	   void delete(Long id) throws JSimpleException;
-	   
-	   Blog getById(Long id) throws JSimpleException;
-	   
-	   Pagination getAll(int pageNumber,int pageSize)throws JSimpleException;
-	   
-	   
-	   Blog getByLinkName(String linkName) throws JSimpleException;
+    void insert(Blog blog);
 
-	Pagination getByTagLinkName(int pageNumber, int pageSize, String linkName,
-			String sortBy, boolean isDesc) throws JSimpleException;
+    void update(Blog blog);
 
-	Pagination getByCategoryLinkName(int pageNumber, int pageSize,
-			String linkName, String sortBy, boolean isDesc)
-			throws JSimpleException;
+    void delete(Long id);
+
+    Blog getById(Long id);
+
+    Pagination<Blog> getAll(int pageNumber, int pageSize);
+
+
+    Blog getByLinkName(String linkName);
+
+    Pagination<Blog> getByTagLinkName(int pageNumber, int pageSize, String linkName,
+                                      String sortBy, boolean isDesc);
+
+    List<Blog> getOrderByReadingCount();
+
+    Pagination<Blog> getByCategoryLinkName(int pageNumber, int pageSize,
+                                           String linkName, String sortBy, boolean isDesc);
 }

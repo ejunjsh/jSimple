@@ -35,8 +35,8 @@ public class WebContext {
     private List<FileItem> fileItems;
 
     // 初始化
-    public static void init(HttpServletRequest request, HttpServletResponse response) throws JSimpleException   {
-    	WebContext webContext = new WebContext();
+    public static void init(HttpServletRequest request, HttpServletResponse response) {
+        WebContext webContext = new WebContext();
         webContext.request = request;
         webContext.response = response;
         dataContextContainer.set(webContext);
@@ -188,9 +188,11 @@ public class WebContext {
     public static class Cookie {
 
         // 将数据放入 Cookie 中
-        public static void put(String key, Object value) {
+        public static void put(String key, Object value, int maxAge) {
             String strValue = CodecUtil.urlEncode(CastUtil.castString(value));
             javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie(key, strValue);
+            cookie.setMaxAge(maxAge);
+            cookie.setPath("/");
             getResponse().addCookie(cookie);
         }
 
@@ -208,6 +210,25 @@ public class WebContext {
                 }
             }
             return value;
+        }
+
+        /**
+         * 清除COOKIE
+         *
+         * @param key
+         */
+        public static void remove(String key) {
+            javax.servlet.http.Cookie[] cookieArray = getRequest().getCookies();
+            if (ArrayUtil.isNotEmpty(cookieArray)) {
+                for (javax.servlet.http.Cookie cookie : cookieArray) {
+                    if (key.equals(cookie.getName())) {
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        getResponse().addCookie(cookie);
+                        break;
+                    }
+                }
+            }
         }
 
         // 从 Cookie 中获取所有数据

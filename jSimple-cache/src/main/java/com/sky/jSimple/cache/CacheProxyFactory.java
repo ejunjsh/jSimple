@@ -14,38 +14,33 @@ import java.util.List;
 
 public class CacheProxyFactory implements IProxyFactory {
 
-	private static final Logger logger = LoggerFactory.getLogger(CacheProxyFactory.class);
-	public List<Proxy> create(Class<?> cls) {
-		Method[] methods =cls.getDeclaredMethods();
-		boolean flag=false;
-		for(Method method :methods)
-		{
-			if(method.isAnnotationPresent(Cache.class)||method.isAnnotationPresent(Evict.class))
-			{
-				flag=true;
-				break;
-			}
-		}
-		List<Proxy> proxies=new ArrayList<Proxy>();
-		if(flag)
-		{
-			if(BeanContainer.getBean(CacheProxy.class)==null)
-			{ 
-				Object proxy=new CacheProxy();
-				BeanContainer.setBean(CacheProxy.class, proxy);
-				proxies.add((Proxy)proxy);
-			}
-			else {
-				proxies.add((Proxy)BeanContainer.getBean(CacheProxy.class));
-			}
-		   
-		}
-		if(proxies.size()>0){
-			return proxies;
-		}
-		else {
-			return null;
-		}
-	}
+    private static final Logger logger = LoggerFactory.getLogger(CacheProxyFactory.class);
+
+    public List<Proxy> create(Class<?> cls) {
+        Method[] methods = cls.getDeclaredMethods();
+        boolean flag = false;
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(Cache.class) || method.isAnnotationPresent(Evict.class)) {
+                flag = true;
+                break;
+            }
+        }
+        List<Proxy> proxies = new ArrayList<Proxy>();
+        if (flag) {
+            if (BeanContainer.getBean(CacheProxy.class) == null) {
+                Object proxy = new CacheProxy();
+                BeanContainer.setBean(CacheProxy.class, proxy);
+                proxies.add((Proxy) proxy);
+            } else {
+                proxies.add(BeanContainer.getBean(CacheProxy.class));
+            }
+
+        }
+        if (proxies.size() > 0) {
+            return proxies;
+        } else {
+            return null;
+        }
+    }
 
 }

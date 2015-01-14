@@ -1,0 +1,48 @@
+﻿<h1>编辑博客</h1>
+<form name="signup_form" ng-submit="update()">
+    <div class="form-group">
+        <label for="title">输入标题</label>
+        <input class="form-control" name="title" ng-model="blog.title" placeholder="输入标题" required/>
+        <small class="error"
+               ng-show="signup_form.title.$error.required">
+            必填
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="content">输入内容</label> <a ng-click="loadEditor()" class="btn btn-default">加载编辑器</a>
+        <textarea name="content" class="form-control" rows="8" id="kindEditor" required
+                  ng-model="blog.content"></textarea>
+        <small class="error"
+               ng-show="signup_form.content.$error.required">
+            必填
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="tags">输入标签</label>
+        <input name="tags" class="form-control" ng-model="blog.tags" required placeholder="输入标签"/>
+        <small class="error"
+               ng-show="signup_form.tags.$error.required">
+            必填
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="categoryId">输入分类</label>
+        <select name="categoryId" class="form-control" ng-model="blog.categoryId" required
+                ng-options="m.id as m.name for m in categories">
+            <option value="">-- 请选择 --</option>
+        </select>
+        <small class="error"
+               ng-show="signup_form.categoryId.$error.required">
+            必填
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="exampleInputEmail1">输入链接名</label>
+        <input name="linkName" class="form-control" ng-model="blog.linkName" required placeholder="输入链接名"/>
+        <small class="error"
+               ng-show="signup_form.linkName.$error.required">
+            必填
+        </small>
+    </div>
+    <button type="submit" class="btn btn-default">发布</button>
+</form>

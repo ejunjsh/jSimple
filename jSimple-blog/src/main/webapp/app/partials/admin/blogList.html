@@ -1,0 +1,9 @@
+<h1 ng-if="category.name">{{category.name}}</h1>
+<h1 ng-if="tag.name">含有标签"{{tag.name}}"的博客</h1>
+<h1 ng-if="!category.name&&!tag.name">所有博客</h1>
+<div ng-repeat="blog in blogs.data">
+    <h4><a href="/admin/blog/{{blog.linkName}}">{{blog.title}}</a>
+        <a href="/admin/blog/{{blog.linkName}}/edit"><span class="glyphicon glyphicon-wrench"> </span></a>
+    </h4>
+</div>
+<div gen-pagination="pagination"></div>

@@ -6,7 +6,6 @@ import com.sky.jSimple.blog.entity.Tag;
 import com.sky.jSimple.cache.annotation.Cache;
 import com.sky.jSimple.cache.annotation.Evict;
 import com.sky.jSimple.data.annotation.Transactional;
-import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.ioc.annotation.Inject;
 
 import java.util.List;
@@ -19,32 +18,32 @@ public class TagService implements ITagService {
 
     @Transactional
     @Evict(scope = "tag1")
-    public void insert(Tag tag) throws JSimpleException {
+    public void insert(Tag tag) {
         tagDao.insert(tag);
     }
 
     @Transactional
     @Evict(scope = "tag1")
-    public void update(Tag tag) throws JSimpleException {
+    public void update(Tag tag) {
         tagDao.update(tag);
     }
 
     @Transactional
-    public void delete(Long id) throws JSimpleException {
+    public void delete(Long id) {
         tagDao.delete(id);
     }
 
-    public Tag getById(Long id) throws JSimpleException {
+    public Tag getById(Long id) {
         return tagDao.getById(id);
     }
 
-    public Tag getByLinkName(String linkName) throws JSimpleException {
+    public Tag getByLinkName(String linkName) {
         return tagDao.getByLinkName(linkName);
     }
 
     @Override
     @Cache(scope = "tag1")
-    public List<Tag> getAllTags(String sortBy, boolean isDesc) throws JSimpleException {
+    public List<Tag> getAllTags(String sortBy, boolean isDesc) {
         String sort = sortBy + " " + (isDesc ? "desc" : "asc");
         return tagDao.getAll(sort);
     }

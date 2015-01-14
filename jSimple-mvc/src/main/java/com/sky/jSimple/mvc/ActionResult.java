@@ -1,6 +1,5 @@
 package com.sky.jSimple.mvc;
 
-import com.sky.jSimple.exception.JSimpleException;
 import org.apache.commons.beanutils.BeanMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +24,11 @@ public abstract class ActionResult  {
 	{
 		request=WebContext.getRequest();
 	    response=WebContext.getResponse();
-	}
-	
-	public abstract void ExecuteResult() throws JSimpleException;
+
+
+    }
+
+    public abstract void ExecuteResult();
 
 	public Object getModel() {
 		return model;
@@ -39,10 +40,14 @@ public abstract class ActionResult  {
 	
 	public void processRequest()
 	{
-		if(getModel() instanceof Map)
-		{
-			Map<String,Object> map=(Map<String,Object>)getModel();
-			for(Map.Entry<String, Object> entry:map.entrySet())
+        if (getModel() instanceof Map || getModel() instanceof Model) {
+            Map<String, Object> map;
+            if (getModel() instanceof Map) {
+                map = (Map<String, Object>) getModel();
+            } else {
+                map = ((Model) getModel()).getMap();
+            }
+            for(Map.Entry<String, Object> entry:map.entrySet())
 			{
 				
 				request.setAttribute(entry.getKey(),entry.getValue());

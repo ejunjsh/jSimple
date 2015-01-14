@@ -1,3 +1,5 @@
-/target
-/.settings
-/.classpath
+target/
+.classpath
+.settings/
+.project
+jSimple-hessian.iml

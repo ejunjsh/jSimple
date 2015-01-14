@@ -19,4 +19,9 @@ public class TestController extends BaseController {
     public ActionResult formTest(int urlInteger, int formInteger) {
         return html("/test/index.html");
     }
+
+    @HttpGet("/api/test/blogIndex")
+    public ActionResult blogIndex() {
+        return html("/app/index.html");
+    }
 }

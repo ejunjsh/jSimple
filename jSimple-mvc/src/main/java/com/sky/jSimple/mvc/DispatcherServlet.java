@@ -65,7 +65,7 @@ public class DispatcherServlet extends HttpServlet {
 
     }
 
-    private void loadMvcSetting() throws JSimpleException {
+    private void loadMvcSetting() {
         InputStream is = BeanContainer.class.getClassLoader().getResourceAsStream(jSimpleConfig.configFilePath);
         SAXReader reader = new SAXReader();
         try {
@@ -169,6 +169,8 @@ public class DispatcherServlet extends HttpServlet {
                                                     paramName));
                                 } else if (paramClass == Map.class) {
                                     actionMethodParamList.add(requestmMap);
+                                } else if (paramClass == Model.class) {
+                                    actionMethodParamList.add(new Model(requestmMap));
                                 } else {
                                     Object bean;
                                     try {
@@ -249,13 +251,12 @@ public class DispatcherServlet extends HttpServlet {
                         }
 
                     } else {
-                        new TextResult("not found any action!").ExecuteResult();
+                        throw new JSimpleException("not found any action!");
                     }
-                } else {
-                    new TextResult("not found any action!").ExecuteResult();
                 }
             }
         } catch (JSimpleException e) {
+            e.printStackTrace();
 
             if (foundControllerBean != null) {
                 foundControllerBean.onException(e, request, response);
@@ -263,7 +264,6 @@ public class DispatcherServlet extends HttpServlet {
                 new ControllerBase().onException(e, request, response);
             }
 
-            e.printStackTrace();
         } finally {
             // 销毁 DataContext
             WebContext.destroy();
@@ -271,7 +271,7 @@ public class DispatcherServlet extends HttpServlet {
     }
 
 
-    private File getFileFromRequest(HttpServletRequest request, String fieldName) throws JSimpleException {
+    private File getFileFromRequest(HttpServletRequest request, String fieldName) {
         try {
             if (WebContext.isFileUpload()) {
                 List<FileItem> fileItemList = WebContext.getFileItems();
@@ -301,7 +301,7 @@ public class DispatcherServlet extends HttpServlet {
         return null;
     }
 
-    private Map<String, String> getRequstParamsMap(HttpServletRequest request) throws JSimpleException {
+    private Map<String, String> getRequstParamsMap(HttpServletRequest request) {
         Map<String, String> map = null;
         if (WebContext.isFileUpload()) {
             List<FileItem> fileItemList = WebContext.getFileItems();

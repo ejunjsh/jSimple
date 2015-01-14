@@ -1,0 +1,71 @@
+.ie-upgrade-warning-cover, .ie-upgrade-warning {
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    border: none;
+}
+
+.ie-upgrade-warning-cover {
+    background: #000;
+    z-index: 99998;
+}
+
+.ie-upgrade-warning {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: 99999;
+    font-size: 14px;
+    color: #666;
+    font-family: "宋体";
+    background: url(../../image/dialog.png) no-repeat;
+}
+
+.ie-upgrade-warning-inner {
+    padding: 0 25px;
+}
+
+.ie-upgrade-warning p {
+    margin: 15px 0;
+    padding: 0;
+    line-height: 22px;
+    text-justify: inter-ideograph;
+}
+
+.ie-upgrade-warning-text {
+    padding-top: 20px;
+}
+
+.ie-upgrade-warning-options {
+    font-size: 12px;
+    position: absolute;
+    left: 25px;
+    bottom: 18px;
+    margin: 0;
+}
+
+.ie-upgrade-warning-options input {
+    vertical-align: middle;
+}
+
+.ie-upgrade-warning-buttons {
+    position: absolute;
+    right: 25px;
+    bottom: 15px;
+    word-spacing: 0.8em;
+    margin: 0;
+}
+
+.ie-upgrade-warning-buttons a {
+    display: inline-block;
+    width: 85px;
+    height: 30px;
+    background: url(../../image/buttons.png) no-repeat;
+    margin-left: 10px;
+}
+
+.ie-upgrade-warning-action-skip {
+    background-position: left -30px !important;
+}
