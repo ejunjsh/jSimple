@@ -1,6 +1,7 @@
 package com.sky.jSimple.blog.controller;
 
 import com.sky.jSimple.Annotation.Bean;
+import com.sky.jSimple.blog.annotation.Cache;
 import com.sky.jSimple.blog.entity.Blog;
 import com.sky.jSimple.blog.entity.Category;
 import com.sky.jSimple.blog.model.Pagination;
@@ -54,6 +55,7 @@ public class BlogController extends BaseController {
      * @return
      */
     @HttpGet("/?")
+    @Cache
     public ActionResult index(int page) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
         if (page == 0) {
@@ -72,6 +74,7 @@ public class BlogController extends BaseController {
     }
 
     @HttpGet("/blog/category/{categoryName}")
+    @Cache
     public ActionResult getBlogByCategory(String categoryName, int page) {
         Map<String, Object> map = new HashMap<String, Object>();
         if (page == 0) {
@@ -92,6 +95,7 @@ public class BlogController extends BaseController {
     }
 
     @HttpGet("/blog/{linkName}")
+    @Cache
     public ActionResult getBlogDetail(String linkName) {
         Map<String, Object> map = new HashMap<String, Object>();
         Blog blog = blogService.getByLinkName(linkName);

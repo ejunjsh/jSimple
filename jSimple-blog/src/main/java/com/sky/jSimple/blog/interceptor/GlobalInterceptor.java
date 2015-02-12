@@ -11,15 +11,15 @@ import java.lang.reflect.Method;
 import java.net.URLEncoder;
 
 @Order(99)
-public class FirstGlobalInterceptor extends Interceptor {
+public class GlobalInterceptor extends Interceptor {
 
-	@Override
-	public boolean getGlobal() {
+    @Override
+    public boolean getGlobal() {
         return true;
     }
 
-	@Override
-	public ActionResult before(Class<?> cls, Method method) {
+    @Override
+    public ActionResult before(Class<?> cls, Method method, Object[] params) {
         //保存原路径
         request.setAttribute("originalUrl", request.getRequestURI());
         String encodeUrl;
@@ -41,10 +41,9 @@ public class FirstGlobalInterceptor extends Interceptor {
         return null;
     }
 
-	@Override
-    public boolean after(Class<?> cls, Method method, Object result) {
-        // TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public void after(Class<?> cls, Method method, Object[] params, ActionResult result) {
+
+    }
 
 }

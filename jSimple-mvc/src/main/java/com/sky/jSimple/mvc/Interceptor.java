@@ -25,11 +25,12 @@ public abstract class Interceptor implements Proxy {
         return false;
     }
 
-    public abstract ActionResult before(Class<?> cls, Method method);
+    public abstract ActionResult before(Class<?> cls, Method method, Object[] params);
 
     public final Object doProxy(ProxyChain aspectChain) {
         Method method = aspectChain.getTargetMethod();
         Class<?> cls = aspectChain.getTargetClass();
+        Object[] params = aspectChain.getMethodParams();
 
         if (method.isAnnotationPresent(Default.class)
                 || method.isAnnotationPresent(HttpDelete.class)
@@ -39,10 +40,10 @@ public abstract class Interceptor implements Proxy {
             if ((getAnnotation() != null && method.isAnnotationPresent(getAnnotation())) || getGlobal()) {
                 request = WebContext.getRequest();
                 response = WebContext.getResponse();
-                Object beforeResult = before(cls, method);
+                Object beforeResult = before(cls, method, params);
                 if (beforeResult == null) {
                     Object result = aspectChain.doProxyChain();
-                    after(cls, method, result);
+                    after(cls, method, params, (ActionResult) result);
                     return result;
                 } else {
                     return beforeResult;
@@ -56,7 +57,7 @@ public abstract class Interceptor implements Proxy {
 
     }
 
-    public abstract boolean after(Class<?> cls, Method method, Object Result);
+    public abstract void after(Class<?> cls, Method method, Object[] params, ActionResult Result);
 
 
     public HttpServletRequest getRequest() {
@@ -74,4 +75,5 @@ public abstract class Interceptor implements Proxy {
     public void setResponse(HttpServletResponse response) {
         this.response = response;
     }
+
 }

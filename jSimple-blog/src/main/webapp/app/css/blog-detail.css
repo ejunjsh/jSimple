@@ -15,27 +15,9 @@
 }
 
 .article footer {
-    margin-top: 35px;
+    margin-top: 15px;
     color: #333;
     font-size: 14px;
-}
-
-.sns-share {
-    font-size: 14px;
-    text-align: right;
-}
-
-.sns-share a {
-    opacity: 0.8;
-    margin-left: 10px;
-}
-
-.sns-share a:hover {
-    opacity: 1;
-}
-
-.sns-share img {
-    vertical-align: middle;
 }
 
 /* 评论 */

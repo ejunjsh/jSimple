@@ -10,7 +10,7 @@ import com.sky.jSimple.mvc.annotation.Order;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-@Order(97)
+@Order(98)
 public class NeedLoginInterceptor extends Interceptor {
 
     public Class<? extends Annotation> getAnnotation() {
@@ -18,7 +18,7 @@ public class NeedLoginInterceptor extends Interceptor {
     }
 
     @Override
-    public ActionResult before(Class<?> cls, Method method) {
+    public ActionResult before(Class<?> cls, Method method, Object[] params) {
         if (BlogContext.getUser() == null) {
             return new RedirectResult("/user/login?path=" + request.getAttribute("encodeUrl"));
         }
@@ -26,9 +26,7 @@ public class NeedLoginInterceptor extends Interceptor {
     }
 
     @Override
-    public boolean after(Class<?> cls, Method method, Object result) {
-        // TODO Auto-generated method stub
-        return false;
+    public void after(Class<?> cls, Method method, Object[] params, ActionResult result) {
     }
 
 }
