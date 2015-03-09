@@ -1,7 +1,7 @@
 package com.sky.jSimple.blog.controller;
 
 import com.sky.jSimple.Annotation.Bean;
-import com.sky.jSimple.blog.annotation.Cache;
+import com.sky.jSimple.blog.annotation.ViewCount;
 import com.sky.jSimple.blog.entity.Blog;
 import com.sky.jSimple.blog.entity.Category;
 import com.sky.jSimple.blog.model.Pagination;
@@ -15,38 +15,24 @@ import com.sky.jSimple.mvc.annotation.HttpPut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Bean
 public class BlogController extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(BlogController.class);
-    public Map<String, Integer> viewCount = new ConcurrentHashMap<String, Integer>();
+
     @Inject
     private IBlogService blogService;
     @Inject
     private ICategoryService categoryService;
 
+
     public BlogController() {
-        Timer timer = new Timer();
-        //每十分钟执行一次,更新阅读数
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                for (String key : viewCount.keySet()) {
-                    int count = viewCount.get(key) == null ? 0 : viewCount.get(key);
-                    if (count > 0) {
-                        Blog blog = blogService.getByLinkName(key);
-                        blog.setViewCount(blog.getViewCount() + viewCount.get(key));
-                        blogService.update(blog);
-                        //清空
-                        viewCount.put(key, 0);
-                        logger.debug("blogViewCountUpdate-博客" + key + "更新" + count + "次阅读量.");
-                    }
-                }
-            }
-        }, 600000, 600000);
+
     }
 
     /**
@@ -55,7 +41,7 @@ public class BlogController extends BaseController {
      * @return
      */
     @HttpGet("/?")
-    @Cache
+    //@Cache
     public ActionResult index(int page) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
         if (page == 0) {
@@ -63,6 +49,9 @@ public class BlogController extends BaseController {
         }
         Pagination<Blog> blogs = blogService.getAll(page, Pagination.PAGESIZE);
         map.put("blogs", blogs);
+
+        Pagination<Blog> recommends = blogService.getByRecommend(1, Pagination.PAGESIZE, "lastModifiedDate", true);
+        map.put("recommends", recommends.getData());
 
         List<Category> categories = categoryService.getAllCategories("name", true);
         map.put("categories", categories);
@@ -74,7 +63,7 @@ public class BlogController extends BaseController {
     }
 
     @HttpGet("/blog/category/{categoryName}")
-    @Cache
+    //@Cache
     public ActionResult getBlogByCategory(String categoryName, int page) {
         Map<String, Object> map = new HashMap<String, Object>();
         if (page == 0) {
@@ -82,6 +71,9 @@ public class BlogController extends BaseController {
         }
         Pagination<Blog> blogs = blogService.getByCategoryLinkName(page, Pagination.PAGESIZE, categoryName, "createdDate", true);
         map.put("blogs", blogs);
+
+        Pagination<Blog> recommends = blogService.getByRecommend(1, Pagination.PAGESIZE, "lastModifiedDate", true);
+        map.put("recommends", recommends.getData());
 
         List<Category> categories = categoryService.getAllCategories("name", true);
         Category curCate = categoryService.getByLinkName(categoryName);
@@ -94,15 +86,18 @@ public class BlogController extends BaseController {
         return jsp("/WEB-INF/jsp/index.jsp", map);
     }
 
+
     @HttpGet("/blog/{linkName}")
-    @Cache
+    @ViewCount
+    //@Cache
     public ActionResult getBlogDetail(String linkName) {
         Map<String, Object> map = new HashMap<String, Object>();
         Blog blog = blogService.getByLinkName(linkName);
-        int count = viewCount.get(linkName) == null ? 0 : viewCount.get(linkName);
-        count++;
-        viewCount.put(linkName, count);
+
         map.put("blog", blog);
+
+        Pagination<Blog> recommends = blogService.getByRecommend(1, Pagination.PAGESIZE, "lastModifiedDate", true);
+        map.put("recommends", recommends.getData());
 
         List<Category> categories = categoryService.getAllCategories("name", true);
         map.put("categories", categories);
@@ -111,6 +106,12 @@ public class BlogController extends BaseController {
 
         List<Blog> topViewCountBlogs = blogService.getOrderByReadingCount();
         map.put("topViewCountBlogs", topViewCountBlogs);
+
+        Blog prev = blogService.getPrevBlog(blog.getId());
+        Blog next = blogService.getNextBlog(blog.getId());
+        map.put("prev", prev);
+        map.put("next", next);
+
         return jsp("/WEB-INF/jsp/blog/detail.jsp", map);
     }
 
@@ -143,6 +144,13 @@ public class BlogController extends BaseController {
         return json(b);
     }
 
+
+    @HttpGet("/api/blog/recommend")
+    public ActionResult recommendBlog(long blogId, int isRecommend) {
+        blogService.updateRecommend(blogId, isRecommend);
+        return text("1");
+    }
+
     @HttpGet("/api/blog/getAllBlog")
     public ActionResult getAllBlog(int p) {
         if (p == 0) {
@@ -150,6 +158,16 @@ public class BlogController extends BaseController {
         }
 
         Pagination pagination = blogService.getAll(p, Pagination.PAGESIZE);
+        return json(pagination);
+    }
+
+    @HttpGet("/api/blog/getRecommendBlog")
+    public ActionResult getRecommendBlog(int p) {
+        if (p == 0) {
+            p = 1;
+        }
+
+        Pagination pagination = blogService.getByRecommend(p, Pagination.PAGESIZE, "lastModifiedDate", true);
         return json(pagination);
     }
 
@@ -195,4 +213,6 @@ public class BlogController extends BaseController {
     public void setCategoryService(ICategoryService categoryService) {
         this.categoryService = categoryService;
     }
+
+
 }

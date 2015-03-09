@@ -1,8 +1,10 @@
 package com.sky.jSimple.blog.entity;
 
 import com.sky.jSimple.data.annotation.Entity;
-import com.sky.jSimple.data.annotation.GetBy;
+import com.sky.jSimple.data.annotation.GetCount;
+import com.sky.jSimple.data.annotation.GetEntity;
 import com.sky.jSimple.data.annotation.Id;
+import com.sky.jSimple.utils.DateUtil;
 import com.sky.jSimple.utils.StringUtil;
 import org.apache.commons.lang.time.DateFormatUtils;
 
@@ -29,11 +31,20 @@ public class Blog implements Serializable {
     private long categoryId;
     private String tags;
 
-    @GetBy(condition = "id=?", values = "categoryId")
+    private int isRecommend;
+
+    @GetEntity(condition = "id=?", values = "categoryId")
     private Category category;
 
-    @GetBy(condition = "id=?", values = "uid")
+    @GetEntity(condition = "id=?", values = "uid")
     private User user;
+
+    @GetCount(condition = "blogId=?", values = "id", cls = Comment.class)
+    private Long commentCount;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
 
     public long getId() {
         return id;
@@ -143,8 +154,31 @@ public class Blog implements Serializable {
         return DateFormatUtils.format(createdDate, "dd");
     }
 
-
     public String getShortContent() {
-        return StringUtil.truncateHTML(content, 200);
+        return StringUtil.truncateHTML(content, 800);
+    }
+
+    public Long getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Long commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public String getContentNoHtml() {
+        return StringUtil.delHTMLTag(content);
+    }
+
+    public int getIsRecommend() {
+        return isRecommend;
+    }
+
+    public void setIsRecommend(int isRecommend) {
+        this.isRecommend = isRecommend;
+    }
+
+    public String getRelativeDate() {
+        return DateUtil.RelativeDateFormat.format(this.createdDate);
     }
 }

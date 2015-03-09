@@ -26,4 +26,15 @@ public interface IBlogService {
 
     Pagination<Blog> getByCategoryLinkName(int pageNumber, int pageSize,
                                            String linkName, String sortBy, boolean isDesc);
+
+    Pagination<Blog> getByRecommend(int pageNumber, int pageSize,
+                                    String sortBy, boolean isDesc);
+
+    Blog getNextBlog(long id);
+
+    Blog getPrevBlog(long id);
+
+    void updateViewCount(long id, long count);
+
+    void updateRecommend(long id, int isRecommend);
 }

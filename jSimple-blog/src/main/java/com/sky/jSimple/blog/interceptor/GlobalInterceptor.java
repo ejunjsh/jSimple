@@ -1,5 +1,6 @@
 package com.sky.jSimple.blog.interceptor;
 
+import com.sky.jSimple.blog.utils.BlogContext;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.mvc.ActionResult;
 import com.sky.jSimple.mvc.Interceptor;
@@ -25,7 +26,6 @@ public class GlobalInterceptor extends Interceptor {
         String encodeUrl;
         if (StringUtils.isNotBlank(request.getQueryString())) {
             encodeUrl = request.getRequestURI() + "?" + request.getQueryString();
-
         } else {
             encodeUrl = request.getRequestURI();
         }
@@ -34,10 +34,14 @@ public class GlobalInterceptor extends Interceptor {
             request.setAttribute("unencodeUrl", encodeUrl);
             encodeUrl = URLEncoder.encode(encodeUrl, "UTF-8");
             request.setAttribute("encodeUrl", encodeUrl);
+
+            request.setAttribute("host", request.getServerName() + ":" + request.getServerPort());
         } catch (UnsupportedEncodingException e) {
             throw new JSimpleException(e);
         }
 
+        //保存当前user
+        request.setAttribute("curUser", BlogContext.getUser());
         return null;
     }
 

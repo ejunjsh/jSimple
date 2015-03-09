@@ -21,4 +21,12 @@ public interface IBlogDao {
 
 
     List<Blog> getAll(String sort);
+
+    Blog getNextBlog(long id);
+
+    Blog getPrevBlog(long id);
+
+    void updateViewCount(long id, long count);
+
+    void updateRecommend(long id, int isRecommend);
 }

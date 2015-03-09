@@ -1,9 +1,12 @@
 <h1 ng-if="category.name">{{category.name}}</h1>
 <h1 ng-if="tag.name">含有标签"{{tag.name}}"的博客</h1>
-<h1 ng-if="!category.name&&!tag.name">所有博客</h1>
+<h1 ng-if="isRecommend">推荐博客</h1>
+<h1 ng-if="!category.name&&!tag.name&&!isRecommend">所有博客</h1>
 <div ng-repeat="blog in blogs.data">
     <h4><a href="/admin/blog/{{blog.linkName}}">{{blog.title}}</a>
         <a href="/admin/blog/{{blog.linkName}}/edit"><span class="glyphicon glyphicon-wrench"> </span></a>
+        <a ng-if="blog.isRecommend" ng-click="unrecommend(blog.id)">不推荐</a>
+        <a ng-if="!blog.isRecommend" ng-click="recommend(blog.id)">推荐</a>
     </h4>
 </div>
 <div gen-pagination="pagination"></div>

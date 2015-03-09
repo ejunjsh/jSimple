@@ -18,21 +18,21 @@
             <!-- 属性值是否动态产生 -->
             <rtexprvalue>true</rtexprvalue>
             <!-- 属性的数据类型 -->
-            <type>int</type>
+            <!--<type>int</type>-->
         </attribute>
         <attribute>
             <!-- 总记录数 -->
             <name>recordCount</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
+            <!--<type>int</type>-->
         </attribute>
         <attribute>
             <!-- 每页显示多少条 -->
             <name>pageSize</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
+            <!--<type>int</type>-->
         </attribute>
         <attribute>
             <!--anchor -->

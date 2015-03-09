@@ -46,6 +46,7 @@ linkName varchar(50) not null unique,
 viewCount int(8) not null default 0,
 categoryId int(8) not null,
 tags nvarchar(50) not null,
+isRecommend bit not null default 0,
   CONSTRAINT `uid_user_blog` FOREIGN KEY (`uid`) REFERENCES `user` (`id`),
   CONSTRAINT `categoryId_blog_category` FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`)
 );
@@ -55,9 +56,11 @@ create table comment(
   content text not null,
   createdDate datetime not null,
   lastModifiedDate datetime not null,
-  uid int(8) not null ,
+  uid int(8)  null ,
   blogId int(8) not null,
-  CONSTRAINT `uid_user_comment` FOREIGN KEY (`uid`) REFERENCES `user` (`id`),
+  nickName nvarchar(50),
+  email varchar(50),
+  website nvarchar(500),
   CONSTRAINT `blogId_blog_comment` FOREIGN KEY (`blogId`) REFERENCES `blog` (`id`)
 );
 

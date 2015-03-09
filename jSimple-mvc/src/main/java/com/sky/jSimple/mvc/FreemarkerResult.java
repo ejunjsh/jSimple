@@ -1,10 +1,15 @@
 package com.sky.jSimple.mvc;
 
 import com.sky.jSimple.exception.JSimpleException;
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.jsp.TaglibFactory;
+import freemarker.ext.servlet.HttpRequestHashModel;
+import freemarker.ext.servlet.ServletContextHashModel;
 import freemarker.template.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.GenericServlet;
 import javax.servlet.ServletContext;
 import java.io.PrintWriter;
 import java.util.*;
@@ -86,6 +91,7 @@ public class FreemarkerResult extends ActionResult {
         // 去掉int型输出时的逗号, 例如: 123,456
         // config.setNumberFormat("#");		// config.setNumberFormat("0"); 也可以
         config.setNumberFormat("#0.#####");
+
     }
 
     public void ExecuteResult() {
@@ -99,6 +105,36 @@ public class FreemarkerResult extends ActionResult {
             root.put(attrName, request.getAttribute(attrName));
         }
 
+        ServletContext servletContext = request.getServletContext();
+        ServletContextHashModel servletContextModel = (ServletContextHashModel) servletContext
+                .getAttribute(".freemarker.Application");
+        if (servletContextModel == null) {
+            GenericServlet servlet = DispatcherServlet.dispatcherServlet;
+            if (servlet != null) {
+                servletContextModel = new ServletContextHashModel(servlet,
+                        new BeansWrapper());
+                servletContext.setAttribute(".freemarker.Application",
+                        servletContextModel);
+                TaglibFactory taglibs = new TaglibFactory(servletContext);
+                servletContext.setAttribute(".freemarker.JspTaglibs",
+                        taglibs);
+            }
+        }
+        HttpRequestHashModel requestModel = (HttpRequestHashModel) request
+                .getAttribute(".freemarker.Request");
+        if ((requestModel == null)
+                || (requestModel.getRequest() != request)) {
+            requestModel = new HttpRequestHashModel(request, response,
+                    new BeansWrapper());
+            request.setAttribute(".freemarker.Request", requestModel);
+        }
+        root.put("Application", servletContextModel);
+        root.put("Request", requestModel);
+        root.put("Session", request
+                .getSession());
+        root.put("JspTaglibs",
+                new TaglibFactory(request.getServletContext()));
+
         PrintWriter writer = null;
         try {
             Template template = config.getTemplate(path);
@@ -106,9 +142,6 @@ public class FreemarkerResult extends ActionResult {
             template.process(root, writer);        // Merge the data-model and the template
         } catch (Exception e) {
             throw new JSimpleException(e);
-        } finally {
-            if (writer != null)
-                writer.close();
         }
     }
 

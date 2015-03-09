@@ -50,14 +50,14 @@ public class PageTag extends TagSupport {
             }
 
             if (this.pageNo > 1) {
-                sb.append("<li class=\"paginator-item paginator-prev\"><a href='" + this.url + "page=" + (this.pageNo - 1) + "'>上一页</a></li>");
+                sb.append("<li class=\"paginator__item paginator__item--prev\"><a class=\"paginator__item__text\" href='" + this.url + "page=" + (this.pageNo - 1) + "'><span class=\"paginator__item__text__icon\"></span></a></li>");
             }
             int start = 1;
             if (this.pageNo > 4) {
                 start = this.pageNo - 1;
-                sb.append("<li class=\"paginator-item paginator-number\"><a href='" + this.url + "page=1'>1</a></li>");
-                sb.append("<li class=\"paginator-item paginator-number\"><a href='" + this.url + "page=2'>2</a></li>");
-                sb.append("<li><span>...</span></li>");
+                sb.append("<li class=\"paginator__item paginator__item--number\"><a class=\"paginator__item__text\" href='" + this.url + "page=1'>1</a></li>");
+                sb.append("<li class=\"paginator__item paginator__item--number\"><a class=\"paginator__item__text\" href='" + this.url + "page=2'>2</a></li>");
+                sb.append("<li  class=\"paginator__item paginator__item--ellipsis\"><span class=\"paginator__item__text\"><span class=\"paginator__item__text__icon\"></span></span></li>");
             }
             int end = this.pageNo + 1;
             if (end > pageCount) {
@@ -65,22 +65,22 @@ public class PageTag extends TagSupport {
             }
             for (int i = start; i <= end; i++) {
                 if (this.pageNo == i) {
-                    sb.append("<li class=\"paginator-item paginator-number  paginator-current\"><span>" + i + "</span></li>");
+                    sb.append("<li class=\"paginator__item paginator__item--number paginator__item--current\"><span  class=\"paginator__item__text\">" + i + "</span></li>");
                 } else {
-                    sb.append("<li class=\"paginator-item paginator-number\"><a href='" + this.url + "page=" + i + "'>").append(i).append("</a></li>");
+                    sb.append("<li class=\"paginator__item paginator__item--number\"><a  class=\"paginator__item__text\" href='" + this.url + "page=" + i + "'>").append(i).append("</a></li>");
                 }
             }
             if (end < pageCount - 2) {
-                sb.append("<li class=\"paginator-item paginator-ellipsis\"><span>...</span></li>");
+                sb.append("<li  class=\"paginator__item paginator__item--ellipsis\"><span  class=\"paginator__item__text\"><span class=\"paginator__item__text__icon\"></span></span></li>");
             }
             if (end < pageCount - 1) {
-                sb.append("<li  class=\"paginator-item paginator-number\"><a href='" + this.url + "page=" + (pageCount - 1) + "'>").append((pageCount - 1) + "</a></li>");
+                sb.append("<li   class=\"paginator__item paginator__item--number\"><a class=\"paginator__item__text\" href='" + this.url + "page=" + (pageCount - 1) + "'>").append((pageCount - 1) + "</a></li>");
             }
             if (end < pageCount) {
-                sb.append("<li  class=\"paginator-item paginator-number\"><a href='" + this.url + "page=" + pageCount + "'>").append(pageCount + "</a></li>");
+                sb.append("<li class=\"paginator__item paginator__item--number\"><a  class=\"paginator__item__text\" href='" + this.url + "page=" + pageCount + "'>").append(pageCount + "</a></li>");
             }
             if (this.pageNo != pageCount) {
-                sb.append("<li class=\"paginator-item paginator-next\"><a href='" + this.url + "page=" + (this.pageNo + 1) + "'>下一页 </a></li>");
+                sb.append("<li class=\"paginator__item paginator__item--next\"><a  class=\"paginator__item__text\" href='" + this.url + "page=" + (this.pageNo + 1) + "'><span class=\"paginator__item__text__icon\"></span></a></li>");
             }
         }
         if (anchor != null) {
@@ -98,20 +98,17 @@ public class PageTag extends TagSupport {
     }
 
 
-    public void setPageNo(int pageNo) {
-        this.pageNo = pageNo;
+    public void setPageNo(String pageNo) {
+        this.pageNo = Integer.parseInt(pageNo);
     }
 
-    public int getRecordCount() {
-        return recordCount;
+
+    public void setRecordCount(String recordCount) {
+        this.recordCount = Integer.parseInt(recordCount);
     }
 
-    public void setRecordCount(int recordCount) {
-        this.recordCount = recordCount;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
+    public void setPageSize(String pageSize) {
+        this.pageSize = Integer.parseInt(pageSize);
     }
 
     public void setUrl(String url) {

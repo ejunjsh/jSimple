@@ -12,7 +12,6 @@ import com.sky.jSimple.mvc.ActionResult;
 import com.sky.jSimple.mvc.Model;
 import com.sky.jSimple.mvc.annotation.HttpGet;
 import com.sky.jSimple.mvc.annotation.HttpPost;
-import com.sky.jSimple.utils.RandomValidateCode;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,19 +49,19 @@ public class UserController extends BaseController {
         model.put("categories", categories);
 
         String name = model.get("name", String.class);
-        String code = model.get("code", String.class);
+        //String code = model.get("code", String.class);
         String pwd = model.get("pwd", String.class);
         String path = model.get("path", String.class);
-        int isRemember = model.get("isRemember", int.class);
-        if (StringUtils.isBlank(name) || StringUtils.isBlank(pwd) || StringUtils.isBlank(code)) {
+        int isRemember = 1;
+        if (StringUtils.isBlank(name) || StringUtils.isBlank(pwd)) {
             model.put("message", "信息没填齐");
             return jsp("/WEB-INF/jsp/login.jsp", model);
         }
 
-        if (!code.equalsIgnoreCase(RandomValidateCode.getValidateCode(getRequest()))) {
-            model.put("message", "验证码有误");
-            return jsp("/WEB-INF/jsp/login.jsp", model);
-        }
+//        if (!code.equalsIgnoreCase(RandomValidateCode.getValidateCode(getRequest()))) {
+//            model.put("message", "验证码有误");
+//            return jsp("/WEB-INF/jsp/login.jsp", model);
+//        }
 
 
         User user = userService.Login(name, pwd);

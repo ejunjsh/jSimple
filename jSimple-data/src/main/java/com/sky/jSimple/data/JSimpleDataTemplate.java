@@ -187,6 +187,7 @@ public class JSimpleDataTemplate {
         return DBHelper.query(sessionFactory.getSession(), sql, params);
     }
 
+
     public int execute(String sql, Object... params) {
         return DBHelper.execute(sessionFactory.getSession(), sql, params);
     }

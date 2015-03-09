@@ -2,7 +2,8 @@ package com.sky.jSimple.data;
 
 import com.sky.jSimple.aop.Proxy;
 import com.sky.jSimple.aop.ProxyChain;
-import com.sky.jSimple.data.annotation.GetBy;
+import com.sky.jSimple.data.annotation.GetCount;
+import com.sky.jSimple.data.annotation.GetEntity;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.BeanPropertyUtil;
 
@@ -32,13 +33,13 @@ public class JSimpleDataBeanProxy implements Proxy {
             propertyName = firstLetter + propertyName.substring(1);
             Field field = BeanPropertyUtil.getField(proxyChain.getTargetClass(), propertyName);
 
-            if (field != null && field.isAnnotationPresent(GetBy.class)) {
+            if (field != null && field.isAnnotationPresent(GetEntity.class)) {
                 field.setAccessible(true);
                 Object propertyValue = field.get(targetObject);
                 //already getBy...
                 if (propertyValue == null) {
-                    String condition = field.getAnnotation(GetBy.class).condition();
-                    String values = field.getAnnotation(GetBy.class).values();
+                    String condition = field.getAnnotation(GetEntity.class).condition();
+                    String values = field.getAnnotation(GetEntity.class).values();
 
                     String[] ss = values.split(",");
                     List<Object> params = new ArrayList<Object>();
@@ -55,6 +56,7 @@ public class JSimpleDataBeanProxy implements Proxy {
                         String sql = SQLHelper.generateSelectSQL(returnClass, condition, "");
                         Object value = DBHelper.queryBeanList(session, returnClass, sql, params.toArray());
                         BeanPropertyUtil.setPropertyValue(targetObject, propertyName, value);
+                        //session.close();
                     } else {
                         returnClass = targetMethod.getReturnType();
 
@@ -62,9 +64,34 @@ public class JSimpleDataBeanProxy implements Proxy {
                         String sql = SQLHelper.generateSelectSQL(returnClass, condition, "");
                         Object value = DBHelper.queryBean(session, returnClass, sql, params.toArray());
                         BeanPropertyUtil.setPropertyValue(targetObject, propertyName, value);
-                        session.close();
+                        //session.close();
 
                     }
+                }
+            }
+
+            if (field != null && field.isAnnotationPresent(GetCount.class)) {
+                field.setAccessible(true);
+                Object propertyValue = field.get(targetObject);
+                //already getBy...
+                if (propertyValue == null) {
+                    String condition = field.getAnnotation(GetCount.class).condition();
+                    String values = field.getAnnotation(GetCount.class).values();
+                    Class<?> cls = field.getAnnotation(GetCount.class).cls();
+                    String[] ss = values.split(",");
+                    List<Object> params = new ArrayList<Object>();
+                    for (String s : ss) {
+                        params.add(BeanPropertyUtil.getPropertyValue(targetObject, s));
+                    }
+
+
+                    Session session = sessionFactory.getSession();
+                    String sql = SQLHelper.generateSelectSQLForCount(cls, condition);
+                    Object value = DBHelper.queryCount(session, sql, params.toArray());
+                    BeanPropertyUtil.setPropertyValue(targetObject, propertyName, value);
+                    //session.close();
+
+
                 }
             }
             result = proxyChain.doProxyChain();

@@ -2,6 +2,7 @@ package com.sky.jSimple.mvc;
 
 import com.sky.jSimple.utils.CastUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -9,6 +10,10 @@ import java.util.Map;
  */
 public class Model {
     private Map<String, Object> map;
+
+    public Model() {
+        this.map = new HashMap<String, Object>();
+    }
 
     public Model(Map map) {
         this.map = map;

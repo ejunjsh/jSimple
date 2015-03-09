@@ -1,4 +1,3 @@
-<%@ page import="java.util.Date" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -8,143 +7,155 @@
 <head>
     <title>${blog.title}|JSimple-Blog</title>
     <meta charset="utf-8">
+    <meta name="Keywords" content="${blog.tags}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link href="/app/css/pub.css" rel="stylesheet" type="text/css"/>
-    <link href="/app/css/blog-detail.css" rel="stylesheet" type="text/css"/>
-    <!--[if lte IE 9]>
-    <script src="/app/js/lib/html5shiv.js"></script><![endif]-->
+    <link href="/app/css/base.css" rel="stylesheet" type="text/css"/>
+    <link href="/app/css/article-content.css" rel="stylesheet" type="text/css"/>
+    <link href="/app/css/article-detail.css" rel="stylesheet" type="text/css"/>
+    <link href="/app/css/highline.css" rel="stylesheet" type="text/css"/>
     <script src="/app/js/lib/jquery.js"></script>
 </head>
 
 <body>
 <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
-<div class="body clearfix">
-    <div class="boundary">
+<%@ include file="/WEB-INF/jsp/common/browserTip.jsp" %>
+<div class="container clearfix">
+    <div class="boundary container__boundary clearfix">
 
         <div class="main">
-            <div class="inner">
-                <article class="article">
-                    <header>
-                        <h1 class="article-title">${blog.title}</h1>
-                        <ul class="article-info clearfix">
-                            <li class="article-posttime">
-                                <address>${blog.user.nickName}</address>
-                                发表于
-                                <time datetime="{{blog.createdDateF}}">${blog.createdDateF}</time>
-                            </li>
-                            <li>分类：<a href="/blog/category/${blog.category.linkName}">${blog.category.name}</a></li>
-                            <li>浏览次数：${blog.viewCount}</li>
-                            <li>评论次数：<span class="comment-count">3</span></li>
-                        </ul>
-                    </header>
-                    <div class="article-content">
-                        ${blog.content}
+            <article class="article">
+                <header class="article__header">
+                    <h1 class="article__header__title">${blog.title}</h1>
+
+                    <div class="article__header__meta clearfix">
+                        ${blog.user.nickName}发表于${blog.relativeDate}，已被查看${blog.viewCount}次
                     </div>
-                    <footer>
+                </header>
+                <div class="article__content">
+                    ${blog.content}
+                </div>
+                <footer class="article__footer">
+                    <div class="article__footer__share">
+                        <a title="${blog.title}" href="http://${host}/blog/${blog.linkName}"
+                           class="share-btn share-btn--weibo" data-sharetype="weibo"><span class="share-btn__ico">&#x349f;</span>分享到微博</a>
+                        <a title="${blog.title}" href="http://${host}/blog/${blog.linkName}"
+                           class="share-btn share-btn--wechat" data-sharetype="wechat"><span class="share-btn__ico">&#xe63c;</span>分享到微信</a>
+                    </div>
 
-                        <!-- JiaThis Button BEGIN -->
-                        <div class="jiathis_style_32x32" style="float:right;">
-                            <a class="jiathis_button_qzone"></a>
-                            <a class="jiathis_button_tsina"></a>
-                            <a class="jiathis_button_tqq"></a>
-                            <a class="jiathis_button_weixin"></a>
-                            <a class="jiathis_button_renren"></a>
-                            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis"
-                               target="_blank"></a>
-                            <a class="jiathis_counter_style"></a>
-                        </div>
-                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js"
-                                charset="utf-8"></script>
-                        <!-- JiaThis Button END -->
+                    <div class="article__footer__adjacents">
+                        <ol class="clearfix">
 
-                        <div style="clear: both"></div>
-                    </footer>
-                </article>
-                <section id="comment-list" class="comment-list">
-                    <h2 class="titlebar">评论（共<em class="comment-count">0</em>条）</h2>
 
-                    <div><p class="comment-tips">暂无评论</p></div>
-                </section>
-                <div id="comment-form" class="comment-form">
-                    <h2 class="titlebar">参与讨论</h2>
+                            <c:if test="${prev!=null}">
+                                <li class="article__footer__adjacents__item article__footer__adjacents__item--prev">
+                                    <a href="/blog/${prev.linkName}"><span
+                                            class="article__footer__adjacents__item__icon"></span>${prev.title}</a>
+                                </li>
+                            </c:if>
+                            <c:if test="${next!=null}">
+                                <li class="article__footer__adjacents__item article__footer__adjacents__item--next">
+                                    <a href="/blog/${next.linkName}"><span
+                                            class="article__footer__adjacents__item__icon"></span>${next.title}</a>
+                                </li>
+                            </c:if>
+                        </ol>
+                    </div>
 
-                    <form action="/Comment/Post/117" method="post" class="clearfix" id="539412456">
-                        <div class="col-l">
-                            <p class="form-field textbox-with-label"><textarea textholder="true" class="form-text"
-                                                                               name="Content" id="Content" rows="5"
-                                                                               cols="40"
-                                                                               style="height: 125px;"></textarea><label
-                                    for="Content" style="display: block;">请填写评论内容 <span
-                                    class="required">*</span></label></p>
+                </footer>
+            </article>
+            <div class="comment">
+                <h2 class="comment__title">评论 (<em class="comment__total">${blog.commentCount}</em>条)</h2>
 
-                            <p class="form-prompt">(带 <span class="required">*</span> 的是必填项)</p>
-                        </div>
-                        <div class="col-r">
-                            <p class="form-field textbox-with-label"><input textholder="true" type="text"
-                                                                            name="AuthorName" id="AuthorName"
-                                                                            class="form-text" maxlength="20"><label
-                                    for="AuthorName" style="display: block;">您的称呼 <span
-                                    class="required">*</span></label></p>
+                <div id="comment__list" class="comment__list">
+                    载入中。。。。
+                </div>
+                <form id="commentForm" action="/comment/post/${blog.id}" method="post"
+                      class="comment__form form-layout">
+                    <input type="hidden" name="articleid" value="60">
 
-                            <p class="form-field textbox-with-label"><input textholder="true" type="text" name="Email"
-                                                                            id="Email" class="form-text"><label
-                                    for="Email" style="display: block;">Email（选填，保密）</label></p>
+                    <h2 class="comment__title">发表评论</h2>
 
-                            <p class="form-field textbox-with-label"><input textholder="true" type="text"
-                                                                            name="HomePage" id="HomePage"
-                                                                            class="form-text"><label for="HomePage"
-                                                                                                     style="display: block;">个人博客或主页（选填）</label>
-                            </p>
-
-                            <div class="captcha">
-						<span class="form-field textbox-with-label">
-							<input textholder="true" type="text" name="captcha" id="captcha" class="form-text"
-                                   maxlength="4"><label for="captcha" style="display: block;">验证码 <span
-                                class="required">*</span></label>
-						</span>
-                                <span class="captcha-img"><img
-                                        onclick="this.src='/user/validateCode?'+new Date().getTime()"
-                                        src="/user/validateCode?<%=new Date().getTime()%>" alt="点击更换验证码" alt="点击更换验证码"
-                                        class="captcha-img"></span>
+                    <div class="form-layout__row form-layout__row--3cols clearfix">
+                        <c:if test="${curUser==null}">
+                        <div class="form-layout__col">
+                            <div class="form-item">
+                                <p class="form-item__label">
+                                    <label for="comment_user_nickname">昵称</label>
+                                    <em class="form-item__label__tips form-item__label__tips--required">(必填)</em>
+                                </p>
+                                <input class="textbox" type="text" id="comment_user_nickname" name="nickName"
+                                       maxlength="20">
                             </div>
-                            <p class="form-button"><input type="submit" value="发 表" class="button"></p>
                         </div>
-                        <input type="hidden" name="ArticleId" value="117">
-                        <input type="hidden" id="comment-minlength" value="10">
-                        <input type="hidden" id="comment-maxlength" value="500">
-                    </form>
-                </div>
-                <div class="adjacent-articles">
-                    <p>上一篇：<a href="/Article/Detail/115">从千分位格式化谈JS性能优化</a></p>
-                </div>
+                        <div class="form-layout__col">
+                            <div class="form-item">
+                                <p class="form-item__label">
+                                    <label for="comment_user_email">Email</label>
+                                    <em class="form-item__label__tips">(选填，不公开)</em>
+                                </p>
+                                <input class="textbox" type="text" id="comment_user_email" name="email" maxlength="60">
+                            </div>
+                        </div>
+                        <div class="form-layout__col">
+                            <div class="form-item">
+                                <p class="form-item__label">
+                                    <label for="comment_user_qq">QQ</label>
+                                    <em class="form-item__label__tips">(选填，不公开)</em>
+                                </p>
+                                <input class="textbox" type="text" id="comment_user_qq" name="website" maxlength="15">
+                            </div>
+                        </div>
+                    </div>
+                    </c:if>
+                    <div class="form-layout__row">
+                        <div class="form-item">
+                            <p class="form-item__label">
+                                <label for="comment_content">内容</label>
+                                <em class="form-item__label__tips form-item__label__tips--required">(必填)</em>
+                            </p>
+                            <textarea class="textbox" id="comment_content" name="content" cols="50"
+                                      rows="10"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-layout__row">
+                        <div class="form-item">
+                            <input id="ajaxSubmitBtn" type="button" value="发 表" class="btn"
+                                   data-submitingtext="发表中，请稍后">
+                        </div>
+                    </div>
+                </form>
+
             </div>
         </div>
-
-        <%@ include file="/WEB-INF/jsp/common/sidebar.jsp" %>
-
+    </div>
     </div>
 </div>
 <%@ include file="/WEB-INF/jsp/common/footer.jsp" %>
-<!--[if lte IE 6]>
-<script src="/app/js/lib/ie-upgrade-warning.js"></script>
-<![endif]-->
 <script type="text/javascript">
     $(function () {
-        $("input[textholder='true']").focus(function () {
-            $(this).next().fadeOut(200);
-        }).blur(function () {
-            if (!this.value) {
-                $(this).next().fadeIn(200);
-            }
-        });
-        $("textarea[textholder='true']").focus(function () {
-            $(this).next().fadeOut(200);
-        }).blur(function () {
-            if (!this.value) {
-                $(this).next().fadeIn(200);
-            }
-        });
+        loadComments("/comments/${blog.id}");
+        $("#ajaxSubmitBtn").click(addComment);
     });
+
+    var loadComments = function (url) {
+        $.ajax({url: url, cache: false, success: function (data) {
+            $("#comment__list").html(data);
+            $("#comment__list").find("#comment-list__paginator a").click(function () {
+                loadComments(this.href);
+
+                return false;
+            });
+        }});
+    }
+
+    var addComment = function () {
+        $.ajax({url: $("#commentForm").attr("action"), type: "POST", data: $("#commentForm").serialize(), success: function (data) {
+            alert(data);
+            loadComments("/comments/${blog.id}");
+        }, error: function (error) {
+            alert(error.responseText);
+        }});
+    }
 </script>
 </body>
 </html>

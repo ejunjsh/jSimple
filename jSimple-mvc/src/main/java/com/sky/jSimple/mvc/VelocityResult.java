@@ -31,7 +31,7 @@ public class VelocityResult extends ActionResult {
     }
 
 	/*
-	static {
+    static {
 		String webPath = RenderFactory.getServletContext().getRealPath("/");
 		
 		Properties properties = new Properties();
@@ -98,9 +98,6 @@ public class VelocityResult extends ActionResult {
             writer.flush();    // flush and cleanup
         } catch (ResourceNotFoundException e) {
             throw new JSimpleException(e);
-        } finally {
-            if (writer != null)
-                writer.close();
         }
     }
 

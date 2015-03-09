@@ -27,25 +27,46 @@ angular.module('controllers', [])
     })
     .controller('blogListController', function ($scope, blogService, categoryService, tagService, $routeParams, $location) {
 
-        if (!$routeParams.p)
-            $routeParams.p = 1;
-        if ($routeParams.tagLinkName) {
-            $scope.blogs = blogService.get({queryAction: "getBlogByTagLinkName", p: $routeParams.p, linkName: $routeParams.tagLinkName}, function (pagination) {
-                $scope.pagination = {path: $location.path(), pageSize: pagination.pageSize, pageIndex: pagination.currentPage, total: pagination.recordCount};
-            });
-            $scope.tag = tagService.get({tagId: $routeParams.tagLinkName});
+        $scope.reload = function () {
+            if (!$routeParams.p)
+                $routeParams.p = 1;
+            if ($routeParams.tagLinkName) {
+                $scope.blogs = blogService.get({queryAction: "getBlogByTagLinkName", p: $routeParams.p, linkName: $routeParams.tagLinkName}, function (pagination) {
+                    $scope.pagination = {path: $location.path(), pageSize: pagination.pageSize, pageIndex: pagination.currentPage, total: pagination.recordCount};
+                });
+                $scope.tag = tagService.get({tagId: $routeParams.tagLinkName});
+            }
+            else if ($routeParams.categoryLinkName) {
+                $scope.blogs = blogService.get({queryAction: "getBlogByCategoryLinkName", p: $routeParams.p, linkName: $routeParams.categoryLinkName}, function (pagination) {
+                    $scope.pagination = {path: $location.path(), pageSize: pagination.pageSize, pageIndex: pagination.currentPage, total: pagination.recordCount};
+                });
+                $scope.category = categoryService.get({categoryId: $routeParams.categoryLinkName});
+            }
+            else {
+                if ($location.path().indexOf("/blog/recommend") >= 0) {
+                    $scope.blogs = blogService.get({queryAction: "getRecommendBlog", p: $routeParams.p}, function (pagination) {
+                        $scope.pagination = {path: $location.path(), pageSize: pagination.pageSize, pageIndex: pagination.currentPage, total: pagination.recordCount};
+                    })
+                    $scope.isRecommend = true;
+                }
+                else {
+                    $scope.blogs = blogService.get({queryAction: "getAllBlog", p: $routeParams.p}, function (pagination) {
+                        $scope.pagination = {path: $location.path(), pageSize: pagination.pageSize, pageIndex: pagination.currentPage, total: pagination.recordCount};
+                    });
+                }
+            }
         }
-        else if ($routeParams.categoryLinkName) {
-            $scope.blogs = blogService.get({queryAction: "getBlogByCategoryLinkName", p: $routeParams.p, linkName: $routeParams.categoryLinkName}, function (pagination) {
-                $scope.pagination = {path: $location.path(), pageSize: pagination.pageSize, pageIndex: pagination.currentPage, total: pagination.recordCount};
-            });
-            $scope.category = categoryService.get({categoryId: $routeParams.categoryLinkName});
-        }
-        else {
-            $scope.blogs = blogService.get({queryAction: "getAllBlog", p: $routeParams.p}, function (pagination) {
-                $scope.pagination = {path: $location.path(), pageSize: pagination.pageSize, pageIndex: pagination.currentPage, total: pagination.recordCount};
-            });
 
+        $scope.reload();
+
+        $scope.recommend = function (blogid) {
+            blogService.recommend({queryAction: "recommend", blogId: blogid, isRecommend: 1});
+            $scope.reload();
+        }
+
+        $scope.unrecommend = function (blogid) {
+            blogService.recommend({queryAction: "recommend", blogId: blogid, isRecommend: 0});
+            $scope.reload();
         }
     })
     .controller('blogController', function ($scope, categoryService, blogService, $routeParams, $location, $rootScope) {

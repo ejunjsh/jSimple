@@ -40,10 +40,16 @@ public class DispatcherServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory
             .getLogger(DispatcherServlet.class);
 
+    public static DispatcherServlet dispatcherServlet;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         // 初始化相关配置
         ServletContext servletContext = config.getServletContext();
+
+        super.init(config);
+        dispatcherServlet = this;
+
 
         FreemarkerResult.init(servletContext, Locale.CHINA, 1);
         VelocityResult.init(servletContext);
@@ -267,6 +273,7 @@ public class DispatcherServlet extends HttpServlet {
         } finally {
             // 销毁 DataContext
             WebContext.destroy();
+
         }
     }
 

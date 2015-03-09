@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Order(97)
+@Order(96)
 public class CacheInterceptor extends Interceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(CacheInterceptor.class);

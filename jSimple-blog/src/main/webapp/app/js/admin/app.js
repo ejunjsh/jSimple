@@ -52,6 +52,7 @@ angular.module('myapp', [
         $routeProvider.when('/admin/category/add', { templateUrl: '/app/partials/admin/categoryAdd.html', controller: 'categoryController' });
         $routeProvider.when('/admin/category/:linkName/edit', { templateUrl: '/app/partials/admin/categoryEdit.html', controller: 'categoryController' });
         $routeProvider.when('/admin/blog/add', { templateUrl: '/app/partials/admin/blogAdd.html', controller: 'blogController' });
+        $routeProvider.when('/admin/blog/recommend', { templateUrl: '/app/partials/admin/blogList.html', controller: 'blogListController' });
         $routeProvider.when('/admin/blog/:linkName/edit', { templateUrl: '/app/partials/admin/blogEdit.html', controller: 'blogController' });
         $routeProvider.when('/admin/blog/list', { templateUrl: '/app/partials/admin/blogList.html', controller: 'blogListController' });
         $routeProvider.when('/admin/blog/:linkName', { templateUrl: '/app/partials/admin/blogDetail.html', controller: 'blogController' });

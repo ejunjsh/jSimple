@@ -1,10 +1,7 @@
 package com.sky.jSimple.data;
 
 import com.sky.jSimple.bean.ClassScaner;
-import com.sky.jSimple.data.annotation.Column;
-import com.sky.jSimple.data.annotation.Entity;
-import com.sky.jSimple.data.annotation.GetBy;
-import com.sky.jSimple.data.annotation.Ignore;
+import com.sky.jSimple.data.annotation.*;
 import com.sky.jSimple.exception.JSimpleException;
 import com.sky.jSimple.utils.BeanPropertyUtil;
 import com.sky.jSimple.utils.MapUtil;
@@ -36,7 +33,7 @@ public class EntityHelper {
                         if (field != null) {
                             String fieldName = field.getName();
                             String columnName;
-                            if (!field.isAnnotationPresent(Ignore.class) && !field.isAnnotationPresent(GetBy.class)) {
+                            if (!field.isAnnotationPresent(Ignore.class) && !field.isAnnotationPresent(GetEntity.class) && !field.isAnnotationPresent(GetCount.class)) {
                                 // 若该字段上存在 @Column 注解，则优先获取注解中的列名
                                 if (field.isAnnotationPresent(Column.class)) {
                                     columnName = field.getAnnotation(Column.class).value();
@@ -74,7 +71,7 @@ public class EntityHelper {
         for (int i = 0; i < fields.size(); i++) {
             Field field = BeanPropertyUtil.getField(entity.getClass(), fields.get(i));
             try {
-                if (field != null && !field.isAnnotationPresent(Ignore.class) && !field.isAnnotationPresent(GetBy.class)) {
+                if (field != null && !field.isAnnotationPresent(Ignore.class) && !field.isAnnotationPresent(GetEntity.class) && !field.isAnnotationPresent(GetCount.class)) {
                     objects.add(BeanPropertyUtil.getPropertyValue(entity, fields.get(i)));
                 }
             } catch (Exception e) {
@@ -90,7 +87,7 @@ public class EntityHelper {
         for (int i = 0; i < fields.size(); i++) {
             Field field = BeanPropertyUtil.getField(entity.getClass(), fields.get(i));
             try {
-                if (field != null && !field.isAnnotationPresent(Ignore.class) && !field.isAnnotationPresent(GetBy.class)) {
+                if (field != null && !field.isAnnotationPresent(Ignore.class) && !field.isAnnotationPresent(GetEntity.class) && !field.isAnnotationPresent(GetCount.class)) {
                     objects.add(BeanPropertyUtil.getPropertyValue(entity, fields.get(i)));
                 }
             } catch (Exception e) {

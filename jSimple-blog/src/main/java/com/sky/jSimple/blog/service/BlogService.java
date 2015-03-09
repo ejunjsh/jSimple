@@ -109,6 +109,29 @@ public class BlogService implements IBlogService {
     }
 
     @Override
+    public Pagination<Blog> getByRecommend(int pageNumber, int pageSize, String sortBy, boolean isDesc) {
+        Pagination pagination = new Pagination();
+
+        String sort = sortBy + " " + (isDesc ? "desc" : "asc");
+
+        pagination.setData(blogDao.getPager(pageNumber, pageSize, "isRecommend=?", sort, 1));
+        pagination.setRecordCount(blogDao.getCount("isRecommend=?", 1));
+        pagination.setPageSize(pageSize);
+        pagination.setCurrentPage(pageNumber);
+        return pagination;
+    }
+
+    @Override
+    public Blog getNextBlog(long id) {
+        return blogDao.getNextBlog(id);
+    }
+
+    @Override
+    public Blog getPrevBlog(long id) {
+        return blogDao.getPrevBlog(id);
+    }
+
+    @Override
     public Pagination<Blog> getByTagLinkName(int pageNumber, int pageSize, String linkName, String sortBy, boolean isDesc) {
         Tag tag = tagDao.getByLinkName(linkName);
         if (tag != null) {
@@ -123,6 +146,19 @@ public class BlogService implements IBlogService {
         }
         return null;
 
+    }
+
+
+    @Transactional
+    @Override
+    public void updateViewCount(long id, long count) {
+        blogDao.updateViewCount(id, count);
+    }
+
+    @Transactional
+    @Override
+    public void updateRecommend(long id, int isRecommend) {
+        blogDao.updateRecommend(id, isRecommend);
     }
 
     public IBlogDao getBlogDao() {
