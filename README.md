@@ -20,3 +20,84 @@ jSimple-parent(jSimple父级模块，配置基础依赖)
 ### PS. 拷贝别人代码，并改动成自己，望原作者见谅。
 
 ##入门
+### 1.安装
+clone代码之后，直接maven命令安装
+```
+mvn clean install
+```
+### 2.创建一个maven web工程
+基本java目录结构如下：
+```
+{your package}
+　　┗ controller/ 控制器
+　　┗ entity/   实体
+   ┗ dao/   数据访问
+   ┗ service/   业务逻辑
+   ┗ interceptor/   拦截器
+```
+### 3. 配置 Maven 依赖
+```
+<dependency>
+   <groupId>com.sky.jSimple</groupId>
+   <artifactId>jSimple-mvc</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+### 4. 编写配置
+
+在 `resources` 目录下，创建一个名为 `jSimple.xml` 的文件，内容如下：
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<jSimple>
+    <mvc static-suffix=".jpg;.bmp;.jpeg;.png;.gif;.html;.css;.js;.htm;.ttf;.woff;.svg;.swf;.map"
+         static-expire="3600"
+            />
+    <beans scan-package="${scan.package}">
+        <bean id="dataSource"
+              class="org.apache.commons.dbcp.BasicDataSource">
+            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+            <property name="url"
+                      value="${jdbc.driver}"/>
+            <property name="username" value="${jdbc.user}"/>
+            <property name="password" value="${jdbc.pwd}"/>
+            <property name="initialSize" value="10"/>
+            <property name="maxIdle" value="20"/>
+            <property name="minIdle" value="5"/>
+            <property name="maxActive" value="50"/>
+        </bean>
+        <bean id="sessionFactory" class="com.sky.jSimple.data.SessionFactory">
+            <property name="dataSource" ref="dataSource"/>
+        </bean>
+        <bean id="jSimpleDataTemplate" class="com.sky.jSimple.data.JSimpleDataTemplate">
+            <property name="sessionFactory" ref="sessionFactory"/>
+            <property name="dbType" value="mysql"/>
+        </bean>
+        <!--默认是memoryCacheManager,去掉注释用的是memcached-->
+        <!--<bean id="memcachedCacheManager" class="com.sky.jSimple.cache.MemcachedCacheManager">-->
+        <!--<property name="servers"  value="192.168.153.132:11111,192.168.153.133:11111" />-->
+        <!--<property name="weights"  value="1,1" />-->
+        <!--</bean>-->
+        <!--<bean id="cacheProxy" class="com.sky.jSimple.cache.CacheProxy">-->
+        <!--<property name="cacheManager"  ref="memcachedCacheManager" />-->
+        <!--</bean>-->
+    </beans>
+</jSimple>
+```
+这里很像spring的做法，之所以用这个，主要是因为想实现一个类下面的多个bean实体的配置，例如多数据源,当然还有就是灵活配置
+
+然后在`web.xml` 添加一个serlvet
+```xml
+ <servlet>  
+        <servlet-name>jsimplemvc</servlet-name>  
+        <servlet-class>com.sky.jSimple.mvc.DispatcherServlet</servlet-class>
+        <init-param>
+          <param-name>configPath</param-name>
+          <param-value>/jSimple.xml</param-value>
+        </init-param>
+      <load-on-startup>1</load-on-startup>
+    </servlet>  
+    <servlet-mapping>  
+        <servlet-name>jsimplemvc</servlet-name>  
+        <url-pattern>/</url-pattern>  
+    </servlet-mapping>  
+```
