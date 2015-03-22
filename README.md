@@ -216,10 +216,10 @@ public class BlogController extends ControllerBase {
    //setter/getter
 }
 ```
-controller中最重要的是用`@HttpPost` 标记的方法，方法参数是由前端post过来参数，支持封装到一个对象，map等。
-例如：url /api/blog/{id}/edit?page=1
-相应的参数是(int page,int id)或者是(Map map)或者是包含page和id两个属性的实体。
-目前有`@HttpPost` `@HttpGet` `@HttpPut` `@HttpDelete` 四种标记。
+controller中最重要的是用`@HttpPost` 标记的方法，方法参数是由前端post过来参数，支持封装到一个对象，map等。<br />
+例如：url /api/blog/{id}/edit?page=1 <br />
+相应的参数是(int page,int id)或者是(Map map)或者是包含page和id两个属性的实体。 <br />
+目前有`@HttpPost` `@HttpGet` `@HttpPut` `@HttpDelete` 四种标记。 <br />
 
 返回的`ActionResult` 支持多种，json，html，jsp，file，freemarker，velocity等，同时易于扩展。
 例如，我要返回一个验证码，那我要怎么实现一个`ActionResult`,代码如下：
@@ -271,3 +271,36 @@ So easy!
      
  }
 ```
+
+### 10.拦截器编写
+假如我要实现一个非登陆跳转的拦截器，代码如下：
+```java
+@Order(98)
+public class NeedLoginInterceptor extends Interceptor {
+
+    public Class<? extends Annotation> getAnnotation() {
+        return Login.class;
+    }
+
+    @Override
+    public ActionResult before(Class<?> cls, Method method, Object[] params) {
+        if (BlogContext.getUser() == null) {
+            return new RedirectResult("/user/login?path=" + request.getAttribute("encodeUrl"));
+        }
+        return null;
+    }
+
+    @Override
+    public void after(Class<?> cls, Method method, Object[] params, ActionResult result) {
+    }
+
+}
+```
+`@Order`注解表示，这个拦截器执行顺序，越大表示执行最前面。`getAnnotation()`表示标记了什么注解方法会被拦截。<br />
+`before()` 和 `after()` 代表方法之前和之后执行，必须要注意的是`before()`返回非空表示直接返回，不往下执行了。
+
+### 总结
+这个框架还存在很多问题，我只能说，就当学习一下呗。
+
+### PS
+再次强调，拿了别人的代码改成自己的总是不好的，请原作者见谅。
