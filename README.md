@@ -28,7 +28,7 @@ mvn clean install
 ### 2.创建一个maven web工程
 基本java目录结构如下：
 ```
-{your package}
+com.sky.jSimple.blog
 　　┗ controller/ 控制器
 　　┗ entity/   实体
    ┗ dao/   数据访问
@@ -101,3 +101,36 @@ mvn clean install
         <url-pattern>/</url-pattern>  
     </servlet-mapping>  
 ```
+### 5. 编写entity
+```java
+@Entity("blog")
+public class Blog implements Serializable {
+
+    @Id
+    private long id;
+    private String title;
+    private String content;
+    private Date createdDate;
+    private Date lastModifiedDate;
+    private long uid;
+    private long viewCount;
+    private String linkName;
+    private long categoryId;
+    private String tags;
+
+    private int isRecommend;
+
+    @GetEntity(condition = "id=?", values = "categoryId")
+    private Category category;
+
+    @GetEntity(condition = "id=?", values = "uid")
+    private User user;
+
+    @GetCount(condition = "blogId=?", values = "id", cls = Comment.class)
+    private Long commentCount;
+    
+    //getter/setter
+
+}
+```
+里面`@Entity`注解里面是表名，`@Id`注解是必须的,`@GetEntity`和`@GetCount`是延迟加载的对象注解。
