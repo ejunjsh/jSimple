@@ -300,7 +300,7 @@ public class NeedLoginInterceptor extends Interceptor {
 `before()` 和 `after()` 代表方法之前和之后执行，必须要注意的是`before()`返回非空表示直接返回，不往下执行了。
 
 ### 总结
-这个框架还存在很多问题，我只能说，就当学习一下呗。
+这个框架还存在很多问题，我只能说，就当学习一下呗。上面的代码来自一个基于这个框架写的blog，jsimple-blog，多谢捧场哦。
 
 ## PS
 再次强调，拿了别人的代码改成自己的总是不好的，请原作者见谅。
