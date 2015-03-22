@@ -35,6 +35,7 @@ public class IocManager {
                     if (beanField != null && beanField.isAnnotationPresent(Inject.class)) {
                         Object implementInstance = null;
                         String beanId = beanField.getAnnotation(Inject.class).value();
+                        // 根据bean的id注入
                         if (beanId != null && !beanId.isEmpty()) {
                             implementInstance = BeanContainer.getBean(beanId);
                         } else {

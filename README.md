@@ -134,3 +134,140 @@ public class Blog implements Serializable {
 }
 ```
 里面`@Entity`注解里面是表名，`@Id`注解是必须的,`@GetEntity`和`@GetCount`是延迟加载的对象注解。
+
+### 6.dao编写
+```java
+@Bean
+public class BlogDao {
+    @Inject
+    private JSimpleDataTemplate jSimpleDataTemplate;
+
+    public void insert(Blog entity) {
+        jSimpleDataTemplate.insert(entity);
+    }
+
+
+    public void update(Blog entity) {
+        jSimpleDataTemplate.update(entity);
+    }
+
+    public void delete(Long id) {
+        jSimpleDataTemplate.delete(id, Blog.class);
+    }
+
+    public Blog getById(Long id) {
+        return jSimpleDataTemplate.getById(Blog.class, id);
+    }
+    
+    //getter/setter
+}
+```
+`@Bean`代表此类放进bean容器里面，`@Inject` 注入进去，可以传参数进去代表注入的是那个bean例如`@Inject("jSimpleDataTemplate")`,同时注意的是被注入对象必须有setter
+
+### 7.service编写
+```java
+@Bean
+public class BlogService implements IBlogService {
+    @Inject
+    private BlogDao blogDao;
+
+    @Transactional
+    public void insert(Blog entity) {
+        blogDao.insert(entity);
+    }
+
+    @Transactional
+    public void update(Blog entity) {
+        blogDao.update(entity);
+    }
+
+    public void delete(Long id) {
+        blogDao.delete(id, Blog.class);
+    }
+
+    public Blog getById(Long id) {
+        return blogDao.getById(Blog.class, id);
+    }
+   
+    //getter/setter
+}
+```
+`@Transactional` 事务处理，里面可以放入多个dao操作。
+
+### 8.Controller 编写
+```java
+@Bean
+public class BlogController extends ControllerBase {
+   @Inject
+   private IBlogService blogService;
+   
+   @HttpPost("/api/blog")
+   public ActionResult addBlog(Blog blog)  {
+   
+           blog.setCreatedDate(new Date());
+           blog.setLastModifiedDate(new Date());
+           blog.setUid(1);
+           blog.setViewCount(0);
+           blogService.insert(blog);
+   
+           return json(blog);
+   }
+   
+   //setter/getter
+}
+```
+controller中最重要的是用`@HttpPost` 标记的方法，方法参数是由前端post过来参数，支持封装到一个对象，map等。
+例如：url /api/blog/{id}/edit?page=1
+相应的参数是(int page,int id)或者是(Map map)或者是包含page和id两个属性的实体。
+目前有`@HttpPost` `@HttpGet` `@HttpPut` `@HttpDelete` 四种标记。
+
+返回的`ActionResult` 支持多种，json，html，jsp，file，freemarker，velocity等，同时易于扩展。
+例如，我要返回一个验证码，那我要怎么实现一个`ActionResult`,代码如下：
+```java
+public class ValidateCodeResult extends ActionResult {
+    @Override
+    public void ExecuteResult() {
+        response.setContentType("image/jpeg");//设置相应类型,告诉浏览器输出的内容为图片
+        response.setHeader("Pragma", "No-cache");//设置响应头信息，告诉浏览器不要缓存此内容
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expire", 0);
+        //验证码类，用来生成验证码的类库
+        RandomValidateCode randomValidateCode = new RandomValidateCode();
+        try {
+            randomValidateCode.getRandcode(request, response);//输出图片方法
+        } catch (Exception e) {
+            throw new JSimpleException(e);
+        }
+    }
+
+}
+```
+在controller调用
+```java
+@HttpGet("/validateCode")
+public ActionResult getValidateCode()
+{
+   return new ValidateCodeResult();
+}
+```
+So easy!
+
+### 9.异常处理
+每个controller里面都有一个onException的方法，默认是返回打印错误信息的页面，直接覆盖onException可以实现自定义的异常
+例如一个ajax请求，我不需要返回一个错误信息的页面而是一个json，那么代码可以这样写：
+```java
+ public class AjaxController extends ControllerBase {
+ 
+     public void onException(Throwable e, HttpServletRequest request, HttpServletResponse response) {
+         try {
+             Map map=new HashMap();
+             map.put("error",e);
+             json(map).ExcuteResult();
+         } catch (JSimpleException e1) {
+             // TODO Auto-generated catch block
+             e1.printStackTrace();
+         }
+     }
+     
+ }
+```
