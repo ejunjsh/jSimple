@@ -13,3 +13,4 @@
 </properties>
 ```
 ### 5.在jSimple-blog目录下执行`mvn jetty:run`
+### 6.链接/admin 开头的都是后台，前台为/
