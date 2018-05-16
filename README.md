@@ -1,8 +1,6 @@
 # jSimple
 ## 简介
-### 1.源代码基于smart-framework开发，并在基础上进行深度改造，或者说是按我的意思改造。
-### 2.同时也借鉴了jFinal的mvc中的多视图处理。
-### 3.源码模块结构如下：
+### 源码模块结构如下：
 ```
 jSimple-parent(jSimple父级模块，配置基础依赖)
  L aop--利用cglib实现的aop，支持多拦截器（未排序）
@@ -17,7 +15,6 @@ jSimple-parent(jSimple父级模块，配置基础依赖)
  L mvc--mvc框架，应该说还是好好用的
  L utils--基于apache公共java库的一个公共库
 ```
-### PS. 拷贝别人代码，并改动成自己，望原作者见谅。
 
 ## 入门
 ### 1.安装
@@ -302,5 +299,3 @@ public class NeedLoginInterceptor extends Interceptor {
 ### 总结
 这个框架还存在很多问题，我只能说，就当学习一下呗。上面的实例代码来自一个基于这个框架写的blog，jsimple-blog，多谢捧场哦。
 
-## PS
-再次强调，拿了别人的代码改成自己的总是不好的，请原作者见谅。
